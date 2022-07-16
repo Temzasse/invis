@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
 import {
   createContext,
@@ -6,9 +6,9 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
+} from 'react';
 
-import { getCssText } from "./stitches.config";
+import { getCssText } from './stitches.config';
 
 export interface ClientStyleContextData {
   reset: () => void;
@@ -17,7 +17,7 @@ export interface ClientStyleContextData {
 
 const ClientStyleContext = createContext<ClientStyleContextData>({
   reset: () => {},
-  sheet: "",
+  sheet: '',
 });
 
 export function useClientStyleSheet() {
@@ -32,7 +32,11 @@ export function useClientStyleSheet() {
   return clientStyle.sheet;
 }
 
-export function ClientStyleSheetProvider({ children }: { children: ReactNode }) {
+export function ClientStyleSheetProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [sheet, setSheet] = useState(getCssText());
 
   const reset = useCallback(() => {
