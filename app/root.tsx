@@ -1,4 +1,4 @@
-import type { LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 import type { ReactNode } from "react";
 import { json } from "@remix-run/node";
 
@@ -12,14 +12,24 @@ import {
   useCatch,
 } from "@remix-run/react";
 
+import globalStyles from "./styles/global.css";
 import { useClientStyleSheet } from "./styles/stitches.context";
-import { globalStyles } from "./styles/stitches.config";
 import { getUser } from "./session.server";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: globalStyles }];
+};
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "Mökkilista",
-  viewport: "width=device-width,initial-scale=1",
+  description: "Kaikki mitä mökille tarvitaan",
+  viewport: "width=device-width,initial-scale=1,viewport-fit=cover",
+  "theme-color": "#ffffff",
+  "apple-mobile-web-app-title": "Mökkilista",
+  "application-name": "Mökkilista",
+  "apple-mobile-web-app-capable": "yes",
+  "apple-mobile-web-app-status-bar-style": "black-translucent",
 });
 
 export async function loader({ request }: LoaderArgs) {
@@ -35,10 +45,8 @@ function Document({
 }) {
   const sheet = useClientStyleSheet();
 
-  globalStyles();
-
   return (
-    <html lang="en">
+    <html lang="fi">
       <head>
         {title ? <title>{title}</title> : null}
         <Meta />
