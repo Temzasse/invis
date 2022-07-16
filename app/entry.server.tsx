@@ -1,11 +1,8 @@
-import { PassThrough } from "stream";
-import { renderToPipeableStream } from "react-dom/server";
+import type { EntryContext } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
-import { Response } from "@remix-run/node";
-import type { EntryContext, Headers } from "@remix-run/node";
-import isbot from "isbot";
+import { renderToString } from "react-dom/server";
 
-const ABORT_DELAY = 5000;
+import { getCssText } from "./styles/stitches.config";
 
 export default function handleRequest(
   request: Request,
@@ -13,38 +10,19 @@ export default function handleRequest(
   responseHeaders: Headers,
   remixContext: EntryContext
 ) {
-  const callbackName = isbot(request.headers.get("user-agent"))
-    ? "onAllReady"
-    : "onShellReady";
+  let markup = renderToString(
+    <RemixServer context={remixContext} url={request.url} />
+  );
 
-  return new Promise((resolve, reject) => {
-    let didError = false;
+  markup = markup.replace(
+    /<style id="stitches">.*<\/style>/g,
+    `<style id="stitches">${getCssText()}</style>`
+  );
 
-    const { pipe, abort } = renderToPipeableStream(
-      <RemixServer context={remixContext} url={request.url} />,
-      {
-        [callbackName]() {
-          let body = new PassThrough();
+  responseHeaders.set("Content-Type", "text/html");
 
-          responseHeaders.set("Content-Type", "text/html");
-
-          resolve(
-            new Response(body, {
-              status: didError ? 500 : responseStatusCode,
-              headers: responseHeaders,
-            })
-          );
-          pipe(body);
-        },
-        onShellError(err: unknown) {
-          reject(err);
-        },
-        onError(error: unknown) {
-          didError = true;
-          console.error(error);
-        },
-      }
-    );
-    setTimeout(abort, ABORT_DELAY);
+  return new Response("<!DOCTYPE html>" + markup, {
+    status: responseStatusCode,
+    headers: responseHeaders,
   });
 }
