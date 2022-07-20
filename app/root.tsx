@@ -36,37 +36,6 @@ export async function loader({ request }: LoaderArgs) {
   return json({ user: await getUser(request) });
 }
 
-function Document({
-  children,
-  title,
-}: {
-  children: ReactNode;
-  title?: string;
-}) {
-  const sheet = useClientStyleSheet();
-
-  return (
-    <html lang="fi">
-      <head>
-        {title ? <title>{title}</title> : null}
-        <Meta />
-        <Links />
-        <style
-          id="stitches"
-          dangerouslySetInnerHTML={{ __html: sheet }}
-          suppressHydrationWarning
-        />
-      </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
-  );
-}
-
 export default function App() {
   return (
     <Document>
@@ -91,5 +60,36 @@ export function ErrorBoundary({ error }: { error: Error }) {
     <Document title="Error!">
       <p>[ErrorBoundary]: There was an error: {error.message}</p>
     </Document>
+  );
+}
+
+function Document({
+  children,
+  title,
+}: {
+  children: ReactNode;
+  title?: string;
+}) {
+  const sheet = useClientStyleSheet();
+
+  return (
+    <html lang="en">
+      <head>
+        {title ? <title>{title}</title> : null}
+        <Meta />
+        <Links />
+        <style
+          id="stitches"
+          dangerouslySetInnerHTML={{ __html: sheet }}
+          suppressHydrationWarning
+        />
+      </head>
+      <body>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
   );
 }

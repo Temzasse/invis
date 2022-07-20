@@ -10,13 +10,8 @@ const stitches = createStitches({
       grey: '#666',
     },
   },
-  media: {
-    tabletUp: '(min-width: 768px)',
-    desktopUp: '(min-width: 1024px)',
-    largeDesktopUp: '(min-width: 1680px)',
-  },
 });
 
 const { styled, globalCss, getCssText } = stitches;
 
-export { styled, getCssText, globalCss };
+export { styled, globalCss, getCssText };
