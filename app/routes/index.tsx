@@ -1,9 +1,10 @@
+import Button from '~/components/uikit/Button';
 import { styled } from '~/styles/stitches.config';
 
 export default function Index() {
   return (
     <Main>
-      <h1>Hello World</h1>
+      <Button onPress={() => console.log('Pressed')}>Hello world</Button>
     </Main>
   );
 }
