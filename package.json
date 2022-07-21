@@ -12,7 +12,11 @@
     "install:clean": "rm -rf node_modules && rm package-lock.json && npm i",
     "format": "prettier --write .",
     "test": "vitest",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "design-system:sync": "npm run design-system:tokenize && npm run design-system:codegen",
+    "design-system:tokenize": "figmage tokenize --env .env.figma",
+    "design-system:codegen": "figmage codegen --env .env.figma && npm run design-system:move-icon-sprite",
+    "design-system:move-icon-sprite": "mv ./tokens/icon-sprite.svg ./public/icon-sprite.svg"
   },
   "prettier": {
     "bracketSpacing": true,
@@ -58,6 +62,7 @@
     "eslint": "8.20.0",
     "eslint-config-next": "12.2.2",
     "eslint-config-prettier": "8.5.0",
+    "figmage": "0.8.0",
     "happy-dom": "6.0.3",
     "msw": "0.44.1",
     "npm-run-all": "4.1.5",
@@ -74,5 +79,48 @@
   },
   "prisma": {
     "seed": "node --require tsconfig-paths/register prisma/seed.js"
+  },
+  "figmage": {
+    "outDir": "tokens",
+    "tokenize": {
+      "tokens": [
+        {
+          "name": "colors",
+          "type": "color"
+        },
+        {
+          "name": "typography",
+          "type": "text"
+        },
+        {
+          "name": "spacing",
+          "type": "width",
+          "nodeId": "22:582"
+        },
+        {
+          "name": "radii",
+          "type": "radius",
+          "nodeId": "22:641"
+        },
+        {
+          "name": "icons",
+          "type": "svg",
+          "nodeId": "1:1887"
+        }
+      ]
+    },
+    "codegen": {
+      "defaults": {
+        "filetype": "ts",
+        "tokenCase": "camel"
+      },
+      "icons": {
+        "filetype": "svg",
+        "filename": "icon-sprite",
+        "sprite": {
+          "writeIds": true
+        }
+      }
+    }
   }
 }

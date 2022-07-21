@@ -35,6 +35,7 @@ yarn-error.log*
 *.tsbuildinfo
 
 .env
+.env.figma
 
 /prisma/data.db
 /prisma/data.db-journal
