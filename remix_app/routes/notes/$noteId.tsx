@@ -3,9 +3,9 @@ import { json, redirect } from '@remix-run/node';
 import { Form, useCatch, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 
-import { deleteNote } from '~/models/note.server';
-import { getNote } from '~/models/note.server';
-import { requireUserId } from '~/session.server';
+import { deleteNote } from 'remix_app/models/note.server';
+import { getNote } from 'remix_app/models/note.server';
+import { requireUserId } from 'remix_app/session.server';
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);

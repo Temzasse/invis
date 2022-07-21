@@ -1,4 +1,4 @@
-import { styled } from '~/styles/stitches.config';
+import { styled } from 'remix_app/styles/stitches.config';
 import { Touchable } from './Touchable';
 
 type Props = {

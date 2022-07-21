@@ -1,5 +1,5 @@
-import Button from '~/components/uikit/Button';
-import { styled } from '~/styles/stitches.config';
+import Button from 'remix_app/components/uikit/Button';
+import { styled } from 'remix_app/styles/stitches.config';
 
 export default function Index() {
   return (

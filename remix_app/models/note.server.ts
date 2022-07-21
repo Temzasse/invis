@@ -1,6 +1,6 @@
 import type { User, Note } from '@prisma/client';
 
-import { prisma } from '~/db.server';
+import { prisma } from 'remix_app/db.server';
 
 export type { Note } from '@prisma/client';
 
