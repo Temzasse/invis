@@ -7,7 +7,7 @@ TODO: update instructions!
 - This step only applies if you've opted out of having the CLI install dependencies for you:
 
   ```sh
-  npx remix init
+  prisma migrate dev --name init
   ```
 
 - Initial setup: _If you just generated this project, this step has been done for you._
