@@ -1,7 +1,7 @@
 import type * as Stitches from '@stitches/react';
 import { createStitches } from '@stitches/react';
 
-import { mapToPx, mapTypography } from '../tokens/utils';
+import * as tokenUtils from '../tokens/utils';
 import * as typography from '../tokens/typography';
 import * as colors from '../tokens/colors';
 import * as space from '../tokens/spacing';
@@ -16,26 +16,26 @@ const stitches = createStitches({
     },
     space: {
       none: '0px',
-      ...mapToPx(space),
+      ...tokenUtils.mapToPx(space),
     },
     radii: {
       none: '0px',
-      ...mapToPx(radii),
+      ...tokenUtils.mapToPx(radii),
     },
     fontSizes: {
-      ...mapTypography(typography, 'fontSize'),
+      ...tokenUtils.mapTypography(typography, 'fontSize'),
     },
     fontWeights: {
-      ...mapTypography(typography, 'fontWeight'),
+      ...tokenUtils.mapTypography(typography, 'fontWeight'),
     },
     fonts: {
-      ...mapTypography(typography, 'fontFamily'),
+      ...tokenUtils.mapTypography(typography, 'fontFamily'),
     },
     lineHeights: {
-      ...mapTypography(typography, 'lineHeight'),
+      ...tokenUtils.mapTypography(typography, 'lineHeight'),
     },
     letterSpacings: {
-      ...mapTypography(typography, 'letterSpacing'),
+      ...tokenUtils.mapTypography(typography, 'letterSpacing'),
     },
   },
   media: {
