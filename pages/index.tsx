@@ -24,6 +24,9 @@ const Home: NextPage = () => {
         <Text variant="bodySmallBold">Body small bold</Text>
         <Text variant="overline">Overline</Text>
         <Button onPress={() => console.log('Pressed')}>Press me</Button>
+        <Button variant="outlined" onPress={() => console.log('Pressed')}>
+          Press me
+        </Button>
       </Main>
     </Layout>
   );

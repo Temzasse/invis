@@ -1,5 +1,4 @@
-import type { ReactNode } from 'react';
-import { forwardRef, useRef } from 'react';
+import { memo, forwardRef, useRef, ReactNode } from 'react';
 import { mergeRefs } from 'react-merge-refs';
 import { useButton } from '@react-aria/button';
 import { FocusRing } from '@react-aria/focus';
@@ -7,50 +6,64 @@ import { motion, useAnimation } from 'framer-motion';
 
 export type TouchableProps = {
   children: ReactNode;
+  interaction?: 'opacity' | 'highlight';
   onPress: () => void;
 };
 
-export const Touchable = forwardRef<any, TouchableProps>(
-  ({ onPress, children, ...rest }, ref) => {
-    const localRef = useRef(null);
-    const mergedRef = mergeRefs([localRef, ref]) as any;
-    const controls = useAnimation();
-    const { buttonProps } = useButton(
-      {
-        onPressStart: () => {
-          controls.stop();
-          controls.set({ background: '#757376' });
-        },
-        onPressEnd: () => {
-          controls.start({
-            background: '#353336',
-            transition: { duration: 0.4 },
-          });
-        },
-        onPress: () => {
-          onPress();
-          controls.start({
-            background: [null, '#353336'],
-            transition: { duration: 0.4 },
-          });
-        },
-      },
-      mergedRef
-    );
+const transistionDuration = 0.4;
 
-    return (
-      <FocusRing focusRingClass="focus-visible">
-        <motion.button
-          {...(buttonProps as any)}
-          {...rest}
-          animate={controls}
-          style={{ touchAction: 'none', userSelect: 'none', outline: 'none' }}
-        >
-          {children}
-        </motion.button>
-      </FocusRing>
-    );
-  }
+export const Touchable = memo(
+  forwardRef<any, TouchableProps>(
+    ({ onPress, children, interaction = 'opacity', ...rest }, ref) => {
+      const localRef = useRef(null);
+      const mergedRef = mergeRefs([localRef, ref]) as any;
+      const controls = useAnimation();
+
+      const animatedStyles = {
+        start:
+          interaction === 'opacity'
+            ? { opacity: 0.85 }
+            : { backgroundColor: 'rgba(150, 150, 150, 0.15)' },
+        end:
+          interaction === 'opacity'
+            ? { opacity: 1 }
+            : { backgroundColor: 'rgba(150, 150, 150, 0)' },
+      };
+
+      const { buttonProps } = useButton(
+        {
+          onPressStart: () => {
+            controls.stop();
+            controls.set({
+              ...animatedStyles.start,
+              transition: { duration: transistionDuration },
+            });
+          },
+          onPressEnd: () => {
+            controls.start({
+              ...animatedStyles.end,
+              transition: { duration: transistionDuration },
+            });
+          },
+          onPress,
+        },
+        mergedRef
+      );
+
+      return (
+        <FocusRing focusRingClass="focus-visible">
+          <motion.button
+            {...(buttonProps as any)}
+            {...rest}
+            animate={controls}
+            style={{ touchAction: 'none', userSelect: 'none', outline: 'none' }}
+          >
+            {children}
+          </motion.button>
+        </FocusRing>
+      );
+    }
+  )
 );
 
 Touchable.displayName = 'Touchable';

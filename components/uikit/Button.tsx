@@ -1,6 +1,5 @@
-import type { ComponentProps, ReactNode } from 'react';
 import type { VariantProps } from '@stitches/react';
-import { forwardRef } from 'react';
+import { forwardRef, memo, ComponentProps, ReactNode } from 'react';
 
 import { styled } from '~styles/styled';
 import { Touchable } from './Touchable';
@@ -10,19 +9,24 @@ type Props = Variants &
   Omit<
     ComponentProps<typeof Root> & {
       children: ReactNode;
+      variant?: 'filled' | 'outlined';
       onPress: () => void;
     },
     'onClick'
   >;
 
-export const Button = forwardRef<HTMLButtonElement, Props>(
-  ({ children, onPress, ...rest }, forwardedRef) => {
+export const Button = memo(
+  forwardRef<HTMLButtonElement, Props>(({ children, ...rest }, ref) => {
     return (
-      <Root onPress={onPress} ref={forwardedRef}>
+      <Root
+        ref={ref}
+        {...rest}
+        interaction={rest.variant === 'outlined' ? 'highlight' : 'opacity'}
+      >
         <span>{children}</span>
       </Root>
     );
-  }
+  })
 );
 
 Button.displayName = 'Button';
@@ -30,8 +34,22 @@ Button.displayName = 'Button';
 const Root = styled(Touchable, {
   paddingVertical: '$regular',
   paddingHorizontal: '$large',
-  color: '$primaryText',
-  backgroundColor: '$primaryMuted',
   borderRadius: '$full',
   typography: '$bodyBold',
+  border: '1px solid $primaryMuted',
+  variants: {
+    variant: {
+      filled: {
+        color: '$primaryText',
+        backgroundColor: '$primaryMuted',
+      },
+      outlined: {
+        color: '$primaryMuted',
+        backgroundColor: '$transparent',
+      },
+    },
+  },
+  defaultVariants: {
+    variant: 'filled',
+  },
 });
