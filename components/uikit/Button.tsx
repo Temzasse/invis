@@ -4,8 +4,7 @@ import { forwardRef, memo, ComponentProps, ReactNode } from 'react';
 import { styled } from '~styles/styled';
 import { Touchable } from './Touchable';
 
-type Variants = VariantProps<typeof Root>;
-type Props = Variants &
+type Props = VariantProps<typeof Root> &
   Omit<
     ComponentProps<typeof Root> & {
       children: ReactNode;

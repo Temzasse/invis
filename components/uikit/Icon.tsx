@@ -7,8 +7,7 @@ import { themeProp } from '~styles/helpers';
 
 export type IconName = typeof ids[number];
 
-type Variants = VariantProps<typeof Root>;
-type Props = Variants &
+type Props = VariantProps<typeof Root> &
   ComponentProps<typeof Root> & {
     size?: number;
     name: IconName;

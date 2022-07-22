@@ -1,21 +1,21 @@
 import type { VariantProps } from '@stitches/react';
-import { memo, forwardRef, ComponentProps } from 'react';
+import { forwardRef, ComponentProps } from 'react';
 
 import { styled, Typography } from '~styles/styled';
 import { themeProp } from '~styles/helpers';
 
 type Tags = keyof JSX.IntrinsicElements;
-type Variants = VariantProps<typeof Root>;
-type Props = Variants & ComponentProps<typeof Root> & { as?: Tags };
+type Props = VariantProps<typeof Root> &
+  ComponentProps<typeof Root> & {
+    as?: Tags;
+  };
 
-export const Text = memo(
-  forwardRef<HTMLElement, Props>(
-    ({ variant, as: asTag, ...rest }, forwardedRef) => {
-      const v = typeof variant === 'string' ? variant : variant?.['@initial'] ?? 'body'; // prettier-ignore
-      const tag = asTag || variantToTag[v];
-      return <Root {...rest} as={tag} variant={variant} ref={forwardedRef} />;
-    }
-  )
+export const Text = forwardRef<HTMLElement, Props>(
+  ({ variant, as: asTag, ...rest }, ref) => {
+    const v = typeof variant === 'string' ? variant : variant?.['@initial'] ?? 'body'; // prettier-ignore
+    const tag = asTag || variantToTag[v];
+    return <Root {...rest} as={tag} variant={variant} ref={ref} />;
+  }
 );
 
 Text.displayName = 'Text';
