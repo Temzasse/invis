@@ -1,11 +1,11 @@
 import type * as Stitches from '@stitches/react';
 import { createStitches } from '@stitches/react';
 
-import * as tokenUtils from '../tokens/utils';
-import * as typography from '../tokens/typography';
-import * as colors from '../tokens/colors';
-import * as space from '../tokens/spacing';
-import * as radii from '../tokens/radii';
+import * as tokenUtils from './tokens/utils';
+import * as typography from './tokens/typography';
+import * as colors from './tokens/colors';
+import * as space from './tokens/spacing';
+import * as radii from './tokens/radii';
 import * as utils from './utils';
 
 const stitches = createStitches({

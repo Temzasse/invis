@@ -1,49 +1,35 @@
-import type { NextPage } from 'next';
+import type { NextPage, GetServerSideProps } from 'next';
 import Head from 'next/head';
 
-import { styled } from '~styles/styled';
-import { Icon, Text, Button, Stack } from '~components/uikit';
+import { isRunningStandalone } from '~utils-app/pwa';
+import { Text } from '~components/uikit';
 
-const Home: NextPage = () => {
+const Landing: NextPage = () => {
+  const isStandalone = isRunningStandalone();
+
+  // TODO: show installation instructions for non-standalone mode
+
   return (
-    <Layout>
+    <>
       <Head>
-        <title>Home</title>
+        <title>Invis</title>
       </Head>
 
-      <Main>
-        <Stack>
-          <Icon name="checkFilled" color="primary" />
-          <Icon name="gridFilled" color="statusFull" />
-          <Icon name="settingsFilled" color="statusPartial" />
-          <Icon name="clipboardOutline" color="statusMissing" />
-          <Text variant="title1">Title 1</Text>
-          <Text variant="title2">Title 2</Text>
-          <Text variant="bodyBold">Body bold</Text>
-          <Text variant="body">Body</Text>
-          <Text variant="bodySmall">Body small</Text>
-          <Text variant="bodySmallBold">Body small bold</Text>
-          <Text variant="overline">Overline</Text>
-          <Button onPress={() => console.log('Pressed')}>Press me</Button>
-          <Button variant="outlined" onPress={() => console.log('Pressed')}>
-            Press me
-          </Button>
-        </Stack>
-      </Main>
-    </Layout>
+      <div>
+        <Text variant="title1">Landing</Text>
+        {isStandalone && <Text variant="title2">Standalone</Text>}
+      </div>
+    </>
   );
 };
 
-const Layout = styled('div', {
-  height: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-});
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const { project } = req.cookies;
 
-const Main = styled('main', {
-  padding: 40,
-});
+  return {
+    props: {},
+    redirect: project ? { destination: '/app/home' } : undefined,
+  };
+};
 
-export default Home;
+export default Landing;

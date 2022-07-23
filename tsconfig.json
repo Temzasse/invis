@@ -18,8 +18,10 @@
     "paths": {
       "~components/*": ["./components/*"],
       "~styles/*": ["./styles/*"],
-      "~tokens/*": ["./tokens/*"]
-    },
+      "~tokens/*": ["./styles/tokens/*"],
+      "~utils-app/*": ["./utils-app/*"],
+      "~utils-api/*": ["./utils-api/*"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "remix_app"]
