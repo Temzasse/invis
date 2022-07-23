@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
-import { Text } from '~components/uikit';
+import Navbar from '~components/navigation/Navbar';
 
 const Settings: NextPage = () => {
   return (
@@ -10,9 +10,7 @@ const Settings: NextPage = () => {
         <title>Asetukset</title>
       </Head>
 
-      <div>
-        <Text variant="title1">Asetukset</Text>
-      </div>
+      <Navbar title="Asetukset" />
     </>
   );
 };

@@ -18,7 +18,13 @@ export default async function handler(
   });
 
   if (project) {
-    setCookie(res, 'project', { name: project.name, pin: project.pin });
+    setCookie(
+      res,
+      'project',
+      { name: project.name, pin: project.pin },
+      { httpOnly: true, sameSite: 'lax' }
+    );
+
     res.redirect('/app/home');
   } else {
     res.redirect('/');

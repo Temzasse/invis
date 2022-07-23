@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
-import { Text } from '~components/uikit';
+import Navbar from '~components/navigation/Navbar';
 
 const Shoplist: NextPage = () => {
   return (
@@ -10,9 +10,7 @@ const Shoplist: NextPage = () => {
         <title>Ostoslista</title>
       </Head>
 
-      <div>
-        <Text variant="title1">Ostoslista</Text>
-      </div>
+      <Navbar title="Ostoslista" />
     </>
   );
 };
