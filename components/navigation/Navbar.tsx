@@ -21,10 +21,16 @@ export default function Navbar({ title, renderLeft, renderRight }: Props) {
     ['rgba(0,0,0,1)', 'rgba(50,50,50,0.6)']
   );
 
+  const borderBottomColor = useTransform(
+    scrollY,
+    [80, 160],
+    ['rgba(255,255,255,0)', 'rgba(255,255,255,0.1)']
+  );
+
   return (
     <>
       <StickyNav>
-        <StickyNavContent style={{ backgroundColor }}>
+        <StickyNavContent style={{ backgroundColor, borderBottomColor }}>
           {renderLeft ? renderLeft() : <div />}
           <StickyNavTitle style={{ opacity, translateY }}>
             {title}
@@ -59,11 +65,12 @@ const StickyNavContent = styled(motion.div, {
   height: '100%',
   width: '100%',
   backgroundColor: 'rgba(0,0,0,1)',
-  backdropFilter: 'blur(12px)',
+  borderBottom: '1px solid rgba(0,0,0,0.1)',
+  backdropFilter: 'blur(16px)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  paddingTop: 'env(safe-area-inset-top))',
+  paddingTop: 'env(safe-area-inset-top)',
 });
 
 const StickyNavTitle = styled(motion.span, {

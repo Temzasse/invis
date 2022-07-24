@@ -99,7 +99,8 @@ const Tabbar = styled('div', {
 const TabbarContent = styled('div', {
   maxWidth: 800,
   margin: '0 auto',
-  paddingVertical: '$xsmall',
+  paddingTop: '$xsmall',
+  paddingBottom: 'max($xsmall, env(safe-area-inset-bottom))',
   paddingHorizontal: '$regular',
   display: 'flex',
   alignItems: 'center',
