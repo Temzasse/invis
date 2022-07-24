@@ -1,9 +1,9 @@
 import type { ComponentProps } from 'react';
 import type { VariantProps } from '@stitches/react';
 
-import type { ids } from '~tokens/icon-sprite-ids';
-import { styled } from '~styles/styled';
-import { themeProp } from '~styles/helpers';
+import type { ids } from 'app/styles/tokens/icon-sprite-ids';
+import { styled } from 'app/styles/styled';
+import { themeProp } from 'app/styles/helpers';
 
 export type IconName = typeof ids[number];
 

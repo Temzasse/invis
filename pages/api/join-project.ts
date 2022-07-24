@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { setCookie } from '../../utils-api/cookie';
-import { prisma } from '../../utils-api/db';
+import { setCookie } from '~api/utils/cookie';
+import { prisma } from '~api/utils/db';
 
 export default async function handler(
   req: NextApiRequest,

@@ -1,7 +1,7 @@
 import type { NextPage, GetServerSideProps } from 'next';
 import Head from 'next/head';
 
-import { isRunningStandalone } from '~utils-app/pwa';
+import { isRunningStandalone } from '~app/utils/pwa';
 import { Text } from '~components/uikit';
 
 const Landing: NextPage = () => {

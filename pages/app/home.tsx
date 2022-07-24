@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
-import { Icon, Stack } from '~components/uikit';
-import Navbar from '~components/navigation/Navbar';
+import { Icon, Stack } from 'app/components/uikit';
+import Navbar from 'app/components/navigation/Navbar';
 
 const Home: NextPage = () => {
   return (
@@ -37,5 +37,11 @@ const Home: NextPage = () => {
     </>
   );
 };
+
+export function getServerSideProps() {
+  return {
+    props: {},
+  };
+}
 
 export default Home;

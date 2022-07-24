@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 import type { IconName } from '../uikit/Icon';
-import { Icon, Stack, Text } from '../uikit';
-import { styled } from '~styles/styled';
+import { Icon, Stack, Text } from '~uikit';
+import { styled } from '~styled';
 
 type Props = {
   children: ReactNode;

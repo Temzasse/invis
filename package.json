@@ -3,10 +3,10 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development binode --require ./mocks -- next:next dev",
+    "dev": "cross-env NODE_ENV=development binode --require ./app/mocks -- next:next dev",
     "build": "next build",
     "start": "next start",
-    "start:mocks": "binode --require ./mocks -- next:next start",
+    "start:mocks": "binode --require ./app/mocks -- next:next start",
     "db:seed": "prisma db seed",
     "db:generate": "prisma generate",
     "db:setup": "prisma generate && prisma migrate deploy && prisma db seed",

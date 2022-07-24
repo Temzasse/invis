@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
-import Navbar from '~components/navigation/Navbar';
+import Navbar from 'app/components/navigation/Navbar';
 
 const Categories: NextPage = () => {
   return (

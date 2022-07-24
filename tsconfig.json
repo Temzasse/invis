@@ -16,13 +16,15 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "~components/*": ["./components/*"],
-      "~styles/*": ["./styles/*"],
-      "~tokens/*": ["./styles/tokens/*"],
-      "~utils-app/*": ["./utils-app/*"],
-      "~utils-api/*": ["./utils-api/*"]
+      "~components/*": ["app/components/*"],
+      "~uikit": ["app/components/uikit/index.ts"],
+      "~styles/*": ["app/styles/*"],
+      "~styled": ["app/styles/styled.ts"],
+      "~tokens/*": ["app/styles/tokens/*"],
+      "~app/*": ["app/*"],
+      "~api/*": ["api/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "remix_app"]
+  "exclude": ["node_modules"]
 }
