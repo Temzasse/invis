@@ -1,8 +1,9 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
-import { Icon, Stack } from 'app/components/uikit';
+import { Stack } from 'app/components/uikit';
 import Navbar from 'app/components/navigation/Navbar';
+import ItemRow from '~components/project/ItemRow';
 
 const Home: NextPage = () => {
   return (
@@ -13,30 +14,22 @@ const Home: NextPage = () => {
 
       <Navbar title="Invis" />
 
-      <Stack>
+      <Stack direction="y" spacing="none">
         {Array.from({ length: 30 }).map((_, i) => (
-          <div
+          <ItemRow
             key={i}
-            style={{
-              minHeight: 100,
-              backgroundColor: '#111',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Stack direction="x">
-              <Icon name="checkFilled" color="primary" />
-              <Icon name="checkFilled" color="statusFull" />
-              <Icon name="checkFilled" color="statusPartial" />
-              <Icon name="checkFilled" color="statusMissing" />
-            </Stack>
-          </div>
+            status={pickRandomFromArray(['missing', 'partial', 'full'])}
+            name="Kananmuna"
+          />
         ))}
       </Stack>
     </>
   );
 };
+
+function pickRandomFromArray(arr: any[]) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 export function getServerSideProps() {
   return {

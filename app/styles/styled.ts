@@ -20,6 +20,7 @@ const stitches = createStitches({
     },
     radii: {
       none: '0px',
+      circle: '50%',
       ...tokenUtils.mapToPx(radii),
     },
     fontSizes: {

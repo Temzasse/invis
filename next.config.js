@@ -9,7 +9,7 @@ const nextConfig = {
   rewrites: async () => {
     return [
       { source: '/healthcheck', destination: '/api/healthcheck' },
-      { source: '/join-project', destination: '/api/join-project' },
+      { source: '/join', destination: '/api/project/join' },
     ];
   },
   redirects: async () => {

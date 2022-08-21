@@ -10,27 +10,29 @@ type Props = {
   children: ReactNode;
 };
 
+type TabId = 'home' | 'categories' | 'shoplist' | 'settings';
+
 export default function TabsNavigator({ children }: Props) {
   const { pathname } = useRouter();
-  const activeTab = pathname.split('/')[2];
+  const activeTab = pathname.split('/')[2] as TabId;
 
   return (
     <Wrapper>
       {children}
 
       <Tabbar>
-        <TabbarContent>
+        <TabbarContent activeTab={activeTab}>
           {tabs.map((tab) => {
-            const tabId = tab.to.split('/')[2];
-            const isActive = tabId === activeTab;
+            const isActive = tab.id === activeTab;
 
             return (
               <Link href={tab.to} passHref key={tab.to}>
                 <TabLink>
                   <Stack spacing="xxsmall" align="center">
-                    <Icon
+                    <TabIcon
                       name={isActive ? tab.iconActive : tab.iconInactive}
                       color={isActive ? 'primary' : 'text'}
+                      isActive={isActive}
                     />
                     <Text
                       variant="bodySmall"
@@ -54,30 +56,35 @@ const tabs: Array<{
   iconInactive: IconName;
   iconActive: IconName;
   to: string;
+  id: TabId;
 }> = [
   {
+    id: 'home',
+    to: '/app/home',
     label: 'Invis',
     iconInactive: 'homeOutline',
     iconActive: 'homeFilled',
-    to: '/app/home',
   },
   {
+    id: 'categories',
+    to: '/app/categories',
     label: 'Kategoriat',
     iconInactive: 'gridOutline',
     iconActive: 'gridFilled',
-    to: '/app/categories',
   },
   {
+    id: 'shoplist',
+    to: '/app/shoplist',
     label: 'Kauppalista',
     iconInactive: 'clipboardOutline',
     iconActive: 'clipboardFilled',
-    to: '/app/shoplist',
   },
   {
+    id: 'settings',
+    to: '/app/settings',
     label: 'Asetukset',
     iconInactive: 'settingsOutline',
     iconActive: 'settingsFilled',
-    to: '/app/settings',
   },
 ];
 
@@ -97,6 +104,7 @@ const Tabbar = styled('div', {
 });
 
 const TabbarContent = styled('div', {
+  $$borderGlowColor: '$colors$primary',
   maxWidth: 800,
   margin: '0 auto',
   paddingTop: '$xsmall',
@@ -106,9 +114,39 @@ const TabbarContent = styled('div', {
   alignItems: 'center',
   justifyContent: 'space-around',
   borderTop: '1px solid',
-  borderColor: '$border',
+  variants: {
+    activeTab: {
+      home: {
+        borderImage:
+          'linear-gradient(to right, $border, $$borderGlowColor 13%, $border 25%, $border 100%) 1',
+      },
+      categories: {
+        borderImage:
+          'linear-gradient(to right, $border, $border 15%, $$borderGlowColor 33%, $border 50%, $border 100%) 1',
+      },
+      shoplist: {
+        borderImage:
+          'linear-gradient(to right, $border, $border 40%, $$borderGlowColor 55%, $border 80%, $border 100%) 1',
+      },
+      settings: {
+        borderImage:
+          'linear-gradient(to right, $border, $border 65%, $$borderGlowColor 85%, $border 100%) 1',
+      },
+    },
+  },
 });
 
 const TabLink = styled('a', {
   paddingHorizontal: '$small',
+});
+
+const TabIcon = styled(Icon, {
+  variants: {
+    isActive: {
+      true: {
+        filter: 'drop-shadow(0px 6px 16px $colors$primary)',
+        backgroundColor: 'transparent',
+      },
+    },
+  },
 });
