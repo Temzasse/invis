@@ -28,6 +28,11 @@ export const margingHorizontal = (value: Stitches.PropertyValue<'margin'>) => ({
   marginRight: value,
 });
 
+export const margingVertical = (value: Stitches.PropertyValue<'margin'>) => ({
+  marginTop: value,
+  marginBottom: value,
+});
+
 export const size = (value: Stitches.PropertyValue<'width'>) => ({
   width: value,
   height: value,

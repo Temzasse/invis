@@ -24,14 +24,10 @@ export async function listProjectCategories({
     include: { categories: true },
   });
 
-  console.log('> Project', project);
-
-  if (!project) return null;
-
-  return project.categories;
+  return project?.categories ?? [];
 }
 
-export async function listProjectItems({
+export async function listProjectCategoriesWithItems({
   name,
   pin,
 }: {
@@ -43,7 +39,5 @@ export async function listProjectItems({
     include: { categories: { include: { items: true } } },
   });
 
-  console.log('> Project', project);
-
-  return [];
+  return project?.categories ?? [];
 }
