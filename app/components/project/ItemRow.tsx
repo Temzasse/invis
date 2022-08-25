@@ -1,16 +1,16 @@
 import { Stack, Text } from '~components/uikit';
 import { styled } from '~styles/styled';
-import { ItemStatus, ItemStatusEnum } from './ItemStatus';
+import { ItemStatusIndicator, ItemStatus } from './ItemStatus';
 
 type Props = {
-  status: ItemStatusEnum;
+  status: ItemStatus;
   name: string;
 };
 
 export default function ItemRow({ status, name }: Props) {
   return (
     <Wrapper direction="x" spacing="regular" align="center">
-      <ItemStatus status={status} />
+      <ItemStatusIndicator status={status} />
       <Text variant="body">{name}</Text>
     </Wrapper>
   );

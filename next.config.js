@@ -6,6 +6,9 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   output: 'standalone',
+  experimental: {
+    swcPlugins: [['next-superjson-plugin', { excluded: [] }]],
+  },
   rewrites: async () => {
     return [
       { source: '/healthcheck', destination: '/api/healthcheck' },

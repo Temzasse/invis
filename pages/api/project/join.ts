@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { setCookie } from '~api/utils/cookie';
-import { findProject } from '~api/project';
+import { findProject } from '~api/project/dao';
 
 export default async function handler(
   req: NextApiRequest,

@@ -1,7 +1,6 @@
-import { serialize, CookieSerializeOptions } from 'cookie';
-import { NextApiRequest, NextApiResponse } from 'next';
-
-import { prisma } from './db';
+import type { NextApiResponse } from 'next';
+import type { CookieSerializeOptions } from 'cookie';
+import { serialize } from 'cookie';
 
 export function setCookie(
   res: NextApiResponse,
@@ -24,32 +23,4 @@ export function setCookie(
 
 export function clearCookie(res: NextApiResponse, name: string) {
   setCookie(res, name, '', { maxAge: 0 });
-}
-
-export function parseProjectCookie(value: string): {
-  name: string;
-  pin: string;
-} {
-  if (value.startsWith('j:')) {
-    return JSON.parse(value.slice(2));
-  } else {
-    throw new Error('Invalid project cookie value');
-  }
-}
-
-export async function getProjectFromCookie(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const { project: projectCookie = '' } = req.cookies;
-
-  try {
-    const name_pin = parseProjectCookie(projectCookie);
-    const project = await prisma.project.findUnique({ where: { name_pin } });
-    return project;
-  } catch (error) {
-    clearCookie(res, 'project');
-    res.redirect('/');
-    return null;
-  }
 }

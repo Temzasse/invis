@@ -5,26 +5,29 @@ import {
   getServerViewSettings,
   HOME_SORT_OPTIONS,
   useViewSettings,
-  ViewSettingsState,
 } from '~app/stores/view-settings';
 
+import type { ConvertDateFields } from '~app/types/data';
+import type { ItemStatus } from '~components/project/ItemStatus';
 import { styled } from '~styles/styled';
-import { Stack, SegmentedControl, Spacer } from 'app/components/uikit';
-import Navbar from 'app/components/navigation/Navbar';
+import { getProjectCategoriesWithItems } from '~api/project/service';
+import { Stack, SegmentedControl, Spacer } from '~app/components/uikit';
+import Navbar from '~app/components/navigation/Navbar';
 import ItemRow from '~components/project/ItemRow';
 
-const items = Array.from({ length: 30 }).map((_, i) => ({
-  id: i.toString(),
-  name: `Item ${i}`,
-  status: 'missing' as any,
-}));
-
-type Props = {
-  initialViewSettings: ViewSettingsState;
+type ServerSideProps = {
+  categories: Awaited<ReturnType<typeof getProjectCategoriesWithItems>>;
+  initialViewSettings: ReturnType<typeof getServerViewSettings>;
 };
 
-export default function Home({ initialViewSettings }: Props) {
+type Props = {
+  categories: ConvertDateFields<ServerSideProps['categories']>;
+  initialViewSettings: ServerSideProps['initialViewSettings'];
+};
+
+export default function Home({ initialViewSettings, categories }: Props) {
   const viewSettings = useViewSettings(initialViewSettings);
+  const items = categories.flatMap((category) => category.items);
 
   return (
     <>
@@ -46,7 +49,7 @@ export default function Home({ initialViewSettings }: Props) {
 
       <Stack direction="y" spacing="none">
         {items.map(({ id, name, status }) => (
-          <ItemRow key={id} status={status} name={name} />
+          <ItemRow key={id} status={status as ItemStatus} name={name} />
         ))}
       </Stack>
     </>
@@ -58,7 +61,15 @@ const ViewSorting = styled('div', {
 });
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    props: { initialViewSettings: getServerViewSettings(req) },
-  };
+  const { project } = req.cookies;
+
+  if (!project) {
+    return { props: {}, redirect: { destination: '/' } };
+  }
+
+  const categories = await getProjectCategoriesWithItems(req);
+  const initialViewSettings = getServerViewSettings(req);
+  const props: ServerSideProps = { categories, initialViewSettings };
+
+  return { props };
 };

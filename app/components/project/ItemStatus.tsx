@@ -1,8 +1,9 @@
 import { styled } from '~styles/styled';
 
-export type ItemStatusEnum = 'missing' | 'partial' | 'full';
+// NOTE: sqlite doesn't support enums so we need cast the string type manually
+export type ItemStatus = 'missing' | 'partial' | 'full';
 
-export const ItemStatus = styled('div', {
+export const ItemStatusIndicator = styled('div', {
   $$glowColor: 'transparent',
   width: 24,
   height: 24,
