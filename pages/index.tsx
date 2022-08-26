@@ -1,13 +1,20 @@
-import type { NextPage, GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
+import { motion, AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
 
+import {
+  SplashScreen,
+  useSplashScreen,
+} from '~components/navigation/SplashScreen';
+
+import { styled } from '~styles/styled';
 import { isRunningStandalone } from '~app/utils/pwa';
-import { Text } from '~components/uikit';
+import InstallationGuide from '~components/installation/InstallationGuide';
+import JoinProject from '~components/project/JoinProject';
 
-const Landing: NextPage = () => {
+export default function Landing() {
   const isStandalone = isRunningStandalone();
-
-  // TODO: show installation instructions for non-standalone mode
+  const isSplashVisible = useSplashScreen();
 
   return (
     <>
@@ -15,13 +22,27 @@ const Landing: NextPage = () => {
         <title>Invis</title>
       </Head>
 
-      <div>
-        <Text variant="title1">Landing</Text>
-        {isStandalone && <Text variant="title2">Standalone</Text>}
-      </div>
+      <AnimatePresence initial={false}>
+        {isSplashVisible ? (
+          <SplashScreen />
+        ) : isStandalone ? (
+          // NOTE: keys are needed for the AnimatePresence component to work
+          <Main key="join-project">
+            <JoinProject />
+          </Main>
+        ) : (
+          <Main key="installation-guide">
+            <InstallationGuide />
+          </Main>
+        )}
+      </AnimatePresence>
     </>
   );
-};
+}
+
+const Main = styled(motion.main, {
+  height: '100%',
+});
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const { project } = req.cookies;
@@ -31,5 +52,3 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     redirect: project ? { destination: '/app/home' } : undefined,
   };
 };
-
-export default Landing;
