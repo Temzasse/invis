@@ -9,7 +9,8 @@ type Props = VariantProps<typeof Root> &
     ComponentProps<typeof Root> & {
       children: ReactNode;
       variant?: 'filled' | 'outlined';
-      onPress: () => void;
+      asLink?: boolean;
+      onPress?: () => void;
     },
     'onClick'
   >;
@@ -31,6 +32,8 @@ export const Button = memo(
 Button.displayName = 'Button';
 
 const Root = styled(Touchable, {
+  display: 'block',
+  textAlign: 'center',
   paddingVertical: '$regular',
   paddingHorizontal: '$large',
   borderRadius: '$full',

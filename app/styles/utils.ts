@@ -41,12 +41,12 @@ export const size = (value: Stitches.PropertyValue<'width'>) => ({
 export const safeAreaInsets = (method: 'padding' | 'margin') =>
   method === 'padding'
     ? {
-        paddingTop: 'env(safe-area-insets-top)',
-        paddingBottom: 'env(safe-area-insets-bottom)',
+        paddingTop: 'env(safe-area-inset-top)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
       }
     : {
-        marginTop: 'env(safe-area-insets-top)',
-        marginBottom: 'env(safe-area-insets-bottom)',
+        marginTop: 'env(safe-area-inset-top)',
+        marginBottom: 'env(safe-area-inset-bottom)',
       };
 
 export const absoluteFill = () => ({

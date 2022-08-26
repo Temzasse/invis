@@ -7,13 +7,17 @@ import { motion, useAnimation } from 'framer-motion';
 export type TouchableProps = {
   children: ReactNode;
   interaction?: 'opacity' | 'highlight';
-  onPress: () => void;
+  asLink?: boolean;
+  onPress?: () => void;
 };
 
 const transistionDuration = 0.4;
 
 export const Touchable = forwardRef<any, TouchableProps>(
-  ({ onPress, children, interaction = 'opacity', ...rest }, ref) => {
+  (
+    { onPress, children, interaction = 'opacity', asLink = false, ...rest },
+    ref
+  ) => {
     const localRef = useRef(null);
     const mergedRef = mergeRefs([localRef, ref]) as any;
     const controls = useAnimation();
@@ -45,20 +49,23 @@ export const Touchable = forwardRef<any, TouchableProps>(
           });
         },
         onPress,
+        elementType: asLink ? 'a' : 'button',
       },
       mergedRef
     );
 
+    const Element = asLink ? motion.a : motion.button;
+
     return (
       <FocusRing focusRingClass="focus-visible">
-        <motion.button
+        <Element
           {...(buttonProps as any)}
           {...rest}
           animate={controls}
           style={{ touchAction: 'none', userSelect: 'none', outline: 'none' }}
         >
           {children}
-        </motion.button>
+        </Element>
       </FocusRing>
     );
   }

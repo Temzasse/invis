@@ -1,9 +1,11 @@
-import type { NextPage } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 
-import Navbar from 'app/components/navigation/Navbar';
+import { styled } from '~styles/styled';
+import { Button } from '~components/uikit';
+import Navbar from '~components/navigation/Navbar';
 
-const Settings: NextPage = () => {
+export default function Settings() {
   return (
     <>
       <Head>
@@ -11,8 +13,18 @@ const Settings: NextPage = () => {
       </Head>
 
       <Navbar title="Asetukset" />
+
+      <Content></Content>
+
+      <Link href="/api/logout" passHref>
+        <Button asLink variant="outlined">
+          Logout
+        </Button>
+      </Link>
     </>
   );
-};
+}
 
-export default Settings;
+const Content = styled('main', {
+  flex: 1,
+});

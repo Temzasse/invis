@@ -64,7 +64,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const { project } = req.cookies;
 
   if (!project) {
-    return { props: {}, redirect: { destination: '/' } };
+    return { props: {}, redirect: { destination: '/', permanent: false } };
   }
 
   const categories = await getProjectCategoriesWithItems(req);

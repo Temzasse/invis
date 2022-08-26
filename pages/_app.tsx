@@ -27,6 +27,7 @@ function FallbackLayout({ children }: { children: ReactNode }) {
 
 const AppWrapper = styled('div', {
   maxWidth: 800,
-  margin: '0 auto',
+  marginLeft: 'auto',
+  marginRight: 'auto',
   height: '100%',
 });

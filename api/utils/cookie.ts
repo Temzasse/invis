@@ -11,14 +11,17 @@ export function setCookie(
   const stringValue =
     typeof value === 'object' ? 'j:' + JSON.stringify(value) : String(value);
 
-  if (typeof options.maxAge === 'number') {
+  if (typeof options.maxAge === 'number' && options.maxAge > 0) {
     options.expires =
       options.maxAge === 0
         ? new Date(0)
         : new Date(Date.now() + options.maxAge * 1000);
   }
 
-  res.setHeader('Set-Cookie', serialize(name, stringValue, options));
+  res.setHeader(
+    'Set-Cookie',
+    serialize(name, stringValue, { path: '/', ...options })
+  );
 }
 
 export function clearCookie(res: NextApiResponse, name: string) {

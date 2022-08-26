@@ -92,10 +92,11 @@ const Wrapper = styled('div', {
   minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
-  paddingBottom: 100,
+  paddingBottom: 'calc(60px + env(safe-area-inset-bottom))',
 });
 
 const Tabbar = styled('div', {
+  height: 60,
   position: 'fixed',
   bottom: 0,
   left: 0,

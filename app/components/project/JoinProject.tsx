@@ -1,10 +1,15 @@
+import Link from 'next/link';
 import { styled } from '~styles/styled';
-import { Text } from '~components/uikit';
+import { Button } from '~components/uikit';
 
 export default function JoinProject() {
   return (
     <Wrapper>
-      <Text variant="body">Join project</Text>
+      <Link href="/join?name=Hattusaari&pin=123456" passHref>
+        <Button asLink variant="outlined">
+          Join Hattusaari project
+        </Button>
+      </Link>
     </Wrapper>
   );
 }
