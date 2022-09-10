@@ -3,6 +3,8 @@ import { forwardRef, memo, ComponentProps, ReactNode } from 'react';
 
 import { styled } from 'app/styles/styled';
 import { Touchable } from './Touchable';
+import { Icon, IconName } from './Icon';
+import { Stack } from './Stack';
 
 type Props = VariantProps<typeof Root> &
   Omit<
@@ -10,34 +12,46 @@ type Props = VariantProps<typeof Root> &
       children: ReactNode;
       variant?: 'filled' | 'outlined';
       asLink?: boolean;
+      fullWidth?: boolean;
+      icon?: IconName;
+      iconPlacement?: 'left' | 'right';
       onPress?: () => void;
     },
     'onClick'
   >;
 
 export const Button = memo(
-  forwardRef<HTMLButtonElement, Props>(({ children, ...rest }, ref) => {
-    return (
-      <Root
-        ref={ref}
-        {...rest}
-        interaction={rest.variant === 'outlined' ? 'highlight' : 'opacity'}
-      >
-        <span>{children}</span>
-      </Root>
-    );
-  })
+  forwardRef<HTMLButtonElement, Props>(
+    ({ children, icon, iconPlacement = 'right', ...rest }, ref) => {
+      return (
+        <Root
+          ref={ref}
+          {...rest}
+          withIcon={!!icon}
+          iconPlacement={iconPlacement}
+          interaction={rest.variant === 'outlined' ? 'highlight' : 'opacity'}
+        >
+          <Stack spacing="small" direction="x">
+            {!!icon && iconPlacement === 'left' && (
+              <Icon name={icon} size={20} />
+            )}
+            <ButtonLabel>{children}</ButtonLabel>
+            {!!icon && iconPlacement === 'right' && (
+              <Icon name={icon} size={20} />
+            )}
+          </Stack>
+        </Root>
+      );
+    }
+  )
 );
 
 Button.displayName = 'Button';
 
 const Root = styled(Touchable, {
   display: 'block',
-  textAlign: 'center',
-  paddingVertical: '$regular',
-  paddingHorizontal: '$large',
+  padding: '$regular',
   borderRadius: '$full',
-  typography: '$bodyBold',
   border: '1px solid $primaryMuted',
   variants: {
     variant: {
@@ -50,8 +64,29 @@ const Root = styled(Touchable, {
         backgroundColor: '$transparent',
       },
     },
+    fullWidth: { true: { width: '100%' } },
+    withIcon: { true: {}, false: {} },
+    iconPlacement: { left: {}, right: {} },
   },
+  compoundVariants: [
+    {
+      withIcon: true,
+      iconPlacement: 'right',
+      css: { paddingLeft: '$xlarge' },
+    },
+    {
+      withIcon: true,
+      iconPlacement: 'left',
+      css: { paddingRight: '$xlarge' },
+    },
+  ],
   defaultVariants: {
     variant: 'filled',
   },
+});
+
+const ButtonLabel = styled('div', {
+  flex: 1,
+  textAlign: 'center',
+  typography: '$bodyBold',
 });

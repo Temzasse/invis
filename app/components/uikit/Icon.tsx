@@ -28,6 +28,7 @@ export function Icon({ name, size = 24, color, ...rest }: Props) {
 const Root = styled('svg', {
   display: 'inline-block',
   flexShrink: 0,
+  fill: 'transparent',
   variants: {
     ...themeProp('color', 'colors', (value) => ({
       color: `${value}`,
