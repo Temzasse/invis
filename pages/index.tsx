@@ -45,13 +45,9 @@ const Main = styled(motion.main, {
 });
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { project } = req.cookies;
-
-  console.log('> Index project', project);
-
   return {
     props: {},
-    redirect: project
+    redirect: req.cookies.project
       ? { destination: '/app/home', permanent: false }
       : undefined,
   };

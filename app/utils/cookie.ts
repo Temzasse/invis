@@ -1,4 +1,4 @@
-import { StateStorage } from 'zustand/middleware';
+import type { StateStorage } from 'zustand/middleware';
 import cookie from 'js-cookie';
 
 export const cookieStorage: StateStorage = {

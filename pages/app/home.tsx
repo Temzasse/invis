@@ -7,10 +7,14 @@ import {
   useViewSettings,
 } from '~app/stores/view-settings';
 
+import {
+  ensureProject,
+  getProjectCategoriesWithItems,
+} from '~api/project/service';
+
 import type { ConvertDateFields } from '~app/types/data';
 import type { ItemStatus } from '~components/project/ItemStatus';
 import { styled } from '~styles/styled';
-import { getProjectCategoriesWithItems } from '~api/project/service';
 import { Stack, SegmentedControl, Spacer } from '~app/components/uikit';
 import Navbar from '~app/components/navigation/Navbar';
 import ItemRow from '~components/project/ItemRow';
@@ -61,15 +65,21 @@ const ViewSorting = styled('div', {
 });
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { project } = req.cookies;
+  const { project, redirect } = await ensureProject(req);
 
-  if (!project) {
-    return { props: {}, redirect: { destination: '/', permanent: false } };
-  }
+  if (!project) return redirect;
 
-  const categories = await getProjectCategoriesWithItems(req);
-  const initialViewSettings = getServerViewSettings(req);
-  const props: ServerSideProps = { categories, initialViewSettings };
+  const categories = await getProjectCategoriesWithItems({
+    name: project.name,
+    pin: project.pin,
+  });
+
+  const initialViewSettings = getServerViewSettings(req.cookies);
+
+  const props: ServerSideProps = {
+    categories,
+    initialViewSettings,
+  };
 
   return { props };
 };

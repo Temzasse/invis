@@ -1,12 +1,37 @@
+import type { Project } from '@prisma/client';
 import type { GetServerSideProps } from 'next';
-import { listProjectCategoriesWithItems } from './dao';
+import { findProject, listProjectCategoriesWithItems } from './dao';
 import { parseProjectCookie } from './utils';
 
-export async function getProjectCategoriesWithItems(
+export async function getProjectCategoriesWithItems({
+  name,
+  pin,
+}: {
+  name: string;
+  pin: string;
+}) {
+  return listProjectCategoriesWithItems({ name, pin });
+}
+
+export async function getProject({ name, pin }: { name: string; pin: string }) {
+  return findProject({ name, pin });
+}
+
+export async function ensureProject(
   req: Parameters<GetServerSideProps>[0]['req']
 ) {
-  const project = req.cookies.project as string;
-  const { name, pin } = parseProjectCookie(project);
-  const categories = await listProjectCategoriesWithItems({ name, pin });
-  return categories;
+  const redirect = {
+    props: {},
+    redirect: { destination: '/', permanent: false },
+  };
+
+  let project: null | Project = null;
+
+  if (req.cookies.project) {
+    const projectCookie = req.cookies.project;
+    const { name, pin } = parseProjectCookie(projectCookie);
+    project = await getProject({ name, pin });
+  }
+
+  return { project, redirect };
 }
