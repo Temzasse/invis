@@ -96,7 +96,6 @@ const Wrapper = styled('div', {
 });
 
 const Tabbar = styled('div', {
-  height: 60,
   position: 'fixed',
   bottom: 0,
   left: 0,
@@ -106,11 +105,11 @@ const Tabbar = styled('div', {
 
 const TabbarContent = styled('div', {
   $$borderGlowColor: '$colors$primary',
+  height: 60,
   maxWidth: 800,
   margin: '0 auto',
-  paddingTop: '$xsmall',
-  paddingBottom: 'max($xsmall, env(safe-area-inset-bottom))',
   paddingHorizontal: '$regular',
+  marginBottom: 'env(safe-area-inset-bottom)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-around',
