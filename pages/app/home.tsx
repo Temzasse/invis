@@ -1,4 +1,5 @@
 import type { GetServerSideProps } from 'next';
+import { Fragment } from 'react';
 import Head from 'next/head';
 
 import {
@@ -14,8 +15,9 @@ import {
 
 import type { ConvertDateFields } from '~app/types/data';
 import type { ItemStatus } from '~components/project/ItemStatus';
+import { useItemSections } from '~app/utils/items';
 import { styled } from '~styles/styled';
-import { Stack, SegmentedControl, Spacer } from '~app/components/uikit';
+import { Stack, SegmentedControl, Spacer, Text } from '~app/components/uikit';
 import Navbar from '~app/components/navigation/Navbar';
 import ItemRow from '~components/project/ItemRow';
 
@@ -31,7 +33,7 @@ type Props = {
 
 export default function Home({ initialViewSettings, categories }: Props) {
   const viewSettings = useViewSettings(initialViewSettings);
-  const items = categories.flatMap((category) => category.items);
+  const sections = useItemSections(viewSettings.homeSortOrder, categories);
 
   return (
     <>
@@ -52,8 +54,15 @@ export default function Home({ initialViewSettings, categories }: Props) {
       <Spacer direction="y" amount="small" />
 
       <Stack direction="y" spacing="none">
-        {items.map(({ id, name, status }) => (
-          <ItemRow key={id} status={status as ItemStatus} name={name} />
+        {Object.entries(sections).map(([title, items]) => (
+          <Fragment key={title}>
+            <SectionTitle variant="overline" color="textMuted">
+              {title}
+            </SectionTitle>
+            {items.map(({ id, name, status }) => (
+              <ItemRow key={id} status={status as ItemStatus} name={name} />
+            ))}
+          </Fragment>
         ))}
       </Stack>
     </>
@@ -62,6 +71,17 @@ export default function Home({ initialViewSettings, categories }: Props) {
 
 const ViewSorting = styled('div', {
   paddingHorizontal: '$small',
+});
+
+const SectionTitle = styled(Text, {
+  display: 'block',
+  zIndex: 1,
+  position: 'sticky',
+  top: 'calc(env(safe-area-inset-top) + 50px)',
+  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+  backdropFilter: 'blur(10px)',
+  paddingVertical: '$xsmall',
+  paddingHorizontal: '$regular',
 });
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {

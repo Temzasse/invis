@@ -1,6 +1,6 @@
 import { createStore } from '~app/utils/store';
 
-type HomeSortOrder = 'by-state' | 'by-category' | 'alphabetized';
+export type HomeSortOrder = 'by-state' | 'by-category' | 'alphabetized';
 
 export type ViewSettingsState = {
   homeSortOrder: HomeSortOrder;

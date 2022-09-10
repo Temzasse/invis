@@ -8,6 +8,11 @@ const nextConfig = {
   output: 'standalone',
   experimental: {
     swcPlugins: [['next-superjson-plugin', { excluded: [] }]],
+    modularizeImports: {
+      lodash: {
+        transform: 'lodash/{{member}}',
+      },
+    },
   },
   rewrites: async () => {
     return [
