@@ -47,6 +47,8 @@ export default function Navbar({ title, renderLeft, renderRight }: Props) {
   );
 }
 
+export const NAVBAR_HEIGHT = 'calc(50px + env(safe-area-inset-top))';
+
 const StaticNav = styled(Stack, {
   paddingHorizontal: '$regular',
   paddingBottom: '$regular',
@@ -58,7 +60,7 @@ const StickyNav = styled('nav', {
   top: 0,
   width: '100%',
   minHeight: 50,
-  height: 'calc(50px + env(safe-area-inset-top))',
+  height: NAVBAR_HEIGHT,
 });
 
 const StickyNavContent = styled(motion.div, {

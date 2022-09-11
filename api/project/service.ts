@@ -1,6 +1,12 @@
 import type { Project } from '@prisma/client';
 import type { GetServerSideProps } from 'next';
-import { findProject, listProjectCategoriesWithItems } from './dao';
+
+import {
+  findProject,
+  listProjectCategories,
+  listProjectCategoriesWithItems,
+} from './dao';
+
 import { parseProjectCookie } from './utils';
 
 export async function getProjectCategoriesWithItems({
@@ -11,6 +17,16 @@ export async function getProjectCategoriesWithItems({
   pin: string;
 }) {
   return listProjectCategoriesWithItems({ name, pin });
+}
+
+export async function getProjectCategories({
+  name,
+  pin,
+}: {
+  name: string;
+  pin: string;
+}) {
+  return listProjectCategories({ name, pin });
 }
 
 export async function getProject({ name, pin }: { name: string; pin: string }) {

@@ -13,22 +13,16 @@ import {
   getProjectCategoriesWithItems,
 } from '~api/project/service';
 
-import type { ConvertDateFields } from '~app/types/data';
 import type { ItemStatus } from '~components/project/ItemStatus';
 import { useItemSections } from '~app/utils/items';
 import { styled } from '~styles/styled';
 import { Stack, SegmentedControl, Spacer, Text } from '~app/components/uikit';
-import Navbar from '~app/components/navigation/Navbar';
+import Navbar, { NAVBAR_HEIGHT } from '~app/components/navigation/Navbar';
 import ItemRow from '~components/project/ItemRow';
 
-type ServerSideProps = {
+type Props = {
   categories: Awaited<ReturnType<typeof getProjectCategoriesWithItems>>;
   initialViewSettings: ReturnType<typeof getServerViewSettings>;
-};
-
-type Props = {
-  categories: ConvertDateFields<ServerSideProps['categories']>;
-  initialViewSettings: ServerSideProps['initialViewSettings'];
 };
 
 export default function Home({ initialViewSettings, categories }: Props) {
@@ -77,7 +71,7 @@ const SectionTitle = styled(Text, {
   display: 'block',
   zIndex: 1,
   position: 'sticky',
-  top: 'calc(env(safe-area-inset-top) + 50px)',
+  top: NAVBAR_HEIGHT,
   backgroundColor: 'rgba(0, 0, 0, 0.4)',
   backdropFilter: 'blur(10px)',
   paddingVertical: '$xsmall',
@@ -96,7 +90,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   const initialViewSettings = getServerViewSettings(req.cookies);
 
-  const props: ServerSideProps = {
+  const props: Props = {
     categories,
     initialViewSettings,
   };

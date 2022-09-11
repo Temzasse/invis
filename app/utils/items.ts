@@ -5,7 +5,6 @@ import type { Item } from '@prisma/client';
 
 import type { HomeSortOrder } from '~app/stores/view-settings';
 import type { ItemStatus } from '~components/project/ItemStatus';
-import type { ConvertDateFields } from '~app/types/data';
 import { getProjectCategoriesWithItems } from '~api/project/service';
 
 const statusLabels: Record<ItemStatus, string> = {
@@ -16,15 +15,13 @@ const statusLabels: Record<ItemStatus, string> = {
 
 export function useItemSections(
   sortOrder: HomeSortOrder,
-  categories: ConvertDateFields<
-    Awaited<ReturnType<typeof getProjectCategoriesWithItems>>
-  >
+  categories: Awaited<ReturnType<typeof getProjectCategoriesWithItems>>
 ) {
   return useMemo(() => {
     const items = categories.flatMap((c) => c.items);
 
     if (sortOrder === 'by-category') {
-      const sections: Record<string, ConvertDateFields<Item>[]> = {};
+      const sections: Record<string, Item[]> = {};
 
       orderBy(categories, 'name').forEach((c) => {
         sections[c.name] = [
@@ -36,7 +33,7 @@ export function useItemSections(
 
       return sections;
     } else if (sortOrder === 'by-state') {
-      const sections: Record<string, ConvertDateFields<Item>[]> = {};
+      const sections: Record<string, Item[]> = {};
 
       items.forEach((i) => {
         const title = statusLabels[i.status as ItemStatus];
@@ -52,7 +49,7 @@ export function useItemSections(
       return sections;
     }
 
-    const sections: Record<string, ConvertDateFields<Item>[]> = {};
+    const sections: Record<string, Item[]> = {};
     const grouped = groupBy(items, (i) => i.name[0].toUpperCase());
 
     Object.entries(grouped).forEach(([key, items]) => {
