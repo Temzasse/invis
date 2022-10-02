@@ -22,7 +22,7 @@ export const useViewSettings = useStore;
 export const getServerViewSettings = getServerState;
 export const HOME_SORT_OPTIONS: Array<{ value: HomeSortOrder; label: string }> =
   [
-    { label: 'Tila', value: 'by-state' },
+    { label: 'Määrä', value: 'by-state' },
     { label: 'Kategoria', value: 'by-category' },
     { label: 'Aakkos', value: 'alphabetized' },
   ];

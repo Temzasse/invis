@@ -5,13 +5,13 @@ import { ensureProject, getProjectCategories } from '~api/project/service';
 import { styled } from '~styles/styled';
 import { Text } from '~app/components/uikit';
 import Navbar from '~app/components/navigation/Navbar';
+import Link from 'next/link';
 
 type Props = {
   categories: Awaited<ReturnType<typeof getProjectCategories>>;
 };
 
 export default function Categories({ categories }: Props) {
-  console.log('> categories', categories);
   return (
     <>
       <Head>
@@ -23,16 +23,17 @@ export default function Categories({ categories }: Props) {
       <Content>
         <CategoriesGrid>
           {categories.map(({ id, name, imageUrl }) => (
-            <Category
-              key={id}
-              style={{
-                backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1)), url(${imageUrl})`,
-              }}
-            >
-              <CategoryName variant="title2" align="center">
-                {name}
-              </CategoryName>
-            </Category>
+            <Link href={`categories/${id}`} passHref key={id}>
+              <Category
+                style={{
+                  backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1)), url(${imageUrl})`,
+                }}
+              >
+                <CategoryName variant="title2" align="center">
+                  {name}
+                </CategoryName>
+              </Category>
+            </Link>
           ))}
         </CategoriesGrid>
       </Content>
@@ -42,6 +43,7 @@ export default function Categories({ categories }: Props) {
 
 const Content = styled('div', {
   paddingHorizontal: '$regular',
+  paddingBottom: '$large',
 });
 
 const CategoriesGrid = styled('div', {
@@ -50,13 +52,15 @@ const CategoriesGrid = styled('div', {
   gridGap: '$regular',
 });
 
-const Category = styled('div', {
+const Category = styled('a', {
   aspectRatio: '16 / 9',
+  backgroundColor: '$surface2',
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   borderRadius: '$regular',
   flexCenter: 'row',
   padding: '$small',
+  textDecoration: 'none',
 });
 
 const CategoryName = styled(Text, {

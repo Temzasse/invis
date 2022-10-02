@@ -101,6 +101,7 @@ const Tabbar = styled('div', {
   left: 0,
   right: 0,
   backgroundColor: '$background',
+  zIndex: 1
 });
 
 const TabbarContent = styled('div', {

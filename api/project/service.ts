@@ -29,6 +29,18 @@ export async function getProjectCategories({
   return listProjectCategories({ name, pin });
 }
 
+export async function getProjectCategory({
+  name,
+  pin,
+  categoryId,
+}: {
+  name: string;
+  pin: string;
+  categoryId: string;
+}) {
+  return listProjectCategories({ name, pin });
+}
+
 export async function getProject({ name, pin }: { name: string; pin: string }) {
   return findProject({ name, pin });
 }
