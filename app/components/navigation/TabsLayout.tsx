@@ -3,53 +3,11 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 import type { IconName } from '../uikit/Icon';
+import { useTabStacks } from './hooks';
 import { Icon, Stack, Text } from '~uikit';
 import { styled } from '~styled';
-
-type Props = {
-  children: ReactNode;
-};
-
-type TabId = 'home' | 'categories' | 'shoplist' | 'settings';
-
-export default function TabsNavigator({ children }: Props) {
-  const { pathname } = useRouter();
-  const activeTab = pathname.split('/')[2] as TabId;
-
-  return (
-    <Wrapper>
-      {children}
-
-      <Tabbar>
-        <TabbarContent activeTab={activeTab}>
-          {tabs.map((tab) => {
-            const isActive = tab.id === activeTab;
-
-            return (
-              <Link href={tab.to} passHref key={tab.to}>
-                <TabLink>
-                  <Stack spacing="xxsmall" align="center">
-                    <TabIcon
-                      name={isActive ? tab.iconActive : tab.iconInactive}
-                      color={isActive ? 'primary' : 'text'}
-                      isActive={isActive}
-                    />
-                    <Text
-                      variant="bodySmall"
-                      color={isActive ? 'text' : 'textMuted'}
-                    >
-                      {tab.label}
-                    </Text>
-                  </Stack>
-                </TabLink>
-              </Link>
-            );
-          })}
-        </TabbarContent>
-      </Tabbar>
-    </Wrapper>
-  );
-}
+import { TabId } from './types';
+import { getTab } from './utils';
 
 const tabs: Array<{
   label: string;
@@ -88,6 +46,52 @@ const tabs: Array<{
   },
 ];
 
+type Props = {
+  children: ReactNode;
+};
+
+export default function TabsNavigator({ children }: Props) {
+  const { pathname } = useRouter();
+  const { tab: activeTab } = getTab(pathname);
+  const stacks = useTabStacks();
+
+  return (
+    <Wrapper>
+      {children}
+
+      <Tabbar>
+        <TabbarContent activeTab={activeTab}>
+          {tabs.map((tab) => {
+            const isActive = tab.id === activeTab;
+            const stack = stacks[tab.id];
+            const href = isActive ? tab.to : stack[stack.length - 1] || tab.to;
+
+            return (
+              <Link href={href} passHref key={tab.to}>
+                <TabLink>
+                  <Stack spacing="xxsmall" align="center">
+                    <TabIcon
+                      name={isActive ? tab.iconActive : tab.iconInactive}
+                      color={isActive ? 'primary' : 'text'}
+                      isActive={isActive}
+                    />
+                    <Text
+                      variant="bodySmall"
+                      color={isActive ? 'text' : 'textMuted'}
+                    >
+                      {tab.label}
+                    </Text>
+                  </Stack>
+                </TabLink>
+              </Link>
+            );
+          })}
+        </TabbarContent>
+      </Tabbar>
+    </Wrapper>
+  );
+}
+
 const Wrapper = styled('div', {
   minHeight: '100vh',
   display: 'flex',
@@ -101,7 +105,7 @@ const Tabbar = styled('div', {
   left: 0,
   right: 0,
   backgroundColor: '$background',
-  zIndex: 1
+  zIndex: 1,
 });
 
 const TabbarContent = styled('div', {
