@@ -1,5 +1,9 @@
-const withPWA = require('next-pwa');
 const runtimeCaching = require('next-pwa/cache');
+
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  runtimeCaching,
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -7,7 +11,7 @@ const nextConfig = {
   swcMinify: true,
   output: 'standalone',
   experimental: {
-    swcPlugins: [['next-superjson-plugin', { excluded: [] }]],
+    swcPlugins: [['next-superjson-plugin', {}]],
     modularizeImports: {
       lodash: {
         transform: 'lodash/{{member}}',
@@ -25,10 +29,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withPWA({
-  ...nextConfig,
-  pwa: {
-    dest: 'public',
-    runtimeCaching,
-  },
-});
+module.exports = withPWA(nextConfig);
