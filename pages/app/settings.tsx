@@ -1,20 +1,13 @@
-import type { GetServerSideProps } from 'next';
-import type { Project } from '@prisma/client';
+import type { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import { ensureProject } from '~api/project/service';
+import { withProject } from '~api/utils/redirect';
 import { styled } from '~styles/styled';
 import { Button } from '~components/uikit';
 import Navbar from '~components/navigation/Navbar';
 
-type ServerSideProps = {
-  project: Project;
-};
-
-type Props = {
-  project: ServerSideProps['project'];
-};
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 export default function Settings({ project }: Props) {
   function copyProjectLink() {
@@ -103,12 +96,6 @@ const Logout = styled('div', {
   padding: '$regular',
 });
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { project, redirect } = await ensureProject(req);
-
-  if (!project) return redirect;
-
-  const props: ServerSideProps = { project };
-
-  return { props };
-};
+export const getServerSideProps = withProject(async (_, project) => {
+  return { props: { project } };
+});

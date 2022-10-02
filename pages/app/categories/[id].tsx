@@ -1,15 +1,13 @@
-import type { GetServerSideProps } from 'next';
+import type { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 
-import { ensureProject } from '~api/project/service';
+import { getCategory } from '~api/category/service';
+import { withProject } from '~api/utils/redirect';
 import { styled } from '~styles/styled';
 import { Text } from '~app/components/uikit';
 import Navbar from '~app/components/navigation/Navbar';
-import { getCategory } from '~api/category/service';
 
-type Props = {
-  category: Awaited<ReturnType<typeof getCategory>>;
-};
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 export default function Category({ category }: Props) {
   if (!category) {
@@ -34,16 +32,7 @@ const Content = styled('div', {
   paddingBottom: '$large',
 });
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  query,
-}) => {
-  const { project, redirect } = await ensureProject(req);
-
-  if (!project) return redirect;
-
+export const getServerSideProps = withProject(async ({ query }, project) => {
   const category = await getCategory({ id: query.id as string });
-  const props: Props = { category };
-
-  return { props };
-};
+  return { props: { category } };
+});

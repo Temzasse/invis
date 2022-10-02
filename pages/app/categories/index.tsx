@@ -1,15 +1,14 @@
-import type { GetServerSideProps } from 'next';
+import type { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 
-import { ensureProject, getProjectCategories } from '~api/project/service';
+import { withProject } from '~api/utils/redirect';
+import { getProjectCategories } from '~api/project/service';
 import { styled } from '~styles/styled';
 import { Text } from '~app/components/uikit';
 import Navbar from '~app/components/navigation/Navbar';
 import Link from 'next/link';
 
-type Props = {
-  categories: Awaited<ReturnType<typeof getProjectCategories>>;
-};
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 export default function Categories({ categories }: Props) {
   return (
@@ -67,19 +66,11 @@ const CategoryName = styled(Text, {
   textShadow: '0 0 8px rgba(0, 0, 0, 0.6)',
 });
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { project, redirect } = await ensureProject(req);
-
-  if (!project) return redirect;
-
+export const getServerSideProps = withProject(async (_, project) => {
   const categories = await getProjectCategories({
     name: project.name,
     pin: project.pin,
   });
 
-  const props: Props = {
-    categories,
-  };
-
-  return { props };
-};
+  return { props: { categories } };
+});

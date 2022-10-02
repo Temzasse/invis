@@ -1,4 +1,4 @@
-import type { GetServerSideProps } from 'next';
+import type { InferGetServerSidePropsType } from 'next';
 import { Fragment } from 'react';
 import Head from 'next/head';
 
@@ -8,22 +8,16 @@ import {
   useViewSettings,
 } from '~app/stores/view-settings';
 
-import {
-  ensureProject,
-  getProjectCategoriesWithItems,
-} from '~api/project/service';
-
 import type { ItemStatus } from '~components/project/ItemStatus';
+import { withProject } from '~api/utils/redirect';
+import { getProjectCategoriesWithItems } from '~api/project/service';
 import { useItemSections } from '~app/utils/items';
 import { styled } from '~styles/styled';
 import { Stack, SegmentedControl, Spacer, Text } from '~app/components/uikit';
 import Navbar, { NAVBAR_HEIGHT } from '~app/components/navigation/Navbar';
 import ItemRow from '~components/project/ItemRow';
 
-type Props = {
-  categories: Awaited<ReturnType<typeof getProjectCategoriesWithItems>>;
-  initialViewSettings: ReturnType<typeof getServerViewSettings>;
-};
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 export default function Home({ initialViewSettings, categories }: Props) {
   const viewSettings = useViewSettings(initialViewSettings);
@@ -78,11 +72,7 @@ const SectionTitle = styled(Text, {
   paddingHorizontal: '$regular',
 });
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { project, redirect } = await ensureProject(req);
-
-  if (!project) return redirect;
-
+export const getServerSideProps = withProject(async ({ req }, project) => {
   const categories = await getProjectCategoriesWithItems({
     name: project.name,
     pin: project.pin,
@@ -90,10 +80,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   const initialViewSettings = getServerViewSettings(req.cookies);
 
-  const props: Props = {
-    categories,
-    initialViewSettings,
+  return {
+    props: {
+      categories,
+      initialViewSettings,
+    },
   };
-
-  return { props };
-};
+});
