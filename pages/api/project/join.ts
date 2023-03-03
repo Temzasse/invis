@@ -21,7 +21,7 @@ export default async function handler(
         res,
         'project',
         { name: project.name, pin: project.pin },
-        { httpOnly: true, sameSite: 'lax' }
+        { httpOnly: true, sameSite: 'lax', maxAge: 31536000 } // 1 year
       );
 
       res.redirect('/app/home');
