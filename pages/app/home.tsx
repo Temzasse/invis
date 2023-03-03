@@ -18,21 +18,22 @@ import {
 } from '~app/components/uikit';
 
 import type { ItemStatus } from '~components/project/ItemStatus';
+import { listProjectCategoriesWithItems } from '~api/project/dao';
 import { withProject } from '~api/utils/redirect';
 import { withSWRConfig } from '~app/utils/swr';
-import { getProjectCategoriesWithItems } from '~api/project/service';
 import { useItemSections } from '~app/utils/items';
 import { styled } from '~styles/styled';
 import Navbar, { NAVBAR_HEIGHT } from '~app/components/navigation/Navbar';
 import ItemRow from '~components/project/ItemRow';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
-type Categories = Awaited<ReturnType<typeof getProjectCategoriesWithItems>>;
+type Categories = Awaited<ReturnType<typeof listProjectCategoriesWithItems>>;
 
 function Home({ initialViewSettings }: Props) {
   const { data: categories = [] } = useSWR<Categories>(
     '/api/project/categories'
   );
+
   const viewSettings = useViewSettings(initialViewSettings);
   const sections = useItemSections(viewSettings.homeSortOrder, categories);
   const [isEditing, setEditing] = useState(false);
@@ -102,7 +103,7 @@ function Home({ initialViewSettings }: Props) {
 export default withSWRConfig(Home);
 
 export const getServerSideProps = withProject(async ({ req }, project) => {
-  const categories = await getProjectCategoriesWithItems({
+  const categories = await listProjectCategoriesWithItems({
     name: project.name,
     pin: project.pin,
   });

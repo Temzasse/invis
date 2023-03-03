@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { getProjectCategoriesWithItems } from '~api/project/service';
+import { listProjectCategoriesWithItems } from '~api/project/dao';
 import { parseProjectCookie } from '~api/project/utils';
 
 export default async function handler(
@@ -17,7 +17,7 @@ export default async function handler(
 
     const { name, pin } = parseProjectCookie(projectCookie);
 
-    const categories = await getProjectCategoriesWithItems({
+    const categories = await listProjectCategoriesWithItems({
       name,
       pin,
     });

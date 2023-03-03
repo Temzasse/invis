@@ -2,7 +2,7 @@ import type { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 
 import { withProject } from '~api/utils/redirect';
-import { getProjectCategories } from '~api/project/service';
+import { listProjectCategories } from '~api/project/dao';
 import { styled } from '~styles/styled';
 import { Text } from '~app/components/uikit';
 import Navbar from '~app/components/navigation/Navbar';
@@ -68,7 +68,7 @@ const CategoryName = styled(Text, {
 });
 
 export const getServerSideProps = withProject(async (_, project) => {
-  const categories = await getProjectCategories({
+  const categories = await listProjectCategories({
     name: project.name,
     pin: project.pin,
   });

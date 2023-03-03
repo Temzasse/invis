@@ -1,6 +1,8 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse, GetServerSideProps } from 'next';
+import type { Project } from '@prisma/client';
 import { clearCookie } from '~api/utils/cookie';
 import { prisma } from '~api/utils/db';
+import { findProject } from './dao';
 
 export function parseProjectCookie(value: string): {
   name: string;
@@ -28,4 +30,23 @@ export async function getProjectFromCookie(
     res.redirect('/');
     return null;
   }
+}
+
+export async function ensureProject(
+  req: Parameters<GetServerSideProps>[0]['req']
+) {
+  const redirect = {
+    props: {},
+    redirect: { destination: '/', permanent: false },
+  };
+
+  let project: null | Project = null;
+
+  if (req.cookies.project) {
+    const projectCookie = req.cookies.project;
+    const { name, pin } = parseProjectCookie(projectCookie);
+    project = await findProject({ name, pin });
+  }
+
+  return { project, redirect };
 }

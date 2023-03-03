@@ -1,3 +1,4 @@
+import { Item } from '@prisma/client';
 import { prisma } from '~api/utils/db';
 
 export async function findProject({
@@ -40,4 +41,19 @@ export async function listProjectCategoriesWithItems({
   });
 
   return project?.categories ?? [];
+}
+
+export async function updateProjectItemStatuses(
+  items: Array<{ id: Item['id']; status: Item['status'] }>
+) {
+  const result = await Promise.all(
+    items.map((item) =>
+      prisma.item.update({
+        where: { id: item.id },
+        data: { status: item.status },
+      })
+    )
+  );
+
+  return result;
 }

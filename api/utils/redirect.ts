@@ -7,7 +7,7 @@ import type {
   PreviewData,
 } from 'next';
 
-import { ensureProject } from '~api/project/service';
+import { ensureProject } from '~api/project/utils';
 
 type AuthedGetServerSideProps<
   Props extends { [key: string]: any } = { [key: string]: any },
