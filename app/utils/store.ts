@@ -1,5 +1,5 @@
-import create, { StateCreator } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create, StateCreator } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 import type { RequestCookies } from '~app/types/cookies';
 import { isBrowser } from '~app/utils/common';
@@ -13,7 +13,7 @@ export function createStore<State>(
     persist(setup as any, {
       version: opts.version,
       name: opts.name,
-      getStorage: () => cookieStorage,
+      storage: createJSONStorage(() => cookieStorage),
     })
   );
 

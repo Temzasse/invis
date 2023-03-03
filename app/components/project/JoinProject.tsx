@@ -5,7 +5,7 @@ import { Button } from '~components/uikit';
 export default function JoinProject() {
   return (
     <Wrapper>
-      <Link href="/join?name=Hattusaari&pin=123456" passHref>
+      <Link href="/join?name=Hattusaari&pin=123456" passHref legacyBehavior>
         <Button asLink variant="outlined">
           Join Hattusaari project
         </Button>

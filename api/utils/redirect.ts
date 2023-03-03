@@ -1,21 +1,31 @@
 import type { Project } from '@prisma/client';
-import type { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
+
+import type {
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+  PreviewData,
+} from 'next';
+
 import { ensureProject } from '~api/project/service';
 
 type AuthedGetServerSideProps<
-  P extends { [key: string]: any } = { [key: string]: any },
-  Q extends ParsedUrlQuery = ParsedUrlQuery
+  Props extends { [key: string]: any } = { [key: string]: any },
+  Params extends ParsedUrlQuery = ParsedUrlQuery,
+  Preview extends PreviewData = PreviewData
 > = (
-  context: GetServerSidePropsContext<Q, any>,
+  context: GetServerSidePropsContext<Params, Preview>,
   project: Project
-) => Promise<GetServerSidePropsResult<P>>;
+) => Promise<GetServerSidePropsResult<Props>>;
 
 export function withProject<
-  P extends { [key: string]: any } = { [key: string]: any },
-  Q extends ParsedUrlQuery = ParsedUrlQuery
->(getServerSideProps: AuthedGetServerSideProps<P, Q>) {
-  return async function handler(context: GetServerSidePropsContext<Q>) {
+  Props extends { [key: string]: any } = { [key: string]: any },
+  Params extends ParsedUrlQuery = ParsedUrlQuery,
+  Preview extends PreviewData = PreviewData
+>(getServerSideProps: AuthedGetServerSideProps<Props, Params>) {
+  return async function handler(
+    context: GetServerSidePropsContext<Params, Preview>
+  ): Promise<GetServerSidePropsResult<Props>> {
     const { project, redirect } = await ensureProject(context.req);
     if (!project) return redirect;
     return getServerSideProps(context, project);

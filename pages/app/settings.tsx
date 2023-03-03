@@ -44,7 +44,7 @@ export default function Settings({ project }: Props) {
       </Content>
 
       <Logout>
-        <Link href="/api/logout" passHref>
+        <Link href="/api/logout" passHref legacyBehavior>
           <Button asLink variant="outlined">
             Kirjaudu ulos
           </Button>
