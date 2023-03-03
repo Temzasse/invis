@@ -43,7 +43,11 @@ export function useItemSections(
       });
 
       Object.values(sections).forEach((section) => {
-        section.sort((a, b) => a.name.localeCompare(b.name));
+        section.sort((a, b) => {
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
+          return 0;
+        });
       });
 
       return sections;
