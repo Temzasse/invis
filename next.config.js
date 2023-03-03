@@ -1,8 +1,12 @@
 const runtimeCaching = require('next-pwa/cache');
 
 const withPWA = require('next-pwa')({
+  // Use prodution mode to reduce logging:
+  // https://github.com/shadowwalker/next-pwa#tips
+  mode: 'production',
   dest: 'public',
   runtimeCaching,
+  buildExcludes: [/middleware-manifest.json$/],
 });
 
 /** @type {import('next').NextConfig} */
