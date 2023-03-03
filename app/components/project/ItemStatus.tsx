@@ -49,6 +49,9 @@ export const ItemStatusIndicator = styled('div', {
         },
       },
     },
+    noGlow: {
+      true: { boxShadow: 'none' },
+    },
   },
   defaultVariants: {
     status: 'missing',

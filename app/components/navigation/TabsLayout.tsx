@@ -67,23 +67,21 @@ export default function TabsNavigator({ children }: Props) {
             const href = isActive ? tab.to : stack[stack.length - 1] || tab.to;
 
             return (
-              <Link href={href} passHref key={tab.to}>
-                <TabLink>
-                  <Stack spacing="xxsmall" align="center">
-                    <TabIcon
-                      name={isActive ? tab.iconActive : tab.iconInactive}
-                      color={isActive ? 'primary' : 'text'}
-                      isActive={isActive}
-                    />
-                    <Text
-                      variant="bodySmall"
-                      color={isActive ? 'text' : 'textMuted'}
-                    >
-                      {tab.label}
-                    </Text>
-                  </Stack>
-                </TabLink>
-              </Link>
+              <TabLink href={href} passHref key={tab.to}>
+                <Stack spacing="xxsmall" align="center">
+                  <TabIcon
+                    name={isActive ? tab.iconActive : tab.iconInactive}
+                    color={isActive ? 'primary' : 'text'}
+                    isActive={isActive}
+                  />
+                  <Text
+                    variant="bodySmall"
+                    color={isActive ? 'text' : 'textMuted'}
+                  >
+                    {tab.label}
+                  </Text>
+                </Stack>
+              </TabLink>
             );
           })}
         </TabbarContent>
@@ -141,7 +139,7 @@ const TabbarContent = styled('div', {
   },
 });
 
-const TabLink = styled('a', {
+const TabLink = styled(Link, {
   paddingHorizontal: '$small',
 });
 

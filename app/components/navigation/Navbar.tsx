@@ -1,19 +1,23 @@
 import type { ReactNode } from 'react';
 import { useTransform, useScroll, motion } from 'framer-motion';
+import useMeasure from 'react-use-measure';
 
 import { Stack, Text } from '~uikit';
 import { styled } from '~styled';
 
 type Props = {
   title: string;
-  renderLeft?: () => ReactNode;
-  renderRight?: () => ReactNode;
+  leftSlot?: ReactNode;
+  rightSlot?: ReactNode;
 };
 
-export default function Navbar({ title, renderLeft, renderRight }: Props) {
+export default function Navbar({ title, leftSlot, rightSlot }: Props) {
+  const [leftSlotRef, leftSlotBounds] = useMeasure();
+  const [rightSlotRef, rightSlotBounds] = useMeasure();
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [30, 60], [0, 1]);
   const translateY = useTransform(scrollY, [30, 40], [-10, 0]);
+  const maxSlotWidth = Math.max(leftSlotBounds.width, rightSlotBounds.width);
 
   const backgroundColor = useTransform(
     scrollY,
@@ -30,18 +34,22 @@ export default function Navbar({ title, renderLeft, renderRight }: Props) {
   return (
     <>
       <StickyNav>
-        <StickyNavContent style={{ backgroundColor, borderBottomColor }}>
-          {renderLeft ? renderLeft() : <div />}
-          <StickyNavTitle style={{ opacity, translateY }}>
-            {title}
-          </StickyNavTitle>
-          {renderRight ? renderRight() : <div />}
-        </StickyNavContent>
+        <StickyNavWrapper style={{ backgroundColor, borderBottomColor }}>
+          <StickyNavContent style={{ opacity, translateY }}>
+            <div ref={leftSlotRef} style={{ minWidth: maxSlotWidth }}>
+              {leftSlot}
+            </div>
+            <Text variant="bodyBold">{title}</Text>
+            <div ref={rightSlotRef} style={{ minWidth: maxSlotWidth }}>
+              {rightSlot}
+            </div>
+          </StickyNavContent>
+        </StickyNavWrapper>
       </StickyNav>
 
       <StaticNav direction="x" spacing="large" align="end" justify="between">
         <Text variant="title1">{title}</Text>
-        {renderRight ? renderRight() : <div />}
+        <div>{rightSlot}</div>
       </StaticNav>
     </>
   );
@@ -63,19 +71,20 @@ const StickyNav = styled('nav', {
   height: NAVBAR_HEIGHT,
 });
 
-const StickyNavContent = styled(motion.div, {
+const StickyNavWrapper = styled(motion.div, {
   height: '100%',
   width: '100%',
   backgroundColor: 'rgba(0,0,0,1)',
   borderBottom: '1px solid rgba(0,0,0,0.1)',
   backdropFilter: 'blur(16px)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
   paddingTop: 'env(safe-area-inset-top)',
 });
 
-const StickyNavTitle = styled(motion.span, {
-  typography: '$bodyBold',
-  color: '$text',
+const StickyNavContent = styled(motion.div, {
+  height: '100%',
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  paddingHorizontal: '$regular',
 });

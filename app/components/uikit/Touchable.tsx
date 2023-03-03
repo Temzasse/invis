@@ -1,7 +1,6 @@
 import { forwardRef, useRef, ReactNode } from 'react';
 import { mergeRefs } from 'react-merge-refs';
-import { useButton } from '@react-aria/button';
-import { FocusRing } from '@react-aria/focus';
+import { useButton, FocusRing } from 'react-aria';
 import { motion, useAnimation } from 'framer-motion';
 
 export type TouchableProps = {

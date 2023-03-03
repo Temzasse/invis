@@ -22,17 +22,18 @@ export default function Categories({ categories }: Props) {
       <Content>
         <CategoriesGrid>
           {categories.map(({ id, name, imageUrl }) => (
-            <Link href={`categories/${id}`} passHref key={id}>
-              <Category
-                style={{
-                  backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1)), url(${imageUrl})`,
-                }}
-              >
-                <CategoryName variant="title2" align="center">
-                  {name}
-                </CategoryName>
-              </Category>
-            </Link>
+            <CategoryLink
+              key={id}
+              href={`categories/${id}`}
+              passHref
+              style={{
+                backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1)), url(${imageUrl})`,
+              }}
+            >
+              <CategoryName variant="title2" align="center">
+                {name}
+              </CategoryName>
+            </CategoryLink>
           ))}
         </CategoriesGrid>
       </Content>
@@ -51,7 +52,7 @@ const CategoriesGrid = styled('div', {
   gridGap: '$regular',
 });
 
-const Category = styled('a', {
+const CategoryLink = styled(Link, {
   aspectRatio: '16 / 9',
   backgroundColor: '$surface2',
   backgroundSize: 'cover',

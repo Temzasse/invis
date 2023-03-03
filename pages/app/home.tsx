@@ -1,5 +1,6 @@
 import type { InferGetServerSidePropsType } from 'next';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
+import useSWR from 'swr';
 import Head from 'next/head';
 
 import {
@@ -8,20 +9,46 @@ import {
   useViewSettings,
 } from '~app/stores/view-settings';
 
+import {
+  Stack,
+  SegmentedControl,
+  Spacer,
+  Text,
+  IconButton,
+} from '~app/components/uikit';
+
 import type { ItemStatus } from '~components/project/ItemStatus';
 import { withProject } from '~api/utils/redirect';
+import { withSWRConfig } from '~app/utils/swr';
 import { getProjectCategoriesWithItems } from '~api/project/service';
 import { useItemSections } from '~app/utils/items';
 import { styled } from '~styles/styled';
-import { Stack, SegmentedControl, Spacer, Text } from '~app/components/uikit';
 import Navbar, { NAVBAR_HEIGHT } from '~app/components/navigation/Navbar';
 import ItemRow from '~components/project/ItemRow';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+type Categories = Awaited<ReturnType<typeof getProjectCategoriesWithItems>>;
 
-export default function Home({ initialViewSettings, categories }: Props) {
+function Home({ initialViewSettings }: Props) {
+  const { data: categories = [] } = useSWR<Categories>(
+    '/api/project/categories'
+  );
   const viewSettings = useViewSettings(initialViewSettings);
   const sections = useItemSections(viewSettings.homeSortOrder, categories);
+  const [isEditing, setEditing] = useState(false);
+  const [statuses, setStatuses] = useState(() => getStatusMap(categories));
+
+  function handleEditingStart() {
+    setEditing(true);
+  }
+
+  function handleEditingEnd() {
+    setEditing(false);
+  }
+
+  function handleEditChange(id: string, newStatus: ItemStatus) {
+    setStatuses((prev) => ({ ...prev, [id]: newStatus }));
+  }
 
   return (
     <>
@@ -29,7 +56,16 @@ export default function Home({ initialViewSettings, categories }: Props) {
         <title>Invis</title>
       </Head>
 
-      <Navbar title="Invis" />
+      <Navbar
+        title="Invis"
+        rightSlot={
+          isEditing ? (
+            <IconButton icon="check" onPress={handleEditingEnd} />
+          ) : (
+            <IconButton icon="pencil" onPress={handleEditingStart} />
+          )
+        }
+      />
 
       <ViewSorting>
         <SegmentedControl
@@ -47,14 +83,50 @@ export default function Home({ initialViewSettings, categories }: Props) {
             <SectionTitle variant="overline" color="textMuted">
               {title}
             </SectionTitle>
-            {items.map(({ id, name, status }) => (
-              <ItemRow key={id} status={status as ItemStatus} name={name} />
+            {items.map(({ id, name }) => (
+              <ItemRow
+                key={id}
+                status={statuses[id]}
+                name={name}
+                isEditable={isEditing}
+                onEdit={(newStatus) => handleEditChange(id, newStatus)}
+              />
             ))}
           </Fragment>
         ))}
       </Stack>
     </>
   );
+}
+
+export default withSWRConfig(Home);
+
+export const getServerSideProps = withProject(async ({ req }, project) => {
+  const categories = await getProjectCategoriesWithItems({
+    name: project.name,
+    pin: project.pin,
+  });
+
+  const initialViewSettings = getServerViewSettings(req.cookies);
+
+  return {
+    props: {
+      swr: { fallback: { '/api/project/categories': categories } },
+      initialViewSettings,
+    },
+  };
+});
+
+function getStatusMap(categories: Categories) {
+  const statuses: Record<string, ItemStatus> = {};
+
+  categories.forEach(({ items }) => {
+    items.forEach((item) => {
+      statuses[item.id] = item.status as ItemStatus;
+    });
+  });
+
+  return statuses;
 }
 
 const ViewSorting = styled('div', {
@@ -70,20 +142,4 @@ const SectionTitle = styled(Text, {
   backdropFilter: 'blur(10px)',
   paddingVertical: '$xsmall',
   paddingHorizontal: '$regular',
-});
-
-export const getServerSideProps = withProject(async ({ req }, project) => {
-  const categories = await getProjectCategoriesWithItems({
-    name: project.name,
-    pin: project.pin,
-  });
-
-  const initialViewSettings = getServerViewSettings(req.cookies);
-
-  return {
-    props: {
-      categories,
-      initialViewSettings,
-    },
-  };
 });
