@@ -9,6 +9,7 @@ import { getTab } from './utils';
 type TabStacksStore = {
   stacks: Record<TabId, string[]>;
   push: (opts: { tab: TabId; url: string; isRoot: boolean }) => void;
+  pop: (tab: TabId) => void;
 };
 
 export const useTabStacksStore = create<TabStacksStore>((set, get) => ({
@@ -20,12 +21,13 @@ export const useTabStacksStore = create<TabStacksStore>((set, get) => ({
   },
   push: ({ tab, url, isRoot }: Parameters<TabStacksStore['push']>[0]) => {
     const { stacks } = get();
-    set({
-      stacks: {
-        ...stacks,
-        [tab]: isRoot ? [] : [...stacks[tab], url],
-      },
-    });
+    const newStack = isRoot ? [] : [...stacks[tab], url];
+    set({ stacks: { ...stacks, [tab]: newStack } });
+  },
+  pop: (tab: TabId) => {
+    const { stacks } = get();
+    const newStack = stacks[tab].slice(0, -1);
+    set({ stacks: { ...stacks, [tab]: newStack } });
   },
 }));
 
@@ -35,7 +37,10 @@ export function useTabStacks() {
 
   const onRouteChange = useEvent((url: string) => {
     const { tab, isRoot } = getTab(url);
-    push({ tab, url, isRoot });
+
+    if (!stacks[tab].includes(url)) {
+      push({ tab, url, isRoot });
+    }
   });
 
   useEffect(() => {
@@ -47,4 +52,10 @@ export function useTabStacks() {
   }, []); // eslint-disable-line
 
   return stacks;
+}
+
+export function useActiveTab() {
+  const { pathname } = useRouter();
+  const { tab: activeTab } = getTab(pathname);
+  return activeTab;
 }

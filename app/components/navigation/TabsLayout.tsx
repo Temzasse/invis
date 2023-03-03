@@ -1,13 +1,11 @@
 import type { ReactNode } from 'react';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 import type { IconName } from '../uikit/Icon';
-import { useTabStacks } from './hooks';
+import { useActiveTab, useTabStacks } from './hooks';
 import { Icon, Stack, Text } from '~uikit';
 import { styled } from '~styled';
 import { TabId } from './types';
-import { getTab } from './utils';
 
 const tabs: Array<{
   label: string;
@@ -51,8 +49,7 @@ type Props = {
 };
 
 export default function TabsNavigator({ children }: Props) {
-  const { pathname } = useRouter();
-  const { tab: activeTab } = getTab(pathname);
+  const activeTab = useActiveTab();
   const stacks = useTabStacks();
 
   return (
