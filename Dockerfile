@@ -1,15 +1,17 @@
-# base node image
-FROM node:16-bullseye-slim AS base
-# Set for base and all layer that inherit from it
-ENV NODE_ENV production
-# Install openssl for Prisma
-RUN apt-get update && apt-get install -y openssl sqlite3
+# Base node image
+FROM node:18-alpine AS base
+# https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
+# Install openssl and SQlite for Prisma
+RUN apk add --no-cache openssl
+RUN apk add --no-cache sqlite
+RUN npm install -g prisma
 
 # Install dependencies only when needed
 FROM base AS deps
 WORKDIR /app
 COPY package.json package-lock.json .npmrc ./
-RUN npm ci --include=dev
+RUN npm ci
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -24,8 +26,11 @@ RUN npm run build
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
+ENV NODE_ENV production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+RUN mkdir -p /data && chown -R nextjs:nodejs /data
+VOLUME /data
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json

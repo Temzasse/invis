@@ -17,7 +17,11 @@
     "typecheck": "tsc -b",
     "design-system:sync": "npm run design-system:tokenize && npm run design-system:codegen",
     "design-system:tokenize": "figmage tokenize --env .env.figma",
-    "design-system:codegen": "figmage codegen --env .env.figma"
+    "design-system:codegen": "figmage codegen --env .env.figma",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "docker:sh": "docker-compose exec -it app /bin/sh"
   },
   "prettier": {
     "bracketSpacing": true,
@@ -46,6 +50,7 @@
     "next": "13.2.3",
     "next-pwa": "5.6.0",
     "next-superjson-plugin": "0.5.6",
+    "prisma": "4.12.0",
     "react": "18.2.0",
     "react-aria": "3.24.0",
     "react-dom": "18.2.0",
@@ -78,7 +83,6 @@
     "msw": "1.1.0",
     "npm-run-all": "4.1.5",
     "prettier": "2.8.4",
-    "prisma": "4.12.0",
     "tsconfig-paths": "4.1.2",
     "type-fest": "3.8.0",
     "typescript": "5.0.4",
@@ -90,7 +94,7 @@
     "node": ">=16"
   },
   "prisma": {
-    "seed": "node --require tsconfig-paths/register prisma/seed.js"
+    "seed": "node prisma/seed.js"
   },
   "figmage": {
     "outDir": "tokens",
