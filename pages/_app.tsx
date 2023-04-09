@@ -3,7 +3,6 @@ import type { ReactNode } from 'react';
 import type { AppProps } from 'next/app';
 
 import TabsLayout from '~components/navigation/TabsLayout';
-import ApiProvider from '~components/ApiProvider';
 import { styled } from '~styles/styled';
 import { api } from '~app/utils/api';
 
@@ -12,13 +11,11 @@ function App({ Component, pageProps, router }: AppProps) {
   const Layout = prefix === 'app' ? TabsLayout : FallbackLayout;
 
   return (
-    <ApiProvider>
-      <AppWrapper>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </AppWrapper>
-    </ApiProvider>
+    <AppWrapper>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </AppWrapper>
   );
 }
 
