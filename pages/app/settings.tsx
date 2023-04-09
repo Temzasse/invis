@@ -1,21 +1,27 @@
-import { type InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import { withProject } from '~server/utils/redirect';
+import { api } from '~utils/api';
+import { withApiSession } from '~server/api/root';
 import { styled } from '~styles/styled';
 import { Button } from '~components/uikit';
 import Navbar from '~components/navigation/Navbar';
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+export const getServerSideProps = withApiSession(async (_, api) => {
+  await api.project.getProject.prefetch();
+});
 
-export default function Settings({ project }: Props) {
+export default function Settings() {
+  const { data: project } = api.project.getProject.useQuery();
+
   function copyProjectLink() {
     // TODO: add toast message
     navigator.clipboard.writeText(
-      `${window.location.origin}/join?name=${project.name}&pin=${project.pin}`
+      `${window.location.origin}/join?name=${project?.name}&pin=${project?.pin}`
     );
   }
+
+  if (!project) return null;
 
   return (
     <>
@@ -94,8 +100,4 @@ const CopyProjectLink = styled('div', {
 
 const Logout = styled('div', {
   padding: '$regular',
-});
-
-export const getServerSideProps = withProject(async (_, project) => {
-  return { props: { project } };
 });

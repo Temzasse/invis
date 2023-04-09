@@ -1,13 +1,11 @@
-import { type InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 
-import { withProject } from '~server/utils/redirect';
+import { withApiSession } from '~server/api/root';
 import Navbar from '~components/navigation/Navbar';
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+export const getServerSideProps = withApiSession();
 
-export default function Shoplist({ project }: Props) {
-  console.log(project);
+export default function Shoplist() {
   return (
     <>
       <Head>
@@ -18,7 +16,3 @@ export default function Shoplist({ project }: Props) {
     </>
   );
 }
-
-export const getServerSideProps = withProject(async (_, project) => {
-  return { props: { project } };
-});

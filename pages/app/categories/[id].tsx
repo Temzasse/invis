@@ -1,10 +1,15 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
+import { api } from '~utils/api';
+import { withApiSession } from '~server/api/root';
 import { styled } from '~styles/styled';
 import { Text } from '~components/uikit';
 import Navbar from '~components/navigation/Navbar';
-import { api } from '~utils/api';
-import { useRouter } from 'next/router';
+
+export const getServerSideProps = withApiSession(async ({ params }, api) => {
+  await api.category.getCategory.prefetch({ id: params?.id as string });
+});
 
 export default function Category() {
   const { query } = useRouter();

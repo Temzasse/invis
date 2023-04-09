@@ -2,9 +2,14 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import { api } from '~utils/api';
+import { withApiSession } from '~server/api/root';
 import { styled } from '~styles/styled';
 import { Text } from '~components/uikit';
 import Navbar from '~components/navigation/Navbar';
+
+export const getServerSideProps = withApiSession(async (_, api) => {
+  await api.category.getCategories.prefetch();
+});
 
 export default function Categories() {
   const { data: categories = [] } = api.category.getCategories.useQuery();

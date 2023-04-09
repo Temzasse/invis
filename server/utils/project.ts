@@ -1,4 +1,4 @@
-import { type GetServerSideProps, NextApiRequest } from 'next';
+import { type NextApiRequest } from 'next';
 import { type Project } from '@prisma/client';
 
 import { prisma } from '~server/db';
@@ -26,25 +26,13 @@ export async function getProjectFromCookies(
   try {
     const projectCookie = cookies.project;
     const { name, pin } = parseProjectCookie(projectCookie);
+
     project = await prisma.project.findUnique({
       where: { name_pin: { name, pin } },
     });
   } catch (error) {
-    console.error(error);
+    console.error('> Failed to parse project cookie', error);
   }
 
   return project;
-}
-
-export async function ensureProject(
-  req: Parameters<GetServerSideProps>[0]['req']
-) {
-  const redirect = {
-    props: {},
-    redirect: { destination: '/', permanent: false },
-  };
-
-  const project = await getProjectFromCookies(req.cookies);
-
-  return { project, redirect };
 }

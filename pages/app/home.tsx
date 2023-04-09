@@ -18,14 +18,20 @@ import {
 
 import { type RouterOutputs, api } from '~utils/api';
 import { type ItemStatus } from '~components/project/ItemStatus';
-import { withProject } from '~server/utils/redirect';
+import { withApiSession } from '~server/api/root';
 import { useItemSections } from '~utils/items';
 import { styled } from '~styles/styled';
 import Navbar, { NAVBAR_HEIGHT } from '~components/navigation/Navbar';
 import ItemRow from '~components/project/ItemRow';
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
-export default function Home({ initialViewSettings }: Props) {
+export const getServerSideProps = withApiSession(async ({ req }, api) => {
+  await api.category.getCategoriesWithItems.prefetch();
+  return { initialViewSettings: getServerViewSettings(req.cookies) };
+});
+
+export default function Home({
+  initialViewSettings,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { data: categories = [] } =
     api.category.getCategoriesWithItems.useQuery();
   const viewSettings = useViewSettings(initialViewSettings);
@@ -93,16 +99,6 @@ export default function Home({ initialViewSettings }: Props) {
     </>
   );
 }
-
-export const getServerSideProps = withProject(async ({ req }) => {
-  const initialViewSettings = getServerViewSettings(req.cookies);
-
-  return {
-    props: {
-      initialViewSettings,
-    },
-  };
-});
 
 function getStatusMap(
   categories: RouterOutputs['category']['getCategoriesWithItems']

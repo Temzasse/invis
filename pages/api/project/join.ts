@@ -1,4 +1,4 @@
-import { type NextApiRequest, NextApiResponse } from 'next';
+import { type NextApiRequest, type NextApiResponse } from 'next';
 
 import { prisma } from '~server/db';
 import { setCookie } from '~server/utils/cookie';
@@ -28,6 +28,9 @@ export default async function handler(
 
       res.redirect('/app/home');
     } else {
+      console.log(
+        `> Project ${name} not found - cannot join, redirecting to /`
+      );
       res.redirect('/');
     }
   } else {
