@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { type NextApiRequest, NextApiResponse } from 'next';
 import { clearCookie } from '~server/utils/cookie';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {

@@ -24,7 +24,7 @@
       "~utils/*": ["client/utils/*"],
       "~styled": ["client/styles/styled.ts"],
       "~tokens/*": ["client/styles/tokens/*"],
-      "~app/*": ["client/*"],
+      "~client/*": ["client/*"],
       "~server/*": ["server/*"]
     }
   },

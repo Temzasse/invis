@@ -1,5 +1,5 @@
-import type { VariantProps } from '@stitches/react';
-import type { ComponentProps } from 'react';
+import { type VariantProps } from '@stitches/react';
+import { type ComponentProps } from 'react';
 
 import { styled } from '~styles/styled';
 import { themeProp } from '~styles/helpers';

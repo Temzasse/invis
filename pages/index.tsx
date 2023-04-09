@@ -1,4 +1,4 @@
-import type { GetServerSideProps } from 'next';
+import { type GetServerSideProps } from 'next';
 import { motion, AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
 

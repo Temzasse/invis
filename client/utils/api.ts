@@ -1,4 +1,4 @@
-import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+import { type inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { httpBatchLink, loggerLink } from '@trpc/client';
 import { createTRPCNext } from '@trpc/next';
 import superjson from 'superjson';

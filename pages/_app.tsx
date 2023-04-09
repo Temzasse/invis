@@ -1,10 +1,10 @@
 import '../client/styles/globals.css';
-import type { ReactNode } from 'react';
-import type { AppProps } from 'next/app';
+import { type ReactNode } from 'react';
+import { type AppProps } from 'next/app';
 
 import TabsLayout from '~components/navigation/TabsLayout';
 import { styled } from '~styles/styled';
-import { api } from '~app/utils/api';
+import { api } from '~utils/api';
 
 function App({ Component, pageProps, router }: AppProps) {
   const prefix = router.pathname.split('/')[1];

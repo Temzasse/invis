@@ -1,7 +1,7 @@
-import type { Project } from '@prisma/client';
-import type { ParsedUrlQuery } from 'querystring';
+import { type Project } from '@prisma/client';
+import { type ParsedUrlQuery } from 'querystring';
 
-import type {
+import { type 
   GetServerSidePropsContext,
   GetServerSidePropsResult,
   PreviewData,

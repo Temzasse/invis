@@ -1,7 +1,7 @@
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import type { RequestCookies } from '~types/cookies';
+import { type RequestCookies } from '~client/types/cookies';
 import { isBrowser } from '~utils/common';
 import { cookieStorage } from '~utils/cookie';
 

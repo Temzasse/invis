@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { type NextApiRequest, NextApiResponse } from 'next';
 
 import { prisma } from '~server/db';
 import { setCookie } from '~server/utils/cookie';

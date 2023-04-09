@@ -1,4 +1,4 @@
-import type { InferGetServerSidePropsType } from 'next';
+import { type InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 

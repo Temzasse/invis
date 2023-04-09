@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useTransform, useScroll, motion } from 'framer-motion';
 import useMeasure from 'react-use-measure';
 

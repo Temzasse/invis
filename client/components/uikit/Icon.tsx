@@ -1,7 +1,7 @@
-import type { ComponentProps } from 'react';
-import type { VariantProps } from '@stitches/react';
+import { type ComponentProps } from 'react';
+import { type VariantProps } from '@stitches/react';
 
-import type { ids } from '~styles/tokens/icon-sprite-ids';
+import { type ids } from '~styles/tokens/icon-sprite-ids';
 import { styled } from '~styles/styled';
 import { themeProp } from '~styles/helpers';
 

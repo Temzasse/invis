@@ -1,5 +1,5 @@
-import type { NextApiResponse } from 'next';
-import type { CookieSerializeOptions } from 'cookie';
+import { type NextApiResponse } from 'next';
+import { type CookieSerializeOptions } from 'cookie';
 import { serialize } from 'cookie';
 
 export function setCookie(

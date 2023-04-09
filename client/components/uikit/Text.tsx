@@ -1,4 +1,4 @@
-import type { VariantProps } from '@stitches/react';
+import { type VariantProps } from '@stitches/react';
 import { forwardRef, ComponentProps } from 'react';
 
 import { styled, Typography } from '~styles/styled';

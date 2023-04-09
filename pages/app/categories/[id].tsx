@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { styled } from '~styles/styled';
 import { Text } from '~components/uikit';
 import Navbar from '~components/navigation/Navbar';
-import { api } from '~app/utils/api';
+import { api } from '~utils/api';
 import { useRouter } from 'next/router';
 
 export default function Category() {

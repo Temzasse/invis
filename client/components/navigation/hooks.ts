@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 
-import type { TabId } from './types';
+import { type TabId } from './types';
 import { useEvent } from '~utils/common';
 import { getTab } from './utils';
 

@@ -1,4 +1,4 @@
-import type { CreateNextContextOptions } from '@trpc/server/adapters/next';
+import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
 import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 

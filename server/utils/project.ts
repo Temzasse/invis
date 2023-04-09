@@ -1,5 +1,5 @@
-import type { GetServerSideProps, NextApiRequest } from 'next';
-import type { Project } from '@prisma/client';
+import { type GetServerSideProps, NextApiRequest } from 'next';
+import { type Project } from '@prisma/client';
 
 import { prisma } from '~server/db';
 
