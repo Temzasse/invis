@@ -8,8 +8,7 @@ import {
   type PreviewData,
 } from 'next';
 
-import { prisma } from '~server/db';
-import { createTRPCRouter } from './trpc';
+import { createTRPCContext, createTRPCRouter } from './trpc';
 import { projectRouter } from './routers/project';
 import { categoryRouter } from './routers/category';
 import { getProjectFromCookies } from '~server/utils/project';
@@ -21,7 +20,7 @@ export const appRouter = createTRPCRouter({
 
 export type AppRouter = typeof appRouter;
 
-// NOTE: this is only needed for getting the `ssg` type
+// NOTE: this is only needed for getting the `api` type in `withApiSession`
 const _api = createServerSideHelpers({ router: appRouter, ctx: {} as any });
 
 type Api = typeof _api;
@@ -31,7 +30,7 @@ export function withApiSession<
   Params extends ParsedUrlQuery = ParsedUrlQuery,
   Preview extends PreviewData = PreviewData
 >(
-  prefether?: (
+  getServerSideProps?: (
     context: GetServerSidePropsContext<Params, Preview>,
     api: Api
   ) => Promise<Props | void>
@@ -52,15 +51,15 @@ export function withApiSession<
 
     const api = createServerSideHelpers({
       router: appRouter,
-      ctx: { prisma, project },
+      ctx: await createTRPCContext(context as any),
       transformer: superjson,
     });
 
     let props: any = {};
 
-    if (prefether) {
+    if (getServerSideProps) {
       try {
-        props = await prefether(context, api);
+        props = await getServerSideProps(context, api);
       } catch (err) {
         return {
           props,
