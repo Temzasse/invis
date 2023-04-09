@@ -1,4 +1,4 @@
-import { createStore } from '~app/utils/store';
+import { createStore } from '~utils/store';
 
 export type HomeSortOrder = 'by-state' | 'by-category' | 'alphabetized';
 

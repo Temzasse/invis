@@ -1,8 +1,8 @@
 import type { VariantProps } from '@stitches/react';
 import { forwardRef, ComponentProps } from 'react';
 
-import { styled } from '~app/styles/styled';
-import { themeProp } from '~app/styles/helpers';
+import { styled } from '~styles/styled';
+import { themeProp } from '~styles/helpers';
 
 type Props = VariantProps<typeof Root> &
   ComponentProps<typeof Root> & {

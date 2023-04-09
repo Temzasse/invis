@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { listProjectCategoriesWithItems } from '~api/project/dao';
-import { parseProjectCookie } from '~api/project/utils';
+import { listProjectCategoriesWithItems } from '~server/dao/project';
+import { parseProjectCookie } from '~server/utils/project';
 
 export default async function handler(
   req: NextApiRequest,

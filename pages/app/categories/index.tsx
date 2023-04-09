@@ -1,16 +1,14 @@
-import type { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
-
-import { withProject } from '~api/utils/redirect';
-import { listProjectCategories } from '~api/project/dao';
-import { styled } from '~styles/styled';
-import { Text } from '~app/components/uikit';
-import Navbar from '~app/components/navigation/Navbar';
 import Link from 'next/link';
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+import { api } from '~utils/api';
+import { styled } from '~styles/styled';
+import { Text } from '~components/uikit';
+import Navbar from '~components/navigation/Navbar';
 
-export default function Categories({ categories }: Props) {
+export default function Categories() {
+  const { data: categories = [] } = api.category.getCategories.useQuery();
+
   return (
     <>
       <Head>
@@ -65,13 +63,4 @@ const CategoryLink = styled(Link, {
 
 const CategoryName = styled(Text, {
   textShadow: '0 0 8px rgba(0, 0, 0, 0.6)',
-});
-
-export const getServerSideProps = withProject(async (_, project) => {
-  const categories = await listProjectCategories({
-    name: project.name,
-    pin: project.pin,
-  });
-
-  return { props: { categories } };
 });

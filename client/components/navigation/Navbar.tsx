@@ -2,8 +2,8 @@ import type { ReactNode } from 'react';
 import { useTransform, useScroll, motion } from 'framer-motion';
 import useMeasure from 'react-use-measure';
 
-import { Stack, Text } from '~uikit';
-import { styled } from '~styled';
+import { Stack, Text } from '~components/uikit';
+import { styled } from '~styles/styled';
 
 type Props = {
   title: string;

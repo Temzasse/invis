@@ -8,7 +8,7 @@ import {
 } from '~components/navigation/SplashScreen';
 
 import { styled } from '~styles/styled';
-import { isRunningStandalone } from '~app/utils/pwa';
+import { isRunningStandalone } from '~utils/pwa';
 import InstallationGuide from '~components/installation/InstallationGuide';
 import JoinProject from '~components/project/JoinProject';
 

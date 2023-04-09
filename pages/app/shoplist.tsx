@@ -1,8 +1,8 @@
 import type { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 
-import { withProject } from '~api/utils/redirect';
-import Navbar from '~app/components/navigation/Navbar';
+import { withProject } from '~server/utils/redirect';
+import Navbar from '~components/navigation/Navbar';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 

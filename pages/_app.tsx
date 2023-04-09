@@ -1,12 +1,13 @@
-import '../app/styles/globals.css';
+import '../client/styles/globals.css';
 import type { ReactNode } from 'react';
 import type { AppProps } from 'next/app';
 
 import TabsLayout from '~components/navigation/TabsLayout';
 import ApiProvider from '~components/ApiProvider';
-import { styled } from '~styled';
+import { styled } from '~styles/styled';
+import { api } from '~app/utils/api';
 
-export default function App({ Component, pageProps, router }: AppProps) {
+function App({ Component, pageProps, router }: AppProps) {
   const prefix = router.pathname.split('/')[1];
   const Layout = prefix === 'app' ? TabsLayout : FallbackLayout;
 
@@ -31,3 +32,5 @@ const AppWrapper = styled('div', {
   marginRight: 'auto',
   height: '100%',
 });
+
+export default api.withTRPC(App);

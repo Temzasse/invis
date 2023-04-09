@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { setCookie } from '~api/utils/cookie';
-import { findProject } from '~api/project/dao';
+import { prisma } from '~server/db';
+import { setCookie } from '~server/utils/cookie';
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,7 +14,9 @@ export default async function handler(
       return res.redirect('/');
     }
 
-    const project = await findProject({ name, pin });
+    const project = await prisma.project.findUnique({
+      where: { name_pin: { name, pin } },
+    });
 
     if (project) {
       setCookie(

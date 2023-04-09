@@ -3,9 +3,9 @@ import groupBy from 'lodash/groupBy';
 import orderBy from 'lodash/orderBy';
 import type { Item } from '@prisma/client';
 
-import type { HomeSortOrder } from '~app/stores/view-settings';
+import type { HomeSortOrder } from '~stores/view-settings';
 import type { ItemStatus } from '~components/project/ItemStatus';
-import { getProjectCategoriesWithItems } from '~api/project/service';
+import type { RouterOutputs } from './api';
 
 const statusLabels: Record<ItemStatus, string> = {
   missing: 'Puuttuu',
@@ -15,7 +15,7 @@ const statusLabels: Record<ItemStatus, string> = {
 
 export function useItemSections(
   sortOrder: HomeSortOrder,
-  categories: Awaited<ReturnType<typeof getProjectCategoriesWithItems>>
+  categories: RouterOutputs['category']['getCategoriesWithItems']
 ) {
   return useMemo(() => {
     const items = categories.flatMap((c) => c.items);

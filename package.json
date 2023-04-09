@@ -3,10 +3,10 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development binode --require ./app/mocks -- next:next dev",
+    "dev": "cross-env NODE_ENV=development binode --require ./client/mocks -- next:next dev",
     "build": "next build",
     "start": "next start",
-    "start:mocks": "binode --require ./app/mocks -- next:next start",
+    "start:mocks": "binode --require ./client/mocks -- next:next start",
     "db:seed": "prisma db seed",
     "db:generate": "prisma generate",
     "db:setup": "prisma generate && prisma migrate deploy && prisma db seed",
@@ -34,6 +34,11 @@
   "dependencies": {
     "@prisma/client": "4.11.0",
     "@stitches/react": "1.2.8",
+    "@tanstack/react-query": "4.24.10",
+    "@trpc/client": "10.14.0",
+    "@trpc/next": "10.14.0",
+    "@trpc/react-query": "10.14.0",
+    "@trpc/server": "10.14.0",
     "cookie": "0.5.0",
     "framer-motion": "10.0.1",
     "js-cookie": "3.0.1",
@@ -48,6 +53,7 @@
     "react-use-measure": "2.1.1",
     "superjson": "1.12.2",
     "swr": "2.0.4",
+    "zod": "3.20.6",
     "zustand": "4.3.5"
   },
   "devDependencies": {

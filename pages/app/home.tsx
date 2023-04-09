@@ -1,13 +1,12 @@
-import type { InferGetServerSidePropsType } from 'next';
+import { type InferGetServerSidePropsType } from 'next';
 import { Fragment, useState } from 'react';
-import useSWR from 'swr';
 import Head from 'next/head';
 
 import {
   getServerViewSettings,
   HOME_SORT_OPTIONS,
   useViewSettings,
-} from '~app/stores/view-settings';
+} from '~stores/view-settings';
 
 import {
   Stack,
@@ -15,25 +14,20 @@ import {
   Spacer,
   Text,
   IconButton,
-} from '~app/components/uikit';
+} from '~components/uikit';
 
-import type { ItemStatus } from '~components/project/ItemStatus';
-import { listProjectCategoriesWithItems } from '~api/project/dao';
-import { withProject } from '~api/utils/redirect';
-import { withSWRConfig } from '~app/utils/swr';
-import { useItemSections } from '~app/utils/items';
+import { type RouterOutputs, api } from '~utils/api';
+import { type ItemStatus } from '~components/project/ItemStatus';
+import { withProject } from '~server/utils/redirect';
+import { useItemSections } from '~utils/items';
 import { styled } from '~styles/styled';
-import Navbar, { NAVBAR_HEIGHT } from '~app/components/navigation/Navbar';
+import Navbar, { NAVBAR_HEIGHT } from '~components/navigation/Navbar';
 import ItemRow from '~components/project/ItemRow';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
-type Categories = Awaited<ReturnType<typeof listProjectCategoriesWithItems>>;
-
-function Home({ initialViewSettings }: Props) {
-  const { data: categories = [] } = useSWR<Categories>(
-    '/api/project/categories'
-  );
-
+export default function Home({ initialViewSettings }: Props) {
+  const { data: categories = [] } =
+    api.category.getCategoriesWithItems.useQuery();
   const viewSettings = useViewSettings(initialViewSettings);
   const sections = useItemSections(viewSettings.homeSortOrder, categories);
   const [isEditing, setEditing] = useState(false);
@@ -100,25 +94,19 @@ function Home({ initialViewSettings }: Props) {
   );
 }
 
-export default withSWRConfig(Home);
-
-export const getServerSideProps = withProject(async ({ req }, project) => {
-  const categories = await listProjectCategoriesWithItems({
-    name: project.name,
-    pin: project.pin,
-  });
-
+export const getServerSideProps = withProject(async ({ req }) => {
   const initialViewSettings = getServerViewSettings(req.cookies);
 
   return {
     props: {
-      swr: { fallback: { '/api/project/categories': categories } },
       initialViewSettings,
     },
   };
 });
 
-function getStatusMap(categories: Categories) {
+function getStatusMap(
+  categories: RouterOutputs['category']['getCategoriesWithItems']
+) {
   const statuses: Record<string, ItemStatus> = {};
 
   categories.forEach(({ items }) => {

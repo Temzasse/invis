@@ -3,8 +3,8 @@ import Link from 'next/link';
 
 import type { IconName } from '../uikit/Icon';
 import { useActiveTab, useTabStacks } from './hooks';
-import { Icon, Stack, Text } from '~uikit';
-import { styled } from '~styled';
+import { Icon, Stack, Text } from '~components/uikit';
+import { styled } from '~styles/styled';
 import { TabId } from './types';
 
 const tabs: Array<{

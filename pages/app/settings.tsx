@@ -2,7 +2,7 @@ import type { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import { withProject } from '~api/utils/redirect';
+import { withProject } from '~server/utils/redirect';
 import { styled } from '~styles/styled';
 import { Button } from '~components/uikit';
 import Navbar from '~components/navigation/Navbar';
