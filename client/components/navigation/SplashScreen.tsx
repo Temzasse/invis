@@ -62,7 +62,7 @@ export function useSplashScreen() {
 }
 
 const Wrapper = styled(motion.div, {
-  height: '100vh',
+  viewportHeight: 100,
   fixedFill: true,
   flexCenter: true,
   backgroundColor: '$background',

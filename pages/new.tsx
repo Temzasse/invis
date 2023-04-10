@@ -43,8 +43,6 @@ export default function NewProject() {
     setState((p) => ({ ...p, [name]: value, passwordsMatch: undefined }));
   }
 
-  console.log('> error', mutation.error?.data);
-
   return (
     <>
       <Head>

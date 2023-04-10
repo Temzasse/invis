@@ -70,3 +70,18 @@ export const flexCenter = () => ({
   justifyContent: 'center',
   alignItems: 'center',
 });
+
+export const gradientText = () => ({
+  background:
+    'linear-gradient(90deg, $colors$primary 0%, $colors$secondary 100%)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+});
+
+export const viewportHeight = (value: number) => ({
+  height: `calc(${value} * var(--vh))`,
+});
+
+export const viewportMinHeight = (value: number) => ({
+  minHeight: `calc(${value} * var(--vh))`,
+});

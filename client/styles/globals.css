@@ -1,3 +1,13 @@
+:root {
+  --vh: 1vh;
+}
+
+@supports (height: 1dvh) {
+  :root {
+    --vh: 1dvh;
+  }
+}
+
 *,
 *::before,
 *::after {
@@ -29,7 +39,7 @@ body {
 
 #__next {
   height: 100%;
-  min-height: 100vh;
+  min-height: calc(100 * var(--vh));
   background-color: #000;
 }
 

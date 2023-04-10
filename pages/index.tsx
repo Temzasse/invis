@@ -8,8 +8,9 @@ import {
 } from '~components/navigation/SplashScreen';
 
 import { styled } from '~styles/styled';
-import { Stack, Text } from '~components/uikit';
+import { Button, Stack, Text } from '~components/uikit';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Landing() {
   const isSplashVisible = useSplashScreen();
@@ -25,15 +26,35 @@ export default function Landing() {
           <SplashScreen />
         ) : (
           <Main key="main">
-            <Stack direction="y" spacing="small">
-              <Text variant="body">Invis</Text>
-              <Link href="/login">
-                <Text variant="body">Kirjaudu sisään</Text>
-              </Link>
-              <Link href="/new">
-                <Text variant="body">Luo oma projekti</Text>
-              </Link>
-            </Stack>
+            <BackgroundGrid />
+
+            <Header
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.4 }}
+            >
+              <Image
+                src="/images/text-logo.png"
+                width={60}
+                height={30}
+                style={{ objectFit: 'contain' }}
+                alt="Invis logo"
+              />
+            </Header>
+
+            <Content>
+              <Stack direction="y" spacing="regular">
+                <Title>Pysy kärryillä elämän menoista</Title>
+                <Link href="/login" passHref legacyBehavior>
+                  <Button asLink>Liity projektiin</Button>
+                </Link>
+                <Link href="/login" passHref legacyBehavior>
+                  <Button asLink variant="outlined">
+                    Luo oma projekti
+                  </Button>
+                </Link>
+              </Stack>
+            </Content>
           </Main>
         )}
       </AnimatePresence>
@@ -42,7 +63,40 @@ export default function Landing() {
 }
 
 const Main = styled(motion.main, {
-  height: '100%',
+  position: 'relative',
+  viewportMinHeight: 100,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-end',
+  safeAreaInsets: 'padding',
+});
+
+const BackgroundGrid = styled('div', {
+  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(241 245 249 / 0.03)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`,
+  backgroundPosition: 'center top -1px',
+  WebkitMaskImage: 'linear-gradient(0deg,#0000,#000)',
+  MaskImage: 'linear-gradient(0deg,#0000,#000)',
+  fixedFill: true,
+  pointerEvents: 'none',
+});
+
+const Header = styled(motion.div, {
+  position: 'fixed',
+  top: 'max(0px, env(safe-area-inset-top))',
+  width: '100vw',
+  padding: '$regular',
+  display: 'flex',
+  justifyContent: 'center',
+  background: 'linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0))',
+});
+
+const Content = styled('div', {
+  padding: '$regular',
+});
+
+const Title = styled('h1', {
+  typography: '$title1',
+  gradientText: true,
 });
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
