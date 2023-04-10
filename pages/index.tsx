@@ -83,7 +83,8 @@ const BackgroundGrid = styled('div', {
 const Header = styled(motion.div, {
   position: 'fixed',
   top: 'max(0px, env(safe-area-inset-top))',
-  width: '100vw',
+  left: 0,
+  right: 0,
   padding: '$regular',
   display: 'flex',
   justifyContent: 'center',

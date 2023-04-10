@@ -114,7 +114,8 @@ const Form = styled('form', {
 const Footer = styled('footer', {
   position: 'fixed',
   bottom: 0,
-  width: '100vw',
+  left: 0,
+  right: 0,
   display: 'flex',
   justifyContent: 'center',
   backgroundColor: '$background',
