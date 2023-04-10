@@ -1,7 +1,7 @@
 import { type NextApiRequest, type NextApiResponse } from 'next';
 
 import { prisma } from '~server/db';
-import { setCookie } from '~server/utils/cookie';
+import { setProjectCookie } from '~server/utils/project';
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,7 +11,7 @@ export default async function handler(
     const { name, pin } = req.query;
 
     if (typeof name !== 'string' || typeof pin !== 'string') {
-      return res.redirect('/');
+      return res.redirect('/login');
     }
 
     const project = await prisma.project.findUnique({
@@ -19,19 +19,13 @@ export default async function handler(
     });
 
     if (project) {
-      setCookie(
-        res,
-        'project',
-        { name: project.name, pin: project.pin },
-        { httpOnly: true, sameSite: 'lax', maxAge: 31536000 } // 1 year
-      );
-
+      setProjectCookie(res, project.id);
       res.redirect('/app/home');
     } else {
       console.log(
-        `> Project ${name} not found - cannot join, redirecting to /`
+        `> Project ${name} not found - cannot join, redirecting to /login`
       );
-      res.redirect('/');
+      res.redirect('/login');
     }
   } else {
     res.status(404).end();

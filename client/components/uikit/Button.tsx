@@ -7,18 +7,15 @@ import { Icon, IconName } from './Icon';
 import { Stack } from './Stack';
 
 type Props = VariantProps<typeof Root> &
-  Omit<
-    ComponentProps<typeof Root> & {
-      children: ReactNode;
-      variant?: 'filled' | 'outlined';
-      asLink?: boolean;
-      fullWidth?: boolean;
-      icon?: IconName;
-      iconPlacement?: 'left' | 'right';
-      onPress?: () => void;
-    },
-    'onClick'
-  >;
+  ComponentProps<typeof Root> & {
+    children: ReactNode;
+    variant?: 'filled' | 'outlined';
+    asLink?: boolean;
+    fullWidth?: boolean;
+    icon?: IconName;
+    iconPlacement?: 'left' | 'right';
+    onPress?: () => void;
+  };
 
 export const Button = memo(
   forwardRef<HTMLButtonElement, Props>(
@@ -51,7 +48,7 @@ Button.displayName = 'Button';
 const Root = styled(Touchable, {
   display: 'block',
   padding: '$regular',
-  borderRadius: '$full',
+  borderRadius: '$medium',
   border: '1px solid $primaryMuted',
   variants: {
     variant: {

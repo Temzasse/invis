@@ -12,7 +12,7 @@ type Props = VariantProps<typeof Root> &
       icon: IconName;
       onPress?: () => void;
     },
-    'onClick' | 'children'
+    'children'
   >;
 
 export const IconButton = memo(

@@ -43,7 +43,7 @@ export function withApiSession<
     if (!project) {
       return {
         redirect: {
-          destination: '/',
+          destination: '/login',
           permanent: false,
         },
       };

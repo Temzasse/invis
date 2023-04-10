@@ -1,9 +1,12 @@
-import { forwardRef, useRef, ReactNode } from 'react';
+import { forwardRef, useRef, ReactNode, ButtonHTMLAttributes } from 'react';
 import { mergeRefs } from 'react-merge-refs';
 import { useButton, FocusRing } from 'react-aria';
 import { motion, useAnimation } from 'framer-motion';
 
-export type TouchableProps = {
+export type TouchableProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'onClick'
+> & {
   children: ReactNode;
   interaction?: 'opacity' | 'highlight';
   asLink?: boolean;
