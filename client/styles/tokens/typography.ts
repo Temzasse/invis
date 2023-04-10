@@ -5,7 +5,7 @@ export const body = {
   "fontSize": 16,
   "textTransform": "none",
   "letterSpacing": -0.41,
-  "lineHeight": 1.172
+  "lineHeight": 1.21
 };
 export const bodyBold = {
   "fontFamily": "Inter",
@@ -13,7 +13,7 @@ export const bodyBold = {
   "fontSize": 16,
   "textTransform": "none",
   "letterSpacing": -0.41,
-  "lineHeight": 1.172
+  "lineHeight": 1.21
 };
 export const bodySmall = {
   "fontFamily": "Inter",
@@ -21,7 +21,7 @@ export const bodySmall = {
   "fontSize": 12,
   "textTransform": "none",
   "letterSpacing": -0.41,
-  "lineHeight": 1.172
+  "lineHeight": 1.21
 };
 export const bodySmallBold = {
   "fontFamily": "Inter",
@@ -29,7 +29,7 @@ export const bodySmallBold = {
   "fontSize": 12,
   "textTransform": "none",
   "letterSpacing": -0.41,
-  "lineHeight": 1.172
+  "lineHeight": 1.21
 };
 export const overline = {
   "fontFamily": "Inter",
@@ -37,7 +37,7 @@ export const overline = {
   "fontSize": 12,
   "textTransform": "uppercase",
   "letterSpacing": 1.8,
-  "lineHeight": 1.172
+  "lineHeight": 1.21
 };
 export const title1 = {
   "fontFamily": "Inter",
@@ -45,7 +45,7 @@ export const title1 = {
   "fontSize": 36,
   "textTransform": "none",
   "letterSpacing": -0.41,
-  "lineHeight": 1.172
+  "lineHeight": 1.21
 };
 export const title2 = {
   "fontFamily": "Inter",
@@ -53,7 +53,7 @@ export const title2 = {
   "fontSize": 20,
   "textTransform": "none",
   "letterSpacing": -0.41,
-  "lineHeight": 1.172
+  "lineHeight": 1.21
 };
 
-export type Token = "body" | "bodyBold" | "bodySmall" | "bodySmallBold" | "overline" | "title1" | "title2";
+export type TypographyToken = "body" | "bodyBold" | "bodySmall" | "bodySmallBold" | "overline" | "title1" | "title2";

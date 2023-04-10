@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import bcrypt from 'bcrypt';
 
 import {
   createTRPCRouter,
@@ -7,20 +8,32 @@ import {
 } from '~server/api/trpc';
 
 import { setProjectCookie } from '~server/utils/project';
-
-const PIN_LENGTH = 6;
+import { TRPCError } from '@trpc/server';
 
 const joinCreateInput = z.object({
   name: z.string(),
-  pin: z.string().length(PIN_LENGTH),
+  password: z.string().min(8),
 });
 
 export const projectRouter = createTRPCRouter({
   createProject: publicProcedure
     .input(joinCreateInput)
     .mutation(async ({ ctx, input }) => {
+      const existingProject = await ctx.prisma.project.findUnique({
+        where: { name: input.name },
+      });
+
+      if (existingProject) {
+        throw new TRPCError({ code: 'CONFLICT' });
+      }
+
+      const hashedPassword = await bcrypt.hash(input.password, 10);
+
       const project = await ctx.prisma.project.create({
-        data: { name: input.name, pin: input.pin },
+        data: {
+          name: input.name,
+          password: hashedPassword,
+        },
       });
 
       setProjectCookie(ctx.res, project.id);
@@ -32,17 +45,26 @@ export const projectRouter = createTRPCRouter({
     .input(joinCreateInput)
     .mutation(async ({ ctx, input }) => {
       const project = await ctx.prisma.project.findUnique({
-        where: { name_pin: { name: input.name, pin: input.pin } },
+        where: { name: input.name },
       });
 
-      if (project) {
-        setProjectCookie(ctx.res, project.id);
+      if (!project) {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
       }
+
+      const matches = await bcrypt.compare(input.password, project.password);
+
+      if (!matches) {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
+      }
+
+      setProjectCookie(ctx.res, project.id);
     }),
 
   getProject: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.project.findUnique({
       where: { id: ctx.project.id },
+      select: { name: true, id: true },
     });
   }),
 

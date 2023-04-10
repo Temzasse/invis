@@ -17,7 +17,7 @@ export default function Settings() {
   function copyProjectLink() {
     // TODO: add toast message
     navigator.clipboard.writeText(
-      `${window.location.origin}/join?name=${project?.name}&pin=${project?.pin}`
+      `${window.location.origin}/login?name=${project?.name}`
     );
   }
 
@@ -36,9 +36,6 @@ export default function Settings() {
           <ProjectDetails>
             <ProjectDetailLabel>Projektin nimi</ProjectDetailLabel>
             <ProjectDetail>{project.name}</ProjectDetail>
-
-            <ProjectDetailLabel>PIN-koodi</ProjectDetailLabel>
-            <ProjectDetail>{project.pin}</ProjectDetail>
           </ProjectDetails>
 
           <CopyProjectLink>

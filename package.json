@@ -43,6 +43,7 @@
     "@trpc/next": "10.19.1",
     "@trpc/react-query": "10.19.1",
     "@trpc/server": "10.19.1",
+    "bcrypt": "5.1.0",
     "cookie": "0.5.0",
     "framer-motion": "10.11.2",
     "js-cookie": "3.0.1",
@@ -66,6 +67,7 @@
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "14.0.0",
     "@testing-library/user-event": "14.4.3",
+    "@types/bcrypt": "5.0.0",
     "@types/eslint": "8.4.5",
     "@types/js-cookie": "3.0.3",
     "@types/lodash": "4.14.191",
@@ -97,7 +99,7 @@
     "seed": "node prisma/seed.js"
   },
   "figmage": {
-    "outDir": "tokens",
+    "outDir": "client/styles/tokens",
     "tokenize": {
       "tokens": [
         {

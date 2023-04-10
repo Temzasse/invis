@@ -53,7 +53,7 @@ const Root = styled(Touchable, {
   variants: {
     variant: {
       filled: {
-        color: '$primaryText',
+        color: '$primaryContrast',
         backgroundColor: '$primaryMuted',
       },
       outlined: {

@@ -5,4 +5,4 @@ export const medium = 16;
 export const regular = 8;
 export const small = 4;
 
-export type Token = "full" | "large" | "medium" | "regular" | "small";
+export type RadiiToken = "full" | "large" | "medium" | "regular" | "small";

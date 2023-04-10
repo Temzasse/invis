@@ -8,12 +8,10 @@ import {
 } from '~components/navigation/SplashScreen';
 
 import { styled } from '~styles/styled';
-import { isRunningStandalone } from '~utils/pwa';
-import InstallationGuide from '~components/installation/InstallationGuide';
-import JoinProject from '~components/project/JoinProject';
+import { Stack, Text } from '~components/uikit';
+import Link from 'next/link';
 
 export default function Landing() {
-  const isStandalone = isRunningStandalone();
   const isSplashVisible = useSplashScreen();
 
   return (
@@ -25,14 +23,17 @@ export default function Landing() {
       <AnimatePresence initial={false}>
         {isSplashVisible ? (
           <SplashScreen />
-        ) : isStandalone ? (
-          // NOTE: keys are needed for the AnimatePresence component to work
-          <Main key="join-project">
-            <JoinProject />
-          </Main>
         ) : (
-          <Main key="installation-guide">
-            <InstallationGuide />
+          <Main key="main">
+            <Stack direction="y" spacing="small">
+              <Text variant="body">Invis</Text>
+              <Link href="/login">
+                <Text variant="body">Kirjaudu sisään</Text>
+              </Link>
+              <Link href="/new">
+                <Text variant="body">Luo oma projekti</Text>
+              </Link>
+            </Stack>
           </Main>
         )}
       </AnimatePresence>

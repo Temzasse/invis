@@ -9,13 +9,11 @@ generator client {
 
 model Project {
   id         String     @id @default(cuid())
-  name       String
-  pin        String
+  name       String     @unique
+  password   String
   categories Category[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-
-  @@unique([name, pin])
 }
 
 model Item {

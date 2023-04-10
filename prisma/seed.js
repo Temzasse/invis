@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcrypt');
 
 const prisma = new PrismaClient();
 
@@ -147,11 +148,11 @@ async function seed() {
   const projects = await prisma.project.findMany();
 
   if (projects.length === 0) {
-
+    const passwordHash = await bcrypt.hash('12345678', 10);
     const project = await prisma.project.create({
       data: {
         name: 'Hattusaari',
-        pin: '123456',
+        password: passwordHash,
         categories: {
           create: categories.map((category) => ({
             name: category.name,
