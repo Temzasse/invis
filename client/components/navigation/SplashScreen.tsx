@@ -46,19 +46,25 @@ export function SplashScreen() {
   );
 }
 
+// Only show splash screen once
+let splashShown = false;
+
 export function useSplashScreen() {
   const [visible, setVisible] = useState(true);
 
   // Show splash screen for a second before showing the app
   // so that it doesn't flash on the screen.
   useEffect(() => {
-    if (visible) {
-      const timeout = setTimeout(() => setVisible(false), 1000);
+    if (!splashShown && visible) {
+      const timeout = setTimeout(() => {
+        setVisible(false);
+        splashShown = true;
+      }, 1000);
       return () => clearTimeout(timeout);
     }
   }, [visible]);
 
-  return visible;
+  return splashShown ? false : visible;
 }
 
 const Wrapper = styled(motion.div, {

@@ -48,7 +48,7 @@ export default function Landing() {
                 <Link href="/login" passHref legacyBehavior>
                   <Button asLink>Liity projektiin</Button>
                 </Link>
-                <Link href="/login" passHref legacyBehavior>
+                <Link href="/new" passHref legacyBehavior>
                   <Button asLink variant="outlined">
                     Luo oma projekti
                   </Button>

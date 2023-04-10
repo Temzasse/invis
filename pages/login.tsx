@@ -1,10 +1,11 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { api } from '~utils/api';
 import { styled } from '~styles/styled';
-import { Button, Stack, Text, TextInput } from '~components/uikit';
+import { Button, Icon, Stack, Text, TextInput } from '~components/uikit';
 import Navbar from '~components/navigation/Navbar';
 
 export default function Login() {
@@ -47,7 +48,7 @@ export default function Login() {
         <title>Invis | Kirjaudu sisään</title>
       </Head>
 
-      <main>
+      <Main>
         <Navbar title="Kirjaudu sisään" />
 
         <Form onSubmit={handleSubmit}>
@@ -83,14 +84,40 @@ export default function Login() {
             </Stack>
           )}
         </Form>
-      </main>
+
+        <Footer>
+          <Link href="/">
+            <Stack direction="x" spacing="xxsmall" align="center">
+              <Icon name="arrowLeft" size={16} color="text" />
+              <Text variant="body">Takaisin etusivulle</Text>
+            </Stack>
+          </Link>
+        </Footer>
+      </Main>
     </>
   );
 }
+
+const Main = styled('main', {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+});
 
 const Form = styled('form', {
   display: 'flex',
   flexDirection: 'column',
   gap: '$regular',
+  padding: '$regular',
+});
+
+const Footer = styled('footer', {
+  position: 'fixed',
+  bottom: 0,
+  width: '100vw',
+  display: 'flex',
+  justifyContent: 'center',
+  backgroundColor: '$background',
+  marginBottom: 'env(safe-area-inset-bottom)',
   padding: '$regular',
 });
