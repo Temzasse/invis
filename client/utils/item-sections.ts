@@ -21,18 +21,19 @@ export function useItemSections(
 ) {
   return useMemo(() => {
     const items = categories.flatMap((c) => c.items);
+    const sections: Sections = {};
+
+    if (items.length === 0) {
+      return sections;
+    }
 
     if (sortOrder === 'by-category') {
-      const sections: Sections = {};
-
       orderBy(categories, 'name').forEach((c) => {
         sections[c.name] = c.items;
       });
 
       return sections;
     } else if (sortOrder === 'by-state') {
-      const sections: Sections = {};
-
       items.forEach((i) => {
         const title = statusLabels[i.status as ItemStatus];
         const section = sections[title] ?? [];
@@ -54,14 +55,13 @@ export function useItemSections(
         acc[key] = sections[key];
         return acc;
       }, {});
+    } else if (sortOrder === 'alphabetized') {
+      const grouped = groupBy(items, (i) => i.name[0].toUpperCase());
+
+      Object.entries(grouped).forEach(([key, items]) => {
+        sections[key] = items;
+      });
     }
-
-    const sections: Sections = {};
-    const grouped = groupBy(items, (i) => i.name[0].toUpperCase());
-
-    Object.entries(grouped).forEach(([key, items]) => {
-      sections[key] = items;
-    });
 
     return sections;
   }, [sortOrder, categories]);
