@@ -7,10 +7,17 @@ type Props = {
   status: ItemStatus;
   name: string;
   isEditable: boolean;
-  onEdit: (status: ItemStatus) => void;
+  onEditStart: () => void;
+  onEditChange: (status: ItemStatus) => void;
 };
 
-export default function ItemRow({ status, name, isEditable, onEdit }: Props) {
+export default function ItemRow({
+  status,
+  name,
+  isEditable,
+  onEditStart,
+  onEditChange,
+}: Props) {
   return (
     <Wrapper direction="x" spacing="regular" align="center">
       {isEditable ? (
@@ -23,7 +30,7 @@ export default function ItemRow({ status, name, isEditable, onEdit }: Props) {
             <EditStatusButton
               status="full"
               isActive={status === 'full'}
-              onPress={() => onEdit('full')}
+              onPress={() => onEditChange('full')}
             />
           </motion.div>
           <motion.div
@@ -34,7 +41,7 @@ export default function ItemRow({ status, name, isEditable, onEdit }: Props) {
             <EditStatusButton
               status="partial"
               isActive={status === 'partial'}
-              onPress={() => onEdit('partial')}
+              onPress={() => onEditChange('partial')}
             />
           </motion.div>
           <motion.div
@@ -45,12 +52,14 @@ export default function ItemRow({ status, name, isEditable, onEdit }: Props) {
             <EditStatusButton
               status="missing"
               isActive={status === 'missing'}
-              onPress={() => onEdit('missing')}
+              onPress={() => onEditChange('missing')}
             />
           </motion.div>
         </>
       ) : (
-        <ItemStatusIndicator status={status} />
+        <StatusButton onPress={onEditStart}>
+          <ItemStatusIndicator status={status} />
+        </StatusButton>
       )}
 
       <Text variant="body">{name}</Text>

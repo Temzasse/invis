@@ -71,7 +71,12 @@ export const projectRouter = createTRPCRouter({
   updateItemStatuses: protectedProcedure
     .input(
       z.object({
-        items: z.array(z.object({ id: z.string(), status: z.string() })),
+        items: z.array(
+          z.object({
+            id: z.string(),
+            status: z.string(),
+          })
+        ),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -83,6 +88,22 @@ export const projectRouter = createTRPCRouter({
           })
         )
       );
+
+      return result;
+    }),
+
+  updateItemStatus: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        status: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const result = await ctx.prisma.item.update({
+        where: { id: input.id },
+        data: { status: input.status },
+      });
 
       return result;
     }),

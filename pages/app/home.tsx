@@ -1,5 +1,5 @@
 import { type InferGetServerSidePropsType } from 'next';
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import Head from 'next/head';
 
 import {
@@ -16,11 +16,13 @@ import {
   IconButton,
 } from '~components/uikit';
 
-import { type RouterOutputs, api } from '~utils/api';
 import { type ItemStatus } from '~components/project/ItemStatus';
+import { api } from '~utils/api';
 import { withApiSession } from '~server/api/root';
-import { useItemSections } from '~utils/items';
+import { useItemSections } from '~utils/item-sections';
 import { styled } from '~styles/styled';
+import { useItemStatusEditing } from '~stores/item-status-editing';
+import { useItemStatusMutations } from '~client/hooks/item-status-mutations';
 import Navbar, { NAVBAR_HEIGHT } from '~components/navigation/Navbar';
 import ItemRow from '~components/project/ItemRow';
 
@@ -32,23 +34,24 @@ export const getServerSideProps = withApiSession(async ({ req }, api) => {
 export default function Home({
   initialViewSettings,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data: categories = [] } =
-    api.category.getCategoriesWithItems.useQuery();
+  const { data: categories = [] } = api.category.getCategoriesWithItems.useQuery(); // prettier-ignore
   const viewSettings = useViewSettings(initialViewSettings);
   const sections = useItemSections(viewSettings.homeSortOrder, categories);
-  const [isEditing, setEditing] = useState(false);
-  const [statuses, setStatuses] = useState(() => getStatusMap(categories));
-
-  function handleEditingStart() {
-    setEditing(true);
-  }
-
-  function handleEditingEnd() {
-    setEditing(false);
-  }
+  const editing = useItemStatusEditing();
+  const mutations = useItemStatusMutations(categories);
 
   function handleEditChange(id: string, newStatus: ItemStatus) {
-    setStatuses((prev) => ({ ...prev, [id]: newStatus }));
+    if (editing.isMulti) {
+      mutations.onMultiEditChange(id, newStatus);
+    } else {
+      mutations.onSingleEditChange(id, newStatus);
+      editing.toggleItemEditable(id);
+    }
+  }
+
+  function handleMultiEditEnd() {
+    mutations.onMultiEditingEnd();
+    editing.clear();
   }
 
   return (
@@ -60,10 +63,17 @@ export default function Home({
       <Navbar
         title="Invis"
         rightSlot={
-          isEditing ? (
-            <IconButton icon="check" onPress={handleEditingEnd} />
+          editing.isMulti ? (
+            mutations.isLoading ? (
+              <span>...</span>
+            ) : (
+              <IconButton icon="check" onPress={handleMultiEditEnd} />
+            )
           ) : (
-            <IconButton icon="pencil" onPress={handleEditingStart} />
+            <IconButton
+              icon="pencil"
+              onPress={() => editing.setIsMulti(true)}
+            />
           )
         }
       />
@@ -84,13 +94,15 @@ export default function Home({
             <SectionTitle variant="overline" color="textMuted">
               {title}
             </SectionTitle>
-            {items.map(({ id, name }) => (
+
+            {items.map(({ id, name, status }) => (
               <ItemRow
                 key={id}
-                status={statuses[id]}
+                status={mutations.editedStatuses[id] || status}
                 name={name}
-                isEditable={isEditing}
-                onEdit={(newStatus) => handleEditChange(id, newStatus)}
+                isEditable={editing.isMulti || editing.editable.has(id)}
+                onEditStart={() => editing.toggleItemEditable(id)}
+                onEditChange={(newStatus) => handleEditChange(id, newStatus)}
               />
             ))}
           </Fragment>
@@ -98,20 +110,6 @@ export default function Home({
       </Stack>
     </>
   );
-}
-
-function getStatusMap(
-  categories: RouterOutputs['category']['getCategoriesWithItems']
-) {
-  const statuses: Record<string, ItemStatus> = {};
-
-  categories.forEach(({ items }) => {
-    items.forEach((item) => {
-      statuses[item.id] = item.status as ItemStatus;
-    });
-  });
-
-  return statuses;
 }
 
 const ViewSorting = styled('div', {
