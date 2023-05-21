@@ -1,4 +1,4 @@
-import { createStore } from '~utils/store';
+import { createPersistedStore } from '~utils/store';
 
 export type HomeSortOrder = 'by-state' | 'by-category' | 'alphabetized';
 
@@ -7,7 +7,7 @@ export type ViewSettingsState = {
   setHomeSortOrder: (homeSortOrder: HomeSortOrder) => void;
 };
 
-const { getServerState, useStore } = createStore<ViewSettingsState>(
+const { getServerState, useStore } = createPersistedStore<ViewSettingsState>(
   (set) => ({
     homeSortOrder: 'by-state',
     setHomeSortOrder: (order: HomeSortOrder) => set({ homeSortOrder: order }),

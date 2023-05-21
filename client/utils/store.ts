@@ -5,7 +5,7 @@ import { type RequestCookies } from '~client/types/cookies';
 import { isBrowser } from '~utils/common';
 import { cookieStorage } from '~utils/cookie';
 
-export function createStore<State>(
+export function createPersistedStore<State>(
   setup: StateCreator<State>,
   opts: { version: number; name: string }
 ) {
