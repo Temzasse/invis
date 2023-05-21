@@ -29,16 +29,16 @@ export function useItemSections(
 
     if (sortOrder === 'by-category') {
       orderBy(categories, 'name').forEach((c) => {
-        sections[c.name] = c.items;
+        sections[c.name] = c.items || [];
       });
 
       return sections;
     } else if (sortOrder === 'by-state') {
       items.forEach((i) => {
         const title = statusLabels[i.status as ItemStatus];
-        const section = sections[title] ?? [];
-        section.push(i);
-        sections[title] = section;
+        const sectionItems = sections[title] || [];
+        sectionItems.push(i);
+        sections[title] = sectionItems;
       });
 
       // Sort items within section alphabetically
@@ -51,15 +51,15 @@ export function useItemSections(
       });
 
       // Return sections in the order they appear in the statusLabels object
-      return Object.values(statusLabels).reduce<Sections>((acc, key) => {
-        acc[key] = sections[key];
-        return acc;
+      return Object.values(statusLabels).reduce<Sections>((sec, key) => {
+        sec[key] = sections[key] || [];
+        return sec;
       }, {});
     } else if (sortOrder === 'alphabetized') {
       const grouped = groupBy(items, (i) => i.name[0].toUpperCase());
 
       Object.entries(grouped).forEach(([key, items]) => {
-        sections[key] = items;
+        sections[key] = items || [];
       });
     }
 
