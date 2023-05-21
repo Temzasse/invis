@@ -67,6 +67,7 @@ export default function Login() {
             minLength={8}
             value={credentials.password}
             onChange={handleChange}
+            autoComplete="current-password"
           />
 
           <Button type="submit" fullWidth icon="arrowRight">
