@@ -1,6 +1,7 @@
 import '../client/styles/globals.css';
 import { type ReactNode } from 'react';
 import { type AppProps } from 'next/app';
+import { Toaster } from 'react-hot-toast';
 
 import TabsLayout from '~components/navigation/TabsLayout';
 import { styled } from '~styles/styled';
@@ -15,6 +16,7 @@ function App({ Component, pageProps, router }: AppProps) {
       <Layout>
         <Component {...pageProps} />
       </Layout>
+      <Toaster />
     </AppWrapper>
   );
 }
