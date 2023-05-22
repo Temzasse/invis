@@ -64,7 +64,12 @@ export const Touchable = forwardRef<any, TouchableProps>(
           {...(buttonProps as any)}
           {...rest}
           animate={controls}
-          style={{ touchAction: 'none', userSelect: 'none', outline: 'none' }}
+          style={{
+            touchAction: 'none',
+            userSelect: 'none',
+            outline: 'none',
+            ...rest.style,
+          }}
         >
           {children}
         </Element>
