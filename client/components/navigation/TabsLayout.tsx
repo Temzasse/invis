@@ -65,7 +65,7 @@ export default function TabsNavigator({ children }: Props) {
 
             return (
               <TabLink href={href} passHref key={tab.to}>
-                <Stack spacing="xxsmall" align="center">
+                <Stack spacing="xsmall" align="center">
                   <TabIcon
                     name={isActive ? tab.iconActive : tab.iconInactive}
                     color={isActive ? 'primary' : 'text'}

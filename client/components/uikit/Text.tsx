@@ -50,8 +50,13 @@ const Root = styled('span', {
       center: { textAlign: 'center' },
       right: { textAlign: 'right' },
     },
+    withLineHeight: {
+      true: {},
+      false: { lineHeight: '1 !important' },
+    },
   },
   defaultVariants: {
     variant: 'body',
+    withLineHeight: false,
   },
 });
