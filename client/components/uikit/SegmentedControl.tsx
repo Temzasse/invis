@@ -93,8 +93,7 @@ const SegmentButton = styled(Touchable, {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  paddingVertical: '$xsmall',
-  paddingHorizontal: '$small',
+  padding: '$small',
   '& > span': {
     zIndex: 1,
   },

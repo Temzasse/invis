@@ -1,17 +1,19 @@
-import { type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useTransform, useScroll, motion } from 'framer-motion';
 import useMeasure from 'react-use-measure';
 
-import { Stack, Text } from '~components/uikit';
+import { Icon, IconButton, Stack, Text, Touchable } from '~components/uikit';
 import { styled } from '~styles/styled';
 
 type Props = {
   title: string;
   leftSlot?: ReactNode;
   rightSlot?: ReactNode;
+  search?: { value: string; onChange: (value: string) => void };
 };
 
-export default function Navbar({ title, leftSlot, rightSlot }: Props) {
+export default function Navbar({ title, search, leftSlot, rightSlot }: Props) {
+  const [searchVisible, setSearchVisible] = useState(false);
   const [leftSlotRef, leftSlotBounds] = useMeasure();
   const [rightSlotRef, rightSlotBounds] = useMeasure();
   const { scrollY } = useScroll();
@@ -39,7 +41,11 @@ export default function Navbar({ title, leftSlot, rightSlot }: Props) {
             <div ref={leftSlotRef} style={{ minWidth: maxSlotWidth }}>
               {leftSlot}
             </div>
-            <Text variant="bodyBold">{title}</Text>
+
+            <StickyNavTitle variant="bodyBold" align="center">
+              {title}
+            </StickyNavTitle>
+
             <div ref={rightSlotRef} style={{ minWidth: maxSlotWidth }}>
               {rightSlot}
             </div>
@@ -47,11 +53,78 @@ export default function Navbar({ title, leftSlot, rightSlot }: Props) {
         </StickyNavWrapper>
       </StickyNav>
 
-      <StaticNav direction="x" spacing="large" align="end" justify="between">
-        <Text variant="title1">{title}</Text>
-        <div>{rightSlot}</div>
+      <StaticNav direction="x" spacing="small" align="end">
+        {searchVisible && search ? (
+          <SearchBar
+            value={search.value}
+            onChange={search.onChange}
+            onClear={() => search.onChange('')}
+            onClose={() => setSearchVisible(false)}
+          />
+        ) : (
+          <>
+            <StaticNavTitle variant="title1">{title}</StaticNavTitle>
+
+            <div>{rightSlot}</div>
+
+            {!!search && (
+              <IconButton
+                icon="search"
+                onPress={() => setSearchVisible(true)}
+              />
+            )}
+          </>
+        )}
       </StaticNav>
     </>
+  );
+}
+
+function SearchBar({
+  value,
+  onChange,
+  onClear,
+  onClose,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  onClear: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <SearchBarWrapper
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <Stack direction="x" spacing="small" align="center">
+        <SearchInputWrapper>
+          <SearchInputIcon name="search" size={20} color="textMuted" />
+          <SearchInput
+            type="text"
+            placeholder="Etsi"
+            autoFocus
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+          />
+          {!!value && (
+            <SearchInputClearButton
+              icon="close"
+              size={16}
+              color="textMuted"
+              onPress={onClear}
+            />
+          )}
+        </SearchInputWrapper>
+        <motion.div
+          initial={{ x: 20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ ease: 'easeIn' }}
+        >
+          <SearchCloseButton onPress={onClose}>Sulje</SearchCloseButton>
+        </motion.div>
+      </Stack>
+    </SearchBarWrapper>
   );
 }
 
@@ -60,6 +133,10 @@ export const NAVBAR_HEIGHT = 'calc(50px + env(safe-area-inset-top))';
 const StaticNav = styled(Stack, {
   paddingHorizontal: '$regular',
   paddingBottom: '$regular',
+});
+
+const StaticNavTitle = styled(Text, {
+  flex: 1,
 });
 
 const StickyNav = styled('nav', {
@@ -80,6 +157,10 @@ const StickyNavWrapper = styled(motion.div, {
   paddingTop: 'env(safe-area-inset-top)',
 });
 
+const StickyNavTitle = styled(Text, {
+  flex: 1,
+});
+
 const StickyNavContent = styled(motion.div, {
   height: '100%',
   width: '100%',
@@ -87,4 +168,48 @@ const StickyNavContent = styled(motion.div, {
   alignItems: 'center',
   justifyContent: 'space-between',
   paddingHorizontal: '$regular',
+});
+
+const SearchBarWrapper = styled(motion.div, {
+  width: '100%',
+});
+
+const SearchInputWrapper = styled('div', {
+  position: 'relative',
+  flex: 1,
+});
+
+const SearchInput = styled('input', {
+  border: 'none',
+  borderRadius: '$regular',
+  paddingLeft: '$xlarge',
+  paddingRight: '$small',
+  paddingVertical: '$xsmall',
+  flex: 1,
+  backgroundColor: '$surface2',
+  outline: 'none',
+  typography: '$body',
+  color: '$text',
+  minHeight: 40,
+  width: '100%',
+});
+
+const SearchCloseButton = styled(Touchable, {
+  typography: '$bodySmallBold',
+  color: '$textMuted',
+});
+
+const SearchInputIcon = styled(Icon, {
+  position: 'absolute',
+  left: '$small',
+  top: '50%',
+  transform: 'translateY(-50%)',
+  pointerEvents: 'none',
+});
+
+const SearchInputClearButton = styled(IconButton, {
+  position: 'absolute',
+  right: '$xsmall',
+  top: '50%',
+  transform: 'translateY(-50%)',
 });

@@ -13,36 +13,41 @@ const statusLabels: Record<ItemStatus, string> = {
   full: 'Kunnossa',
 };
 
-type Sections = Record<string, Item[]>;
+type SectionMap = Record<string, Item[]>;
+type Sections = Array<{ title: string; items: Item[] }>;
 
-export function useItemSections(
-  sortOrder: HomeSortOrder,
-  categories: RouterOutputs['category']['getCategoriesWithItems']
-) {
-  return useMemo(() => {
+export function useItemSections({
+  categories,
+  sortOrder,
+  searchTerm,
+}: {
+  searchTerm: string;
+  sortOrder: HomeSortOrder;
+  categories: RouterOutputs['category']['getCategoriesWithItems'];
+}): Sections {
+  const sections = useMemo(() => {
     const items = categories.flatMap((c) => c.items);
-    const sections: Sections = {};
 
-    if (items.length === 0) {
-      return sections;
-    }
+    if (items.length === 0) return [];
+
+    let sectionMap: SectionMap = {};
 
     if (sortOrder === 'by-category') {
-      orderBy(categories, 'name').forEach((c) => {
-        sections[c.name] = c.items || [];
+      orderBy(categories, 'name').forEach((category) => {
+        if (category.items?.length) {
+          sectionMap[category.name] = category.items;
+        }
       });
-
-      return sections;
     } else if (sortOrder === 'by-state') {
-      items.forEach((i) => {
-        const title = statusLabels[i.status as ItemStatus];
-        const sectionItems = sections[title] || [];
-        sectionItems.push(i);
-        sections[title] = sectionItems;
+      items.forEach((item) => {
+        const title = statusLabels[item.status as ItemStatus];
+        const sectionItems = sectionMap[title] || [];
+        sectionItems.push(item);
+        sectionMap[title] = sectionItems;
       });
 
       // Sort items within section alphabetically
-      Object.values(sections).forEach((section) => {
+      Object.values(sectionMap).forEach((section) => {
         section.sort((a, b) => {
           if (a.name < b.name) return -1;
           if (a.name > b.name) return 1;
@@ -51,18 +56,49 @@ export function useItemSections(
       });
 
       // Return sections in the order they appear in the statusLabels object
-      return Object.values(statusLabels).reduce<Sections>((sec, key) => {
-        sec[key] = sections[key] || [];
-        return sec;
-      }, {});
+      sectionMap = Object.values(statusLabels).reduce<SectionMap>(
+        (sec, key) => {
+          sec[key] = sectionMap[key] || [];
+          return sec;
+        },
+        {}
+      );
     } else if (sortOrder === 'alphabetized') {
       const grouped = groupBy(items, (i) => i.name[0].toUpperCase());
 
-      Object.entries(grouped).forEach(([key, items]) => {
-        sections[key] = items || [];
+      Object.entries(grouped).forEach((entry) => {
+        if (entry[1]?.length) {
+          sectionMap[entry[0]] = entry[1];
+        }
       });
     }
 
+    const sections: Sections = Object.entries(sectionMap).map((entry) => ({
+      title: entry[0],
+      items: entry[1],
+    }));
+
     return sections;
   }, [sortOrder, categories]);
+
+  return useMemo(() => {
+    if (!searchTerm) sections;
+
+    const filteredSections: Sections = [];
+
+    sections.forEach((section) => {
+      const filteredItems = section.items.filter((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase().trim())
+      );
+
+      if (filteredItems.length) {
+        filteredSections.push({
+          title: section.title,
+          items: filteredItems,
+        });
+      }
+    });
+
+    return filteredSections;
+  }, [searchTerm, sections]);
 }

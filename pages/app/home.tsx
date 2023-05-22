@@ -1,5 +1,5 @@
 import { type InferGetServerSidePropsType } from 'next';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import Head from 'next/head';
 
 import {
@@ -34,11 +34,17 @@ export const getServerSideProps = withApiSession(async ({ req }, api) => {
 export default function Home({
   initialViewSettings,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const [searchTerm, setSearchTerm] = useState('');
   const { data: categories = [] } = api.category.getCategoriesWithItems.useQuery(); // prettier-ignore
   const viewSettings = useViewSettings(initialViewSettings);
-  const sections = useItemSections(viewSettings.homeSortOrder, categories);
   const editing = useItemStatusEditing();
   const mutations = useItemStatusMutations(categories);
+
+  const sections = useItemSections({
+    sortOrder: viewSettings.homeSortOrder,
+    searchTerm,
+    categories,
+  });
 
   function handleEditChange(id: string, newStatus: ItemStatus) {
     if (editing.isMulti) {
@@ -62,6 +68,7 @@ export default function Home({
 
       <Navbar
         title="Invis"
+        search={{ value: searchTerm, onChange: setSearchTerm }}
         rightSlot={
           editing.isMulti ? (
             mutations.isLoading ? (
@@ -88,26 +95,28 @@ export default function Home({
 
       <Spacer direction="y" amount="small" />
 
-      <Stack direction="y" spacing="none">
-        {Object.entries(sections).map(([title, items]) => (
-          <Fragment key={title}>
-            <SectionTitle variant="overline" color="textMuted">
-              {title}
-            </SectionTitle>
+      <Sections>
+        <Stack direction="y" spacing="none">
+          {sections.map(({ title, items }) => (
+            <Fragment key={title}>
+              <SectionTitle variant="overline" color="textMuted">
+                {title}
+              </SectionTitle>
 
-            {items.map(({ id, name, status }) => (
-              <ItemRow
-                key={id}
-                status={mutations.editedStatuses[id] || status}
-                name={name}
-                isEditable={editing.isMulti || editing.editable.has(id)}
-                onEditStart={() => editing.toggleItemEditable(id)}
-                onEditChange={(newStatus) => handleEditChange(id, newStatus)}
-              />
-            ))}
-          </Fragment>
-        ))}
-      </Stack>
+              {items.map(({ id, name, status }) => (
+                <ItemRow
+                  key={id}
+                  status={mutations.editedStatuses[id] || status}
+                  name={name}
+                  isEditable={editing.isMulti || editing.editable.has(id)}
+                  onEditStart={() => editing.toggleItemEditable(id)}
+                  onEditChange={(newStatus) => handleEditChange(id, newStatus)}
+                />
+              ))}
+            </Fragment>
+          ))}
+        </Stack>
+      </Sections>
     </>
   );
 }
@@ -125,4 +134,8 @@ const SectionTitle = styled(Text, {
   backdropFilter: 'blur(10px)',
   paddingVertical: '$xsmall',
   paddingHorizontal: '$regular',
+});
+
+const Sections = styled('div', {
+  minHeight: '100vh',
 });

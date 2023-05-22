@@ -10,16 +10,24 @@ type Props = VariantProps<typeof Root> &
     ComponentProps<typeof Root> & {
       children: ReactNode;
       icon: IconName;
+      size?: number;
       onPress?: () => void;
     },
     'children'
   >;
 
+const ratio = 5 / 3;
+
 export const IconButton = memo(
-  forwardRef<HTMLButtonElement, Props>(({ icon, ...rest }, ref) => {
+  forwardRef<HTMLButtonElement, Props>(({ icon, size = 24, ...rest }, ref) => {
     return (
-      <Root ref={ref} {...rest} interaction="highlight">
-        <Icon name={icon} size={24} color="text" />
+      <Root
+        ref={ref}
+        {...rest}
+        style={{ width: ratio * size, height: ratio * size }}
+        interaction="highlight"
+      >
+        <Icon name={icon} size={size} color="text" />
       </Root>
     );
   })
@@ -29,7 +37,5 @@ IconButton.displayName = 'IconButton';
 
 const Root = styled(Touchable, {
   flexCenter: 'row',
-  width: 40,
-  height: 40,
   borderRadius: '$full',
 });
