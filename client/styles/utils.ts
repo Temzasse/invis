@@ -81,10 +81,16 @@ export const gradientText = () => ({
 
 export const viewportHeight = (value: number) => ({
   height: `calc(${value} * var(--vh))`,
+  '@supports (height: 100dvh)': {
+    height: '100dvh',
+  },
 });
 
 export const viewportMinHeight = (value: number) => ({
-  minHeight: `calc(${value} * var(--vh))`,
+  minHeight: `100dvh; min-height: calc(${value} * var(--vh))`,
+  '@supports (height: 100dvh)': {
+    minHeight: '100dvh',
+  },
 });
 
 const fadeInAnimation = keyframes({

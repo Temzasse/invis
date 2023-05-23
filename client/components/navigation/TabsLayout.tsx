@@ -87,8 +87,8 @@ export default function TabsNavigator({ children }: Props) {
   );
 }
 
-const Wrapper = styled('div', {
-  minViewportHeight: 100,
+const Wrapper = styled('main', {
+  viewportMinHeight: 100,
   display: 'flex',
   flexDirection: 'column',
   paddingBottom: 'calc(60px + env(safe-area-inset-bottom))',
