@@ -92,11 +92,7 @@ function SearchBar({
   onClose: () => void;
 }) {
   return (
-    <SearchBarWrapper
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
+    <SearchBarWrapper>
       <Stack direction="x" spacing="small" align="center">
         <SearchInputWrapper>
           <SearchInputIcon name="search" size={20} color="textMuted" />
@@ -116,13 +112,8 @@ function SearchBar({
             />
           )}
         </SearchInputWrapper>
-        <motion.div
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ ease: 'easeIn' }}
-        >
-          <SearchCloseButton onPress={onClose}>Sulje</SearchCloseButton>
-        </motion.div>
+
+        <SearchCloseButton onPress={onClose}>Sulje</SearchCloseButton>
       </Stack>
     </SearchBarWrapper>
   );
@@ -170,8 +161,9 @@ const StickyNavContent = styled(motion.div, {
   paddingHorizontal: '$regular',
 });
 
-const SearchBarWrapper = styled(motion.div, {
+const SearchBarWrapper = styled('div', {
   width: '100%',
+  fadeIn: '300ms',
 });
 
 const SearchInputWrapper = styled('div', {
@@ -197,6 +189,8 @@ const SearchInput = styled('input', {
 const SearchCloseButton = styled(Touchable, {
   typography: '$bodySmallBold',
   color: '$textMuted',
+  fadeSlideIn: 'right',
+  animationDelay: '200ms',
 });
 
 const SearchInputIcon = styled(Icon, {

@@ -1,4 +1,5 @@
 import type * as Stitches from '@stitches/react';
+import { keyframes } from '@stitches/react';
 import { Typography } from './styled';
 
 export function typography(variant: `$${Typography}`) {
@@ -84,4 +85,33 @@ export const viewportHeight = (value: number) => ({
 
 export const viewportMinHeight = (value: number) => ({
   minHeight: `calc(${value} * var(--vh))`,
+});
+
+const fadeInAnimation = keyframes({
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+});
+
+type Ms = `${number}ms`;
+
+export const fadeIn = (ms: Ms) => ({
+  opacity: 0,
+  animation: `${fadeInAnimation} ${ms} ease-in-out forwards`,
+});
+
+const fadeSlideInLeft = keyframes({
+  from: { opacity: 0, transform: 'translateX(-100%)' },
+  to: { opacity: 1, transform: 'translateX(0)' },
+});
+
+const fadeSlideInRight = keyframes({
+  from: { opacity: 0, transform: 'translateX(100%)' },
+  to: { opacity: 1, transform: 'translateX(0)' },
+});
+
+export const fadeSlideIn = (direction: 'left' | 'right') => ({
+  opacity: 0,
+  animation: `${
+    direction === 'left' ? fadeSlideInLeft : fadeSlideInRight
+  } 200ms ease-in-out forwards`,
 });
