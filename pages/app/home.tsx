@@ -115,6 +115,12 @@ export default function Home({
               ))}
             </Fragment>
           ))}
+
+          {searchTerm && sections.length === 0 && (
+            <NoSearchResults>
+              <Text variant="body">Ei tuloksia</Text>
+            </NoSearchResults>
+          )}
         </Stack>
       </Sections>
     </>
@@ -138,4 +144,9 @@ const SectionTitle = styled(Text, {
 
 const Sections = styled('div', {
   minHeight: '100vh',
+});
+
+const NoSearchResults = styled('div', {
+  padding: '$large',
+  flexCenter: true,
 });
