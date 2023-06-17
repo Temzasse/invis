@@ -7,3 +7,4 @@ export { IconButton } from './IconButton';
 export { Stack } from './Stack';
 export { Spacer } from './Spacer';
 export { SegmentedControl } from './SegmentedControl';
+export { Spinner } from './Spinner';
