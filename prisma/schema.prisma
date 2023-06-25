@@ -25,6 +25,8 @@ model Item {
   categoryId String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@unique([name, categoryId])
 }
 
 model Category {
@@ -36,4 +38,6 @@ model Category {
   projectId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([name, projectId])
 }
