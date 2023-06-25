@@ -1,9 +1,9 @@
 import { FormEvent, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import Sheet from 'react-modal-sheet';
 
 import {
   Button,
+  BottomSheet,
   TextInput,
   Select,
   Stack,
@@ -13,7 +13,7 @@ import {
 
 import { api } from '~utils/api';
 import { styled } from '~styles/styled';
-import { highlightItemRow } from './utils';
+import { highlightElement } from './utils';
 import { ItemStatus } from './ItemStatus';
 import ItemStatusButton from './ItemStatusButton';
 
@@ -30,20 +30,9 @@ export default function CreateItemSheet({ isOpen, onClose }: Props) {
   }));
 
   return (
-    <SheetWrapper isOpen={isOpen} onClose={onClose}>
-      <Sheet.Backdrop onTap={onClose} />
-      <Sheet.Container>
-        <Sheet.Header />
-        <Sheet.Content>
-          <Sheet.Scroller>
-            <CreateItemForm
-              categoryOptions={categoryOptions}
-              onCreated={onClose}
-            />
-          </Sheet.Scroller>
-        </Sheet.Content>
-      </Sheet.Container>
-    </SheetWrapper>
+    <BottomSheet isOpen={isOpen} onClose={onClose}>
+      <CreateItemForm categoryOptions={categoryOptions} onCreated={onClose} />
+    </BottomSheet>
   );
 }
 
@@ -72,7 +61,7 @@ function CreateItemForm({
         onSuccess: async ({ id }) => {
           onCreated();
           await apiUtils.category.getCategoriesWithItems.invalidate();
-          highlightItemRow(id);
+          highlightElement(id);
           toast.success(`${name} lisätty!`, { position: 'bottom-center' });
         },
       }
@@ -143,16 +132,6 @@ function CreateItemForm({
     </Form>
   );
 }
-
-const SheetWrapper = styled(Sheet, {
-  '.react-modal-sheet-container': {
-    backgroundColor: '$elevated !important',
-  },
-  '.react-modal-sheet-scroller': {
-    padding: '$regular',
-    paddingBottom: 'max(env(safe-area-inset-bottom), $regular)',
-  },
-});
 
 const Form = styled('form', {
   height: '100%',

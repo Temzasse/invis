@@ -9,7 +9,7 @@ export type ViewSettingsState = {
 
 const { getServerState, useStore } = createPersistedStore<ViewSettingsState>(
   (set) => ({
-    homeSortOrder: 'by-state',
+    homeSortOrder: 'alphabetized',
     setHomeSortOrder: (order: HomeSortOrder) => set({ homeSortOrder: order }),
   }),
   {
@@ -22,7 +22,7 @@ export const useViewSettings = useStore;
 export const getServerViewSettings = getServerState;
 export const HOME_SORT_OPTIONS: Array<{ value: HomeSortOrder; label: string }> =
   [
-    { label: 'Määrä', value: 'by-state' },
-    { label: 'Kategoria', value: 'by-category' },
     { label: 'Aakkos', value: 'alphabetized' },
+    { label: 'Kategoria', value: 'by-category' },
+    { label: 'Määrä', value: 'by-state' },
   ];

@@ -30,6 +30,19 @@ export const categoryRouter = createTRPCRouter({
     return project?.categories ?? [];
   }),
 
+  createCategory: protectedProcedure
+    .input(z.object({ name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const category = await ctx.prisma.category.create({
+        data: {
+          name: input.name,
+          project: { connect: { id: ctx.project.id } },
+        },
+      });
+
+      return category;
+    }),
+
   addItemToCategory: protectedProcedure
     .input(
       z.object({

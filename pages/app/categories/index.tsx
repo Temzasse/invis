@@ -1,17 +1,21 @@
+import { useState } from 'react';
+import orderBy from 'lodash/orderBy';
 import Head from 'next/head';
-import Link from 'next/link';
 
 import { api } from '~utils/api';
 import { withApiSession } from '~server/api/root';
 import { styled } from '~styles/styled';
-import { Text } from '~components/uikit';
+import { IconButton } from '~components/uikit';
 import Navbar from '~components/navigation/Navbar';
+import LinkList from '~components/navigation/LinkList';
+import CreateCategorySheet from '~components/project/CreateCategorySheet';
 
 export const getServerSideProps = withApiSession(async (_, api) => {
   await api.category.getCategories.prefetch();
 });
 
 export default function Categories() {
+  const [isCreating, setIsCreating] = useState(false);
   const { data: categories = [] } = api.category.getCategories.useQuery();
 
   return (
@@ -20,52 +24,31 @@ export default function Categories() {
         <title>Kategoriat</title>
       </Head>
 
-      <Navbar title="Kategoriat" />
+      <Navbar
+        title="Kategoriat"
+        rightSlot={
+          <IconButton icon="plus" onPress={() => setIsCreating(true)} />
+        }
+      />
 
       <Content>
-        <CategoriesGrid>
-          {categories.map(({ id, name, imageUrl }) => (
-            <CategoryLink
-              key={id}
-              href={`categories/${id}`}
-              passHref
-              style={{
-                backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1)), url(${imageUrl})`,
-              }}
-            >
-              <CategoryName variant="title2" align="center">
-                {name}
-              </CategoryName>
-            </CategoryLink>
-          ))}
-        </CategoriesGrid>
+        <LinkList
+          items={orderBy(categories, 'name').map((c) => ({
+            id: c.id,
+            href: `categories/${c.id}`,
+            label: c.name,
+          }))}
+        />
       </Content>
+
+      <CreateCategorySheet
+        isOpen={isCreating}
+        onClose={() => setIsCreating(false)}
+      />
     </>
   );
 }
 
 const Content = styled('div', {
-  paddingHorizontal: '$regular',
   paddingBottom: '$large',
-});
-
-const CategoriesGrid = styled('div', {
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr',
-  gridGap: '$regular',
-});
-
-const CategoryLink = styled(Link, {
-  aspectRatio: '16 / 9',
-  backgroundColor: '$surface2',
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  borderRadius: '$regular',
-  flexCenter: 'row',
-  padding: '$small',
-  textDecoration: 'none',
-});
-
-const CategoryName = styled(Text, {
-  textShadow: '0 0 8px rgba(0, 0, 0, 0.6)',
 });
