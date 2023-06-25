@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { createTRPCRouter, protectedProcedure } from '~server/api/trpc';
@@ -28,4 +29,32 @@ export const categoryRouter = createTRPCRouter({
 
     return project?.categories ?? [];
   }),
+
+  addItemToCategory: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        status: z.string().optional(),
+        categoryId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const category = await ctx.prisma.category.findUnique({
+        where: { id: input.categoryId },
+      });
+
+      if (!category) {
+        throw new TRPCError({ code: 'NOT_FOUND' });
+      }
+
+      const item = await ctx.prisma.item.create({
+        data: {
+          name: input.name,
+          status: input.status,
+          category: { connect: { id: input.categoryId } },
+        },
+      });
+
+      return item;
+    }),
 });

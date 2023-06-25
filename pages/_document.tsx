@@ -10,7 +10,7 @@ export default class Document extends NextDocument {
           <AppIcon />
           <SplashScreen />
           <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;900&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&display=swap"
             rel="stylesheet"
           />
           <link

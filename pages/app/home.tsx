@@ -14,6 +14,7 @@ import {
   Spacer,
   Text,
   IconButton,
+  Spinner,
 } from '~components/uikit';
 
 import { type ItemStatus } from '~components/project/ItemStatus';
@@ -25,6 +26,7 @@ import { useItemStatusEditing } from '~stores/item-status-editing';
 import { useItemStatusMutations } from '~client/hooks/item-status-mutations';
 import Navbar, { NAVBAR_HEIGHT } from '~components/navigation/Navbar';
 import ItemRow from '~components/project/ItemRow';
+import CreateItemSheet from '~components/project/CreateItemSheet';
 
 export const getServerSideProps = withApiSession(async ({ req }, api) => {
   await api.category.getCategoriesWithItems.prefetch();
@@ -34,6 +36,7 @@ export const getServerSideProps = withApiSession(async ({ req }, api) => {
 export default function Home({
   initialViewSettings,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const [isCreating, setIsCreating] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const { data: categories = [] } = api.category.getCategoriesWithItems.useQuery(); // prettier-ignore
   const viewSettings = useViewSettings(initialViewSettings);
@@ -69,10 +72,13 @@ export default function Home({
       <Navbar
         title="Invis"
         search={{ value: searchTerm, onChange: setSearchTerm }}
+        leftSlot={
+          <IconButton icon="plus" onPress={() => setIsCreating(true)} />
+        }
         rightSlot={
           editing.isMulti ? (
             mutations.isLoading ? (
-              <span>...</span>
+              <Spinner />
             ) : (
               <IconButton icon="check" onPress={handleMultiEditEnd} />
             )
@@ -106,6 +112,7 @@ export default function Home({
               {items.map(({ id, name, status }) => (
                 <ItemRow
                   key={id}
+                  id={id}
                   status={mutations.editedStatuses[id] || status}
                   name={name}
                   isEditable={editing.isMulti || editing.editable.has(id)}
@@ -123,6 +130,11 @@ export default function Home({
           )}
         </Stack>
       </Sections>
+
+      <CreateItemSheet
+        isOpen={isCreating}
+        onClose={() => setIsCreating(false)}
+      />
     </>
   );
 }

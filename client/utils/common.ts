@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export function isBrowser() {
   return typeof window !== 'undefined';
 }

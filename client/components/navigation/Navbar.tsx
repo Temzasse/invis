@@ -53,7 +53,7 @@ export default function Navbar({ title, search, leftSlot, rightSlot }: Props) {
         </StickyNavWrapper>
       </StickyNav>
 
-      <StaticNav direction="x" spacing="small" align="end">
+      <StaticNav direction="x" spacing="small" align="center">
         {searchVisible && search ? (
           <SearchBar
             value={search.value}
@@ -65,6 +65,7 @@ export default function Navbar({ title, search, leftSlot, rightSlot }: Props) {
           <>
             <StaticNavTitle variant="title1">{title}</StaticNavTitle>
 
+            <div>{leftSlot}</div>
             <div>{rightSlot}</div>
 
             {!!search && (

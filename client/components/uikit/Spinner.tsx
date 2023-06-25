@@ -21,9 +21,9 @@ const BORDER_SIZE = 2;
 
 const sizes = {
   small: 12 + BORDER_SIZE,
-  regular: 20 + BORDER_SIZE,
-  medium: 32 + BORDER_SIZE,
-  large: 40 + BORDER_SIZE,
+  regular: 18 + BORDER_SIZE,
+  medium: 26 + BORDER_SIZE,
+  large: 38 + BORDER_SIZE,
 };
 
 export const Spinner = styled('div', {

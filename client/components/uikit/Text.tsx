@@ -32,6 +32,9 @@ const variantToTag: { [key in Typography]: Partial<Tags> } = {
 
 const Root = styled('span', {
   color: '$text',
+  '& > b': {
+    fontWeight: 600,
+  },
   variants: {
     variant: {
       title1: { typography: '$title1' },
