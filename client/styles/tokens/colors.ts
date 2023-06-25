@@ -1,6 +1,7 @@
 /* eslint-disable */
 export const backdrop = "rgba(0, 0, 0, 0.5)";
 export const background = "#000000";
+export const elevated = "#111111";
 export const border = "rgba(150, 150, 150, 0.3)";
 export const primary = "#f4f82b";
 export const primaryContrast = "#616303";
