@@ -19,11 +19,20 @@ import ItemStatusButton from './ItemStatusButton';
 
 type Props = {
   isOpen: boolean;
+  categoryId?: string;
   onClose: () => void;
 };
 
-export default function CreateItemSheet({ isOpen, onClose }: Props) {
-  const { data: categories = [] } = api.category.getCategories.useQuery();
+export default function CreateItemSheet({
+  isOpen,
+  categoryId,
+  onClose,
+}: Props) {
+  const { data: categories = [] } = api.category.getCategories.useQuery(
+    undefined,
+    { enabled: !categoryId }
+  );
+
   const categoryOptions = categories.map((category) => ({
     id: category.id,
     name: category.name,
@@ -31,19 +40,25 @@ export default function CreateItemSheet({ isOpen, onClose }: Props) {
 
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose}>
-      <CreateItemForm categoryOptions={categoryOptions} onCreated={onClose} />
+      <CreateItemForm
+        categoryId={categoryId}
+        categoryOptions={categoryOptions}
+        onCreated={onClose}
+      />
     </BottomSheet>
   );
 }
 
 function CreateItemForm({
+  categoryId,
   categoryOptions,
   onCreated,
 }: {
+  categoryId?: string;
   categoryOptions: { id: string; name: string }[];
   onCreated: () => void;
 }) {
-  const [category, setCategory] = useState(categoryOptions[0].id);
+  const [category, setCategory] = useState(categoryId || categoryOptions[0].id);
   const [name, setName] = useState('');
   const [status, setStatus] = useState<ItemStatus>('missing');
   const apiUtils = api.useContext();
@@ -61,6 +76,7 @@ function CreateItemForm({
         onSuccess: async ({ id }) => {
           onCreated();
           await apiUtils.category.getCategoriesWithItems.invalidate();
+          await apiUtils.category.getCategory.invalidate();
           highlightElement(id);
           toast.success(`${name} lisätty!`, { position: 'bottom-center' });
         },
@@ -71,24 +87,27 @@ function CreateItemForm({
   return (
     <Form onSubmit={handleSubmit}>
       <Content direction="y" spacing="medium">
-        <Select
-          label="Valitse kategoria"
-          name="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        >
-          {categoryOptions.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </Select>
+        {!categoryId && (
+          <Select
+            label="Valitse kategoria"
+            name="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            {categoryOptions.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </Select>
+        )}
 
         <TextInput
           label="Anna nimi"
           name="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          autoFocus={Boolean(categoryId)}
         />
 
         <Stack direction="y" spacing="small">

@@ -38,6 +38,7 @@ export function useItemStatusMutations(categories: Categories) {
         {
           onSuccess: async () => {
             await apiUtils.category.getCategoriesWithItems.invalidate();
+            await apiUtils.category.getCategory.invalidate();
             resetEditedStatuses();
           },
           onError: () => {
@@ -59,6 +60,7 @@ export function useItemStatusMutations(categories: Categories) {
         {
           onSuccess: async () => {
             await apiUtils.category.getCategoriesWithItems.invalidate();
+            await apiUtils.category.getCategory.invalidate();
             resetEditedStatuses();
           },
           onError: () => {
