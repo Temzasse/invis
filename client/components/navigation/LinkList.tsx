@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { styled } from '~styles/styled';
 import { Icon, Stack, Text, Touchable } from '~components/uikit';
 
-export default function LinkList({
+export function LinkList({
   items,
 }: {
   items: { id: string; href: string; label: string }[];

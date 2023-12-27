@@ -12,7 +12,7 @@ type Props = {
   search?: { value: string; onChange: (value: string) => void };
 };
 
-export default function Navbar({ title, search, leftSlot, rightSlot }: Props) {
+export function Navbar({ title, search, leftSlot, rightSlot }: Props) {
   const [searchVisible, setSearchVisible] = useState(false);
   const [leftSlotRef, leftSlotBounds] = useMeasure();
   const [rightSlotRef, rightSlotBounds] = useMeasure();

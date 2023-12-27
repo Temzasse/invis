@@ -3,7 +3,7 @@ import Head from 'next/head';
 
 import { Text } from '~components/uikit';
 
-const NotFound: NextPage = () => {
+export default function NotFound() {
   return (
     <>
       <Head>
@@ -15,6 +15,4 @@ const NotFound: NextPage = () => {
       </div>
     </>
   );
-};
-
-export default NotFound;
+}

@@ -13,7 +13,7 @@ type Props = {
   onEditChange: (status: ItemStatus) => void;
 };
 
-export default function ItemRow({
+export function ItemRow({
   id,
   status,
   name,

@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { Text } from '~components/uikit';
 
 // https://github.com/shadowwalker/next-pwa#offline-fallbacks
-const Offline: NextPage = () => {
+export default function Offline() {
   return (
     <>
       <Head>
@@ -16,6 +16,4 @@ const Offline: NextPage = () => {
       </div>
     </>
   );
-};
-
-export default Offline;
+}

@@ -48,7 +48,7 @@ type Props = {
   children: ReactNode;
 };
 
-export default function TabsNavigator({ children }: Props) {
+export function TabsLayout({ children }: Props) {
   const activeTab = useActiveTab();
   const stacks = useTabStacks();
 

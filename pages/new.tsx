@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { api } from '~utils/api';
 import { styled } from '~styles/styled';
 import { Button, Icon, Stack, Text, TextInput } from '~components/uikit';
-import Navbar from '~components/navigation/Navbar';
+import { Navbar } from '~components/navigation/Navbar';
 
 export default function NewProject() {
   const [state, setState] = useState({

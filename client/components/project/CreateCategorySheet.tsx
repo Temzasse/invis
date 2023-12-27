@@ -19,7 +19,7 @@ type Props = {
   onClose: () => void;
 };
 
-export default function CreateCategorySheet({ isOpen, onClose }: Props) {
+export function CreateCategorySheet({ isOpen, onClose }: Props) {
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose}>
       <CreateCategoryForm onCreated={onClose} />

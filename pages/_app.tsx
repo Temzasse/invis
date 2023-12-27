@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { type AppProps } from 'next/app';
 import { Toaster } from 'react-hot-toast';
 
-import TabsLayout from '~components/navigation/TabsLayout';
+import { TabsLayout } from '~components/navigation/TabsLayout';
 import { styled } from '~styles/styled';
 import { api } from '~utils/api';
 

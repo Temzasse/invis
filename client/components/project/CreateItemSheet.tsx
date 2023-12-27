@@ -23,11 +23,7 @@ type Props = {
   onClose: () => void;
 };
 
-export default function CreateItemSheet({
-  isOpen,
-  categoryId,
-  onClose,
-}: Props) {
+export function CreateItemSheet({ isOpen, categoryId, onClose }: Props) {
   const { data: categories = [] } = api.category.getCategories.useQuery(
     undefined,
     { enabled: !categoryId }

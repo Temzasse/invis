@@ -6,9 +6,9 @@ import { api } from '~utils/api';
 import { withApiSession } from '~server/api/root';
 import { styled } from '~styles/styled';
 import { IconButton } from '~components/uikit';
-import Navbar from '~components/navigation/Navbar';
-import LinkList from '~components/navigation/LinkList';
-import CreateCategorySheet from '~components/project/CreateCategorySheet';
+import { Navbar } from '~components/navigation/Navbar';
+import { LinkList } from '~components/navigation/LinkList';
+import { CreateCategorySheet } from '~components/project/CreateCategorySheet';
 
 export const getServerSideProps = withApiSession(async (_, api) => {
   await api.category.getCategories.prefetch();
