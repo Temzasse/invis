@@ -50,7 +50,7 @@ WORKDIR /app
 COPY --from=production-deps /app/node_modules /app/node_modules
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
-COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/next.config.cjs ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/start.sh ./start.sh
