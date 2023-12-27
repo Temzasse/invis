@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import Sheet from 'react-modal-sheet';
 
-import { styled } from '~styles/styled';
+import { styled } from '~/styles/styled';
 
 type Props = {
   children: ReactNode;

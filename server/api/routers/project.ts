@@ -5,9 +5,9 @@ import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-} from '~server/api/trpc';
+} from '~/server/api/trpc';
 
-import { setProjectCookie } from '~server/utils/project';
+import { setProjectCookie } from '~/server/utils/project';
 import { TRPCError } from '@trpc/server';
 
 const joinCreateInput = z.object({

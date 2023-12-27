@@ -1,5 +1,5 @@
-import { Touchable } from '~components/uikit';
-import { styled } from '~styles/styled';
+import { Touchable } from '~/components/uikit';
+import { styled } from '~/styles/styled';
 import { ItemStatusIndicator, ItemStatus } from './ItemStatus';
 
 export default function ItemStatusButton({

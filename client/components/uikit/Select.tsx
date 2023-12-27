@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 
-import { styled } from '~styles/styled';
+import { styled } from '~/styles/styled';
 import { Text } from './Text';
 import { Icon } from './Icon';
 

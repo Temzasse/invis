@@ -1,6 +1,6 @@
 import { motion, LayoutGroup } from 'framer-motion';
 import { Fragment } from 'react';
-import { styled } from '~styles/styled';
+import { styled } from '~/styles/styled';
 import { Text } from './Text';
 import { Touchable } from './Touchable';
 

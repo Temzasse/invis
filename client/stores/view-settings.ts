@@ -1,4 +1,4 @@
-import { createPersistedStore } from '~utils/store';
+import { createPersistedStore } from '~/utils/store';
 
 export type HomeSortOrder = 'by-state' | 'by-category' | 'alphabetized';
 

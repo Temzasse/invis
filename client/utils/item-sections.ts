@@ -3,8 +3,8 @@ import groupBy from 'lodash/groupBy';
 import orderBy from 'lodash/orderBy';
 import { type Item } from '@prisma/client';
 
-import { type HomeSortOrder } from '~stores/view-settings';
-import { type ItemStatus } from '~components/project/ItemStatus';
+import { type HomeSortOrder } from '~/stores/view-settings';
+import { type ItemStatus } from '~/components/project/ItemStatus';
 import { type RouterOutputs } from './api';
 
 const statusLabels: Record<ItemStatus, string> = {

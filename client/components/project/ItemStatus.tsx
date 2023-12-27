@@ -1,4 +1,4 @@
-import { styled } from '~styles/styled';
+import { styled } from '~/styles/styled';
 
 // NOTE: sqlite doesn't support enums so we need cast the string type manually
 export type ItemStatus = 'missing' | 'partial' | 'full';

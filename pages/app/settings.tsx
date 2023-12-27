@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import Link from 'next/link';
 
-import { api } from '~utils/api';
-import { withApiSession } from '~server/api/root';
-import { styled } from '~styles/styled';
-import { Button } from '~components/uikit';
-import { Navbar } from '~components/navigation/Navbar';
+import { api } from '~/utils/api';
+import { withApiSession } from '~/server/api/root';
+import { styled } from '~/styles/styled';
+import { Button } from '~/components/uikit';
+import { Navbar } from '~/components/navigation/Navbar';
 
 export const getServerSideProps = withApiSession(async (_, api) => {
   await api.project.getProject.prefetch();

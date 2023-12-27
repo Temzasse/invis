@@ -1,8 +1,8 @@
 import { type VariantProps } from '@stitches/react';
 import { forwardRef, ComponentProps } from 'react';
 
-import { styled, Typography } from '~styles/styled';
-import { themeProp } from '~styles/helpers';
+import { styled, Typography } from '~/styles/styled';
+import { themeProp } from '~/styles/helpers';
 
 type Tags = keyof JSX.IntrinsicElements;
 type Props = VariantProps<typeof Root> &

@@ -3,9 +3,9 @@ import { type ReactNode } from 'react';
 import { type AppProps } from 'next/app';
 import { Toaster } from 'react-hot-toast';
 
-import { TabsLayout } from '~components/navigation/TabsLayout';
-import { styled } from '~styles/styled';
-import { api } from '~utils/api';
+import { TabsLayout } from '~/components/navigation/TabsLayout';
+import { styled } from '~/styles/styled';
+import { api } from '~/utils/api';
 
 function App({ Component, pageProps, router }: AppProps) {
   const prefix = router.pathname.split('/')[1];

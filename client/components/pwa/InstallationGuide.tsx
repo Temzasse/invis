@@ -1,5 +1,5 @@
-import { styled } from '~styles/styled';
-import { Text } from '~components/uikit';
+import { styled } from '~/styles/styled';
+import { Text } from '~/components/uikit';
 
 export default function InstallationGuide() {
   return (

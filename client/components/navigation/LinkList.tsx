@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-import { styled } from '~styles/styled';
-import { Icon, Stack, Text, Touchable } from '~components/uikit';
+import { styled } from '~/styles/styled';
+import { Icon, Stack, Text, Touchable } from '~/components/uikit';
 
 export function LinkList({
   items,

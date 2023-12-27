@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { type RouterOutputs, api } from '~utils/api';
-import { type ItemStatus } from '~components/project/ItemStatus';
+import { type RouterOutputs, api } from '~/utils/api';
+import { type ItemStatus } from '~/components/project/ItemStatus';
 
 type Categories = RouterOutputs['category']['getCategoriesWithItems'];
 type Statuses = Record<string, ItemStatus>;

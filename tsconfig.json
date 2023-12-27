@@ -18,15 +18,15 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "~components/*": ["client/components/*"],
-      "~uikit": ["client/components/uikit/index.ts"],
-      "~styles/*": ["client/styles/*"],
-      "~stores/*": ["client/stores/*"],
-      "~utils/*": ["client/utils/*"],
-      "~styled": ["client/styles/styled.ts"],
-      "~tokens/*": ["client/styles/tokens/*"],
-      "~client/*": ["client/*"],
-      "~server/*": ["server/*"]
+      "~/components/*": ["client/components/*"],
+      "~/uikit": ["client/components/uikit/index.ts"],
+      "~/styles/*": ["client/styles/*"],
+      "~/stores/*": ["client/stores/*"],
+      "~/utils/*": ["client/utils/*"],
+      "~/styled": ["client/styles/styled.ts"],
+      "~/tokens/*": ["client/styles/tokens/*"],
+      "~/client/*": ["client/*"],
+      "~/server/*": ["server/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -1,7 +1,7 @@
 import { type NextApiResponse, type NextApiRequest } from 'next';
 import { type Project } from '@prisma/client';
 
-import { prisma } from '~server/db';
+import { prisma } from '~/server/db';
 import { setCookie } from './cookie';
 
 const PROJECT_COOKIE_NAME = 'project';

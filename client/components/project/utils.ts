@@ -1,4 +1,4 @@
-import { sleep } from '~utils/common';
+import { sleep } from '~/utils/common';
 
 export async function highlightElement(id: string) {
   await sleep(500);

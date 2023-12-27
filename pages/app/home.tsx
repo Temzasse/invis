@@ -6,7 +6,7 @@ import {
   getServerViewSettings,
   HOME_SORT_OPTIONS,
   useViewSettings,
-} from '~stores/view-settings';
+} from '~/stores/view-settings';
 
 import {
   Stack,
@@ -15,18 +15,18 @@ import {
   Text,
   IconButton,
   Spinner,
-} from '~components/uikit';
+} from '~/components/uikit';
 
-import { type ItemStatus } from '~components/project/ItemStatus';
-import { api } from '~utils/api';
-import { withApiSession } from '~server/api/root';
-import { useItemSections } from '~utils/item-sections';
-import { styled } from '~styles/styled';
-import { useItemStatusEditing } from '~stores/item-status-editing';
-import { useItemStatusMutations } from '~client/hooks/item-status-mutations';
-import { Navbar, NAVBAR_HEIGHT } from '~components/navigation/Navbar';
-import { ItemRow } from '~components/project/ItemRow';
-import { CreateItemSheet } from '~components/project/CreateItemSheet';
+import { type ItemStatus } from '~/components/project/ItemStatus';
+import { api } from '~/utils/api';
+import { withApiSession } from '~/server/api/root';
+import { useItemSections } from '~/utils/item-sections';
+import { styled } from '~/styles/styled';
+import { useItemStatusEditing } from '~/stores/item-status-editing';
+import { useItemStatusMutations } from '~/client/hooks/item-status-mutations';
+import { Navbar, NAVBAR_HEIGHT } from '~/components/navigation/Navbar';
+import { ItemRow } from '~/components/project/ItemRow';
+import { CreateItemSheet } from '~/components/project/CreateItemSheet';
 
 export const getServerSideProps = withApiSession(async ({ req }, api) => {
   await api.category.getCategoriesWithItems.prefetch();

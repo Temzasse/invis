@@ -9,10 +9,10 @@ import {
   Stack,
   Text,
   Icon,
-} from '~components/uikit';
+} from '~/components/uikit';
 
-import { api } from '~utils/api';
-import { styled } from '~styles/styled';
+import { api } from '~/utils/api';
+import { styled } from '~/styles/styled';
 import { highlightElement } from './utils';
 import { ItemStatus } from './ItemStatus';
 import ItemStatusButton from './ItemStatusButton';

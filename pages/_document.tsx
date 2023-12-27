@@ -1,9 +1,9 @@
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
 
-import { getCssText } from '~styles/styled';
-import { AppMeta } from '~components/pwa/AppMeta';
-import { AppIcon } from '~components/pwa/AppIcon';
-import { SplashImages } from '~components/pwa/SplashImages';
+import { getCssText } from '~/styles/styled';
+import { AppMeta } from '~/components/pwa/AppMeta';
+import { AppIcon } from '~/components/pwa/AppIcon';
+import { SplashImages } from '~/components/pwa/SplashImages';
 
 export default class Document extends NextDocument {
   render() {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { styled } from '~styles/styled';
+import { styled } from '~/styles/styled';
 
 export function SplashScreen() {
   return (

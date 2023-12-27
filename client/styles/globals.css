@@ -2,9 +2,17 @@
   --vh: 1vh;
 }
 
+/* Support the new `dvh` unit so that dynamically shrinking iOS Safari UI works */
 @supports (height: 1dvh) {
   :root {
     --vh: 1dvh;
+  }
+}
+
+/* However when the app is installed as PWA use the `vh` unit to avoid weird layout issues */
+@media all and (display-mode: standalone) {
+  :root {
+    --vh: 1vh;
   }
 }
 
@@ -26,6 +34,7 @@ body {
   font-size: 16px;
   font-family: 'Inter', sans-serif;
   background-color: #000;
+  caret-color: #f4f82b;
 }
 
 body {

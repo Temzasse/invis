@@ -1,7 +1,7 @@
 import { type NextPage } from 'next';
 import Head from 'next/head';
 
-import { Text } from '~components/uikit';
+import { Text } from '~/components/uikit';
 
 // https://github.com/shadowwalker/next-pwa#offline-fallbacks
 export default function Offline() {

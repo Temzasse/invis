@@ -1,5 +1,5 @@
-import { themeProp } from '~styles/helpers';
-import { styled, keyframes, Color } from '~styles/styled';
+import { themeProp } from '~/styles/helpers';
+import { styled, keyframes, Color } from '~/styles/styled';
 
 type Size = 'small' | 'normal' | 'medium' | 'large';
 

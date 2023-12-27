@@ -7,11 +7,11 @@ import Image from 'next/image';
 import {
   SplashScreen,
   useSplashScreen,
-} from '~components/navigation/SplashScreen';
+} from '~/components/navigation/SplashScreen';
 
-import { styled } from '~styles/styled';
-import { Button, Stack } from '~components/uikit';
-import { getProjectFromCookies } from '~server/utils/project';
+import { styled } from '~/styles/styled';
+import { Button, Stack } from '~/components/uikit';
+import { getProjectFromCookies } from '~/server/utils/project';
 
 export default function Landing() {
   const isSplashVisible = useSplashScreen();

@@ -2,8 +2,8 @@ import { useState, type ReactNode } from 'react';
 import { useTransform, useScroll, motion } from 'framer-motion';
 import useMeasure from 'react-use-measure';
 
-import { Icon, IconButton, Stack, Text, Touchable } from '~components/uikit';
-import { styled } from '~styles/styled';
+import { Icon, IconButton, Stack, Text, Touchable } from '~/components/uikit';
+import { styled } from '~/styles/styled';
 
 type Props = {
   title: string;
