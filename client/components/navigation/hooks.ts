@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { create } from 'zustand';
 
 import { type TabId } from './types';
-import { useEvent } from '~/utils/common';
+import { useEffectEvent } from '~/utils/common';
 import { getTab } from './utils';
 
 type TabStacksStore = {
@@ -35,7 +35,7 @@ export function useTabStacks() {
   const { events } = useRouter();
   const { stacks, push } = useTabStacksStore();
 
-  const onRouteChange = useEvent((url: string) => {
+  const onRouteChange = useEffectEvent((url: string) => {
     const { tab, isRoot } = getTab(url);
 
     if (!stacks[tab].includes(url)) {

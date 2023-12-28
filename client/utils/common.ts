@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -10,9 +16,8 @@ export function isBrowser() {
 
 const useIsomorphicLayoutEffect = isBrowser() ? useLayoutEffect : useEffect;
 
-// Userland version of upcoming official `useEvent` React hook:
-// RFC: https://github.com/reactjs/rfcs/blob/useevent/text/0000-useevent.md
-export function useEvent<T extends (...args: any[]) => any>(handler: T) {
+// Userland version of upcoming official `useEffectEvent` React hook:
+export function useEffectEvent<T extends (...args: any[]) => any>(handler: T) {
   const handlerRef = useRef<T>();
 
   useIsomorphicLayoutEffect(() => {
@@ -23,4 +28,14 @@ export function useEvent<T extends (...args: any[]) => any>(handler: T) {
     const fn = handlerRef.current;
     return fn?.(...args);
   }, []) as T;
+}
+
+export function useMounted() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return mounted;
 }
