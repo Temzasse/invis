@@ -1,4 +1,5 @@
 import {
+  FocusEvent,
   FocusEventHandler,
   KeyboardEventHandler,
   useRef,
@@ -48,12 +49,21 @@ function TextInput({
   onKeyDown: KeyboardEventHandler<HTMLInputElement>;
 }) {
   const ref = useRef<HTMLInputElement>(null);
+  const keyboardThreshold = window.innerHeight * 0.6;
 
-  function onFocus() {
+  function onFocus(event: FocusEvent<HTMLInputElement>) {
+    const input = event.currentTarget;
+    if (!input) return;
+
+    const position = input.getBoundingClientRect();
+    const maybeUnderKeyboard = position.bottom > keyboardThreshold;
+
     // NOTE: We need to wait for the keyboard to show up before scrolling
     // to the input, otherwise the keyboard will cover the input
     setTimeout(() => {
-      ref.current?.scrollIntoView({ behavior: 'smooth' });
+      if (maybeUnderKeyboard) {
+        input.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }, 300);
   }
 
