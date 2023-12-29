@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
+import { TRPCError } from '@trpc/server';
 
 import {
   createTRPCRouter,
@@ -8,7 +9,6 @@ import {
 } from '~/server/api/trpc';
 
 import { setProjectCookie } from '~/server/utils/project';
-import { TRPCError } from '@trpc/server';
 
 const joinCreateInput = z.object({
   name: z.string(),

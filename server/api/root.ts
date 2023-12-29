@@ -11,11 +11,13 @@ import {
 import { createTRPCContext, createTRPCRouter } from './trpc';
 import { projectRouter } from './routers/project';
 import { categoryRouter } from './routers/category';
+import { shoplistRouter } from './routers/shoplist';
 import { getProjectFromCookies } from '~/server/utils/project';
 
 export const appRouter = createTRPCRouter({
   project: projectRouter,
   category: categoryRouter,
+  shoplist: shoplistRouter,
 });
 
 export type AppRouter = typeof appRouter;
@@ -28,7 +30,7 @@ type Api = typeof _api;
 export function withApiSession<
   Props extends { [key: string]: any } = { [key: string]: any },
   Params extends ParsedUrlQuery = ParsedUrlQuery,
-  Preview extends PreviewData = PreviewData
+  Preview extends PreviewData = PreviewData,
 >(
   getServerSideProps?: (
     context: GetServerSidePropsContext<Params, Preview>,

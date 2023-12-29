@@ -17,7 +17,10 @@ export function isBrowser() {
 const useIsomorphicLayoutEffect = isBrowser() ? useLayoutEffect : useEffect;
 
 // Userland version of upcoming official `useEffectEvent` React hook:
-export function useEffectEvent<T extends (...args: any[]) => any>(handler: T) {
+// TODO: consider renaming this to `useEffectEvent` when the hooks gets released...
+export function useStableCallback<T extends (...args: any[]) => any>(
+  handler: T
+) {
   const handlerRef = useRef<T>();
 
   useIsomorphicLayoutEffect(() => {

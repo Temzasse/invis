@@ -12,7 +12,7 @@ export function useItemStatusMutations(categories: Categories) {
   const [editedStatuses, setEditedStatuses] = useState<Statuses>({});
   const updateItemStatuses = api.project.updateItemStatuses.useMutation();
   const updateItemStatus = api.project.updateItemStatus.useMutation();
-  const apiUtils = api.useContext();
+  const apiUtils = api.useUtils();
   const isLoading = updateItemStatus.isLoading || updateItemStatuses.isLoading;
   const isError = updateItemStatus.isError || updateItemStatuses.isError;
 
