@@ -6,6 +6,7 @@ import { useActiveTab, useTabStacks } from './hooks';
 import { Icon, Stack, Text } from '~/components/uikit';
 import { styled } from '~/styles/styled';
 import { TabId } from './types';
+import { useKeyboardOpen } from '~/utils/keyboard';
 
 const tabs: Array<{
   label: string;
@@ -49,52 +50,61 @@ type Props = {
 };
 
 export function TabsLayout({ children }: Props) {
-  const activeTab = useActiveTab();
-  const stacks = useTabStacks();
+  const isKeyboardOpen = useKeyboardOpen();
 
   return (
     <Wrapper>
       {children}
-
-      <Tabbar>
-        <TabbarContent activeTab={activeTab}>
-          {tabs.map((tab) => {
-            const isActive = tab.id === activeTab;
-            const stack = stacks[tab.id];
-            const href = isActive ? tab.to : stack[stack.length - 1] || tab.to;
-
-            return (
-              <TabLink href={href} passHref key={tab.to}>
-                <Stack spacing="xsmall" align="center">
-                  <TabIcon
-                    name={isActive ? tab.iconActive : tab.iconInactive}
-                    color={isActive ? 'primary' : 'text'}
-                    isActive={isActive}
-                  />
-                  <Text
-                    variant="bodySmall"
-                    color={isActive ? 'text' : 'textMuted'}
-                  >
-                    {tab.label}
-                  </Text>
-                </Stack>
-              </TabLink>
-            );
-          })}
-        </TabbarContent>
-      </Tabbar>
+      {isKeyboardOpen ? null : <TabBar />}
     </Wrapper>
   );
 }
+
+function TabBar() {
+  const activeTab = useActiveTab();
+  const stacks = useTabStacks();
+
+  return (
+    <TabBarWrapper>
+      <TabBarContent activeTab={activeTab}>
+        {tabs.map((tab) => {
+          const isActive = tab.id === activeTab;
+          const stack = stacks[tab.id];
+          const href = isActive ? tab.to : stack[stack.length - 1] || tab.to;
+
+          return (
+            <TabLink href={href} passHref key={tab.to}>
+              <Stack spacing="xsmall" align="center">
+                <TabIcon
+                  name={isActive ? tab.iconActive : tab.iconInactive}
+                  color={isActive ? 'primary' : 'text'}
+                  isActive={isActive}
+                />
+                <Text
+                  variant="bodySmall"
+                  color={isActive ? 'text' : 'textMuted'}
+                >
+                  {tab.label}
+                </Text>
+              </Stack>
+            </TabLink>
+          );
+        })}
+      </TabBarContent>
+    </TabBarWrapper>
+  );
+}
+
+const TAB_BAR_HEIGHT = 60;
 
 const Wrapper = styled('main', {
   viewportMinHeight: 100,
   display: 'flex',
   flexDirection: 'column',
-  paddingBottom: 'calc(60px + env(safe-area-inset-bottom))',
+  paddingBottom: `calc(${TAB_BAR_HEIGHT}px + env(safe-area-inset-bottom))`,
 });
 
-const Tabbar = styled('div', {
+const TabBarWrapper = styled('div', {
   position: 'fixed',
   bottom: 0,
   left: 0,
@@ -103,9 +113,9 @@ const Tabbar = styled('div', {
   zIndex: 1,
 });
 
-const TabbarContent = styled('div', {
+const TabBarContent = styled('div', {
   $$borderGlowColor: '$colors$primary',
-  height: 60,
+  height: TAB_BAR_HEIGHT,
   maxWidth: 800,
   margin: '0 auto',
   paddingHorizontal: '$regular',
