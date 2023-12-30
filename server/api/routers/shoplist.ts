@@ -1,8 +1,22 @@
+import { type ShoplistItem } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { observable } from '@trpc/server/observable';
 import { orderBy } from 'lodash';
 import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from '../../api/trpc';
+
+import { publish, subscribe } from '../../utils/redis';
+
+type ShoplistEvent =
+  | { operation: 'add'; item: ShoplistItem }
+  | { operation: 'remove'; item: ShoplistItem }
+  | { operation: 'update'; item: ShoplistItem }
+  | { operation: 'complete' };
 
 export const shoplistRouter = createTRPCRouter({
   getCurrentShoplist: protectedProcedure.query(async ({ ctx }) => {
@@ -72,6 +86,11 @@ export const shoplistRouter = createTRPCRouter({
         },
       });
 
+      publish(`shoplist:${item.shoplistId}`, {
+        operation: 'add',
+        item,
+      });
+
       return item;
     }),
 
@@ -89,6 +108,11 @@ export const shoplistRouter = createTRPCRouter({
         data: { name: input.name, checked: input.checked },
       });
 
+      publish(`shoplist:${item.shoplistId}`, {
+        operation: 'update',
+        item,
+      });
+
       return item;
     }),
 
@@ -103,6 +127,28 @@ export const shoplistRouter = createTRPCRouter({
         where: { id: input.id },
       });
 
+      publish(`shoplist:${item.shoplistId}`, {
+        operation: 'remove',
+        item,
+      });
+
       return item;
+    }),
+
+  onChange: publicProcedure
+    .input(z.object({ shoplistId: z.string() }))
+    .subscription(({ input }) => {
+      return observable((observer) => {
+        const unsubscribe = subscribe<ShoplistEvent>(
+          `shoplist:${input.shoplistId}`,
+          (data) => {
+            if ('operation' in data) {
+              observer.next(data);
+            }
+          }
+        );
+
+        return unsubscribe;
+      });
     }),
 });

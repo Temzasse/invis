@@ -12,7 +12,7 @@ import { createTRPCContext, createTRPCRouter } from './trpc';
 import { projectRouter } from './routers/project';
 import { categoryRouter } from './routers/category';
 import { shoplistRouter } from './routers/shoplist';
-import { getProjectFromCookies } from '~/server/utils/project';
+import { getProjectFromCookies } from '../utils/project';
 
 export const appRouter = createTRPCRouter({
   project: projectRouter,

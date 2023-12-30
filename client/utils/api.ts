@@ -1,7 +1,14 @@
 import superjson from 'superjson';
-import { httpBatchLink, loggerLink } from '@trpc/client';
+import { type inferRouterInputs, type inferRouterOutputs } from '@trpc/server';
 import { createTRPCNext } from '@trpc/next';
-import { type inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+
+import {
+  createWSClient,
+  httpBatchLink,
+  loggerLink,
+  splitLink,
+  wsLink,
+} from '@trpc/client';
 
 import { type AppRouter } from '~/server/api/root';
 
@@ -11,12 +18,23 @@ export const api = createTRPCNext<AppRouter>({
       transformer: superjson,
       links: [
         loggerLink({
-          enabled: (opts) =>
-            process.env.NODE_ENV === 'development' ||
-            (opts.direction === 'down' && opts.result instanceof Error),
+          enabled: (opts) => {
+            return (
+              process.env.NODE_ENV === 'development' ||
+              (opts.direction === 'down' && opts.result instanceof Error)
+            );
+          },
         }),
-        httpBatchLink({
-          url: `${getBaseUrl()}/api/trpc`,
+        splitLink({
+          condition: (op) => op.type === 'subscription',
+          true: wsLink({
+            client: createWSClient({
+              url: getWsUrl(),
+            }),
+          }),
+          false: httpBatchLink({
+            url: `${getBaseUrl()}/api/trpc`,
+          }),
         }),
       ],
     };
@@ -31,6 +49,13 @@ function getBaseUrl() {
     return `https://${process.env.FLY_APP_NAME}.${process.env.FLY_REGION}.fly.dev`;
   }
   return `http://localhost:${process.env.PORT ?? 3000}`;
+}
+
+function getWsUrl() {
+  if (process.env.FLY_REGION) {
+    return `wss://${process.env.FLY_APP_NAME}.${process.env.FLY_REGION}.fly.dev`;
+  }
+  return `ws://localhost:${process.env.WS_PORT ?? 3001}`;
 }
 
 export type RouterInputs = inferRouterInputs<AppRouter>;

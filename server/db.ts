@@ -7,7 +7,7 @@ export const prisma =
   new PrismaClient({
     log:
       process.env.NODE_ENV === 'development'
-        ? ['query', 'error', 'warn']
+        ? ['error', 'warn'] // add 'query' if you want to see the actual queries
         : ['error'],
   });
 

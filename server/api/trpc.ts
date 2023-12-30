@@ -1,9 +1,11 @@
 import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
+import { NodeHTTPCreateContextFnOptions } from '@trpc/server/dist/adapters/node-http';
 import { initTRPC, TRPCError } from '@trpc/server';
+import { IncomingMessage } from 'http';
 import superjson from 'superjson';
 
-import { getProjectFromCookies } from '~/server/utils/project';
-import { prisma } from '~/server/db';
+import { getProjectFromCookies } from '../utils/project';
+import { prisma } from '../db';
 
 type CreateContextOptions = {
   project: null | { id: string };
@@ -18,13 +20,23 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
   };
 };
 
-export const createTRPCContext = async (context: CreateNextContextOptions) => {
-  const project = await getProjectFromCookies(context.req.cookies);
+export const createTRPCContext = async ({
+  req,
+  res,
+}: CreateNextContextOptions) => {
+  const project = await getProjectFromCookies(req.cookies);
 
   return createInnerTRPCContext({
     project: project ? { id: project.id } : null,
-    res: context.res,
+    res: res,
   });
+};
+
+// TODO: how to authenticate websocket connections?
+export const createWebSocketTRPCContext = async ({
+  res,
+}: NodeHTTPCreateContextFnOptions<IncomingMessage, WebSocket>) => {
+  return { prisma, res };
 };
 
 const t = initTRPC.context<typeof createTRPCContext>().create({

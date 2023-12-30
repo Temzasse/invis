@@ -68,8 +68,26 @@ export default function Shoplist() {
           />
         </AddButtonWrapper>
       </List>
+
+      <ShoplistSubscription shoplistId={shoplist.id} />
     </>
   );
+}
+
+function ShoplistSubscription({ shoplistId }: { shoplistId: string }) {
+  api.shoplist.onChange.useSubscription(
+    { shoplistId },
+    {
+      onData(event) {
+        console.log('Shoplist subscription event:', event);
+      },
+      onError(err) {
+        console.error('Shoplist subscription error:', err);
+      },
+    }
+  );
+
+  return null;
 }
 
 type ShopListItemProps = {
