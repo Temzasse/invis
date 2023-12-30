@@ -34,7 +34,7 @@ export const createRedisClient = () => {
 const publisher = createRedisClient();
 const subscriber = createRedisClient();
 
-export function publish(channel: string, data: object) {
+export function publish<T>(channel: string, data: T) {
   publisher.publish(channel, JSON.stringify(data)).catch((error) => {
     console.error('[Redis] Error publishing message!', error);
   });

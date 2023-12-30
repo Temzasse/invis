@@ -10,10 +10,11 @@ import {
 
 import { api } from '~/utils/api';
 import { withApiSession } from '~/server/api/root';
-import { Checkbox, EditableText, IconButton } from '~/components/uikit';
 import { styled } from '~/styles/styled';
-import { Navbar } from '~/components/navigation/Navbar';
 import { useMounted } from '~/utils/common';
+import { Navbar } from '~/components/navigation/Navbar';
+import { Checkbox, EditableText, IconButton } from '~/components/uikit';
+import { ShoplistSubscription } from '~/components/shoplist/ShoplistSubscription';
 
 export const getServerSideProps = withApiSession(async ({ req }, api) => {
   await api.shoplist.getCurrentShoplist.prefetch();
@@ -74,22 +75,6 @@ export default function Shoplist() {
   );
 }
 
-function ShoplistSubscription({ shoplistId }: { shoplistId: string }) {
-  api.shoplist.onChange.useSubscription(
-    { shoplistId },
-    {
-      onData(event) {
-        console.log('Shoplist subscription event:', event);
-      },
-      onError(err) {
-        console.error('Shoplist subscription error:', err);
-      },
-    }
-  );
-
-  return null;
-}
-
 type ShopListItemProps = {
   id: string;
   name: string;
@@ -116,7 +101,7 @@ const ShopListItem = memo(
       >
         <ListItemContent>
           <Checkbox
-            defaultChecked={checked}
+            checked={checked}
             onChange={(event) => {
               // Item needs to have a name before it can be checked
               if (name) {

@@ -13,10 +13,10 @@ import {
 import { publish, subscribe } from '../../utils/redis';
 
 type ShoplistEvent =
-  | { operation: 'add'; item: ShoplistItem }
-  | { operation: 'remove'; item: ShoplistItem }
-  | { operation: 'update'; item: ShoplistItem }
-  | { operation: 'complete' };
+  | { clientId: string; operation: 'add'; item: ShoplistItem }
+  | { clientId: string; operation: 'remove'; item: ShoplistItem }
+  | { clientId: string; operation: 'update'; item: ShoplistItem }
+  | { clientId: string; operation: 'complete' };
 
 export const shoplistRouter = createTRPCRouter({
   getCurrentShoplist: protectedProcedure.query(async ({ ctx }) => {
@@ -44,7 +44,12 @@ export const shoplistRouter = createTRPCRouter({
   }),
 
   completeShoplist: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(
+      z.object({
+        id: z.string(),
+        clientId: z.string(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const shoplist = await ctx.prisma.shoplist.findUnique({
         where: { id: input.id },
@@ -67,6 +72,7 @@ export const shoplistRouter = createTRPCRouter({
       z.object({
         name: z.string(),
         shoplistId: z.string(),
+        clientId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -86,7 +92,8 @@ export const shoplistRouter = createTRPCRouter({
         },
       });
 
-      publish(`shoplist:${item.shoplistId}`, {
+      publish<ShoplistEvent>(`shoplist:${item.shoplistId}`, {
+        clientId: input.clientId,
         operation: 'add',
         item,
       });
@@ -100,6 +107,7 @@ export const shoplistRouter = createTRPCRouter({
         id: z.string(),
         name: z.string().optional(),
         checked: z.boolean().optional(),
+        clientId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -108,7 +116,8 @@ export const shoplistRouter = createTRPCRouter({
         data: { name: input.name, checked: input.checked },
       });
 
-      publish(`shoplist:${item.shoplistId}`, {
+      publish<ShoplistEvent>(`shoplist:${item.shoplistId}`, {
+        clientId: input.clientId,
         operation: 'update',
         item,
       });
@@ -120,6 +129,7 @@ export const shoplistRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
+        clientId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -127,7 +137,8 @@ export const shoplistRouter = createTRPCRouter({
         where: { id: input.id },
       });
 
-      publish(`shoplist:${item.shoplistId}`, {
+      publish<ShoplistEvent>(`shoplist:${item.shoplistId}`, {
+        clientId: input.clientId,
         operation: 'remove',
         item,
       });
@@ -138,7 +149,7 @@ export const shoplistRouter = createTRPCRouter({
   onChange: publicProcedure
     .input(z.object({ shoplistId: z.string() }))
     .subscription(({ input }) => {
-      return observable((observer) => {
+      return observable<ShoplistEvent>((observer) => {
         const unsubscribe = subscribe<ShoplistEvent>(
           `shoplist:${input.shoplistId}`,
           (data) => {

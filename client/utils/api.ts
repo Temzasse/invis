@@ -11,6 +11,7 @@ import {
 } from '@trpc/client';
 
 import { type AppRouter } from '~/server/api/root';
+import { config } from '../config';
 
 export const api = createTRPCNext<AppRouter>({
   config() {
@@ -20,7 +21,7 @@ export const api = createTRPCNext<AppRouter>({
         loggerLink({
           enabled: (opts) => {
             return (
-              process.env.NODE_ENV === 'development' ||
+              config.NODE_ENV === 'development' ||
               (opts.direction === 'down' && opts.result instanceof Error)
             );
           },
@@ -45,17 +46,17 @@ function getBaseUrl() {
   if (typeof window !== 'undefined') {
     return '';
   }
-  if (process.env.FLY_REGION) {
-    return `https://${process.env.FLY_APP_NAME}.${process.env.FLY_REGION}.fly.dev`;
+  if (config.FLY_REGION) {
+    return `https://${config.FLY_APP_NAME}.${config.FLY_REGION}.fly.dev`;
   }
-  return `http://localhost:${process.env.PORT ?? 3000}`;
+  return `http://localhost:${config.PORT ?? 3000}`;
 }
 
 function getWsUrl() {
-  if (process.env.FLY_REGION) {
-    return `wss://${process.env.FLY_APP_NAME}.${process.env.FLY_REGION}.fly.dev`;
+  if (config.FLY_REGION) {
+    return `wss://${config.FLY_APP_NAME}.${config.FLY_REGION}.fly.dev`;
   }
-  return `ws://localhost:${process.env.WS_PORT ?? 3001}`;
+  return `ws://localhost:${config.WS_PORT ?? 3001}`;
 }
 
 export type RouterInputs = inferRouterInputs<AppRouter>;

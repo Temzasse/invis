@@ -12,4 +12,5 @@ installSerwist({
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: defaultCache,
+  disableDevLogs: true, // Enabled if needed
 });

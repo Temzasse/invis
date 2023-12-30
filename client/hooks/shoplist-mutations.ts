@@ -4,6 +4,7 @@ import { produce } from 'immer';
 import { api } from '~/utils/api';
 import { useStableCallback } from '~/utils/common';
 import { isOptimisticId } from '~/utils/mutations';
+import { config } from '../config';
 
 export function useUpdateShoplistItem() {
   const utils = api.useUtils();
@@ -41,12 +42,12 @@ export function useUpdateShoplistItem() {
 
   const updateName = useStableCallback((id: string, name: string) => {
     if (isOptimisticId(id)) return;
-    mutation.mutate({ id, name });
+    mutation.mutate({ id, name, clientId: config.CLIENT_ID });
   });
 
   const updateChecked = useStableCallback((id: string, checked: boolean) => {
     if (isOptimisticId(id)) return;
-    mutation.mutate({ id, checked });
+    mutation.mutate({ id, checked, clientId: config.CLIENT_ID });
   });
 
   return { updateName, updateChecked };
@@ -87,7 +88,7 @@ export function useAddShoplistItem() {
   });
 
   const addItem = useStableCallback((shoplistId: string) => {
-    mutation.mutate({ name: '', shoplistId });
+    mutation.mutate({ name: '', shoplistId, clientId: config.CLIENT_ID });
   });
 
   return { addItem };
@@ -123,7 +124,7 @@ export function useRemoveShoplistItem() {
 
   const removeItem = useStableCallback((id: string) => {
     if (isOptimisticId(id)) return;
-    mutation.mutate({ id });
+    mutation.mutate({ id, clientId: config.CLIENT_ID });
   });
 
   return { removeItem };

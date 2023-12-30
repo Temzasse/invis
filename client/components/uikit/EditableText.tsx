@@ -86,7 +86,6 @@ function TextInput({
 const TextButton = styled(Touchable, {
   typography: '$body',
   color: '$text',
-  width: '100%',
   height: '100%',
   textAlign: 'left',
 });
@@ -100,5 +99,4 @@ const Input = styled('input', {
   typography: '$body',
   padding: 0,
   margin: 0,
-  width: '100%',
 });
