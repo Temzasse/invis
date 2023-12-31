@@ -30,7 +30,7 @@ export const api = createTRPCNext<AppRouter>({
           condition: (op) => op.type === 'subscription',
           true: wsLink({
             client: createWSClient({
-              url: getWsUrl(),
+              url: config.WS_URL,
             }),
           }),
           false: httpBatchLink({
@@ -43,20 +43,7 @@ export const api = createTRPCNext<AppRouter>({
 });
 
 function getBaseUrl() {
-  if (typeof window !== 'undefined') {
-    return '';
-  }
-  if (config.FLY_REGION) {
-    return `https://${config.FLY_APP_NAME}.${config.FLY_REGION}.fly.dev`;
-  }
-  return `http://localhost:${config.PORT ?? 3000}`;
-}
-
-function getWsUrl() {
-  if (config.FLY_REGION) {
-    return `wss://${config.FLY_APP_NAME}.${config.FLY_REGION}.fly.dev`;
-  }
-  return `ws://localhost:${config.WS_PORT ?? 3001}`;
+  return typeof window !== 'undefined' ? '' : config.API_URL;
 }
 
 export type RouterInputs = inferRouterInputs<AppRouter>;
