@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { forwardRef, memo } from 'react';
+import { forwardRef, memo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import {
@@ -91,6 +91,17 @@ const ShopListItem = memo(
     { id, name, checked, canAutoFocus, onCheckChange, onNameChange, onRemove },
     ref
   ) {
+    const [removeButtonVisible, setRemoveButtonVisible] = useState(true);
+
+    function handleStartEdit() {
+      setRemoveButtonVisible(false);
+    }
+
+    function handleEndEdit(value: string) {
+      setRemoveButtonVisible(true);
+      onNameChange(id, value);
+    }
+
     return (
       <ListItem
         ref={ref}
@@ -110,21 +121,24 @@ const ShopListItem = memo(
             }}
           />
           <EditableText
-            onEditDone={(value) => onNameChange(id, value)}
+            onEditStart={handleStartEdit}
+            onEditDone={handleEndEdit}
             initialFocused={canAutoFocus}
           >
             {name}
           </EditableText>
         </ListItemContent>
 
-        <RemoveButtonWrapper>
-          <IconButton
-            icon="minusOutline"
-            size={20}
-            color="textMuted"
-            onPress={() => onRemove(id)}
-          />
-        </RemoveButtonWrapper>
+        {removeButtonVisible && (
+          <RemoveButtonWrapper>
+            <IconButton
+              icon="minusOutline"
+              size={20}
+              color="textMuted"
+              onPress={() => onRemove(id)}
+            />
+          </RemoveButtonWrapper>
+        )}
       </ListItem>
     );
   })
@@ -152,6 +166,7 @@ const ListItemContent = styled('div', {
   minWidth: 0,
   overflow: 'hidden',
   whiteSpace: 'nowrap',
+  minHeight: '35px',
 });
 
 const AddButtonWrapper = styled(motion.div, {
