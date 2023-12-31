@@ -5,3 +5,14 @@ services:
     build: .
     ports:
       - 3000:3000
+  
+  redis:
+    container_name: redis
+    image: bitnami/redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/bitnami/redis/data
+
+volumes:
+  redis:

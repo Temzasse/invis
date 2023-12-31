@@ -12,27 +12,41 @@ import { Touchable } from './Touchable';
 type Props = {
   children: string;
   initialFocused?: boolean;
+  onEditStart?: () => void;
   onEditDone: (value: string) => void;
 };
 
-export function EditableText({ children, initialFocused, onEditDone }: Props) {
+export function EditableText({
+  children,
+  initialFocused,
+  onEditStart,
+  onEditDone,
+}: Props) {
   const [isEditing, setEditing] = useState(!!initialFocused);
 
+  function startEditing() {
+    setEditing(true);
+    onEditStart?.();
+  }
+
+  function stopEditing(value: string) {
+    onEditDone(value);
+    setEditing(false);
+  }
+
   if (!isEditing) {
-    return <TextButton onPress={() => setEditing(true)}>{children}</TextButton>;
+    return <TextButton onPress={startEditing}>{children}</TextButton>;
   }
 
   return (
     <TextInput
       defaultValue={children}
       onBlur={(event) => {
-        onEditDone(event.currentTarget.value);
-        setEditing(false);
+        stopEditing(event.currentTarget.value);
       }}
       onKeyDown={(event) => {
         if (event.key === 'Enter') {
-          onEditDone(event.currentTarget.value);
-          setEditing(false);
+          stopEditing(event.currentTarget.value);
         }
       }}
     />
@@ -86,9 +100,9 @@ function TextInput({
 const TextButton = styled(Touchable, {
   typography: '$body',
   color: '$text',
-  width: '100%',
-  height: '100%',
   textAlign: 'left',
+  height: '100%',
+  width: '100%',
 });
 
 const Input = styled('input', {
@@ -101,4 +115,5 @@ const Input = styled('input', {
   padding: 0,
   margin: 0,
   width: '100%',
+  height: '100%',
 });

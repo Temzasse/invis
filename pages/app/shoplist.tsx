@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { forwardRef, memo } from 'react';
+import { forwardRef, memo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import {
@@ -10,10 +10,11 @@ import {
 
 import { api } from '~/utils/api';
 import { withApiSession } from '~/server/api/root';
-import { Checkbox, EditableText, IconButton } from '~/components/uikit';
 import { styled } from '~/styles/styled';
-import { Navbar } from '~/components/navigation/Navbar';
 import { useMounted } from '~/utils/common';
+import { Navbar } from '~/components/navigation/Navbar';
+import { Checkbox, EditableText, IconButton } from '~/components/uikit';
+import { ShoplistSubscription } from '~/components/shoplist/ShoplistSubscription';
 
 export const getServerSideProps = withApiSession(async ({ req }, api) => {
   await api.shoplist.getCurrentShoplist.prefetch();
@@ -68,6 +69,8 @@ export default function Shoplist() {
           />
         </AddButtonWrapper>
       </List>
+
+      <ShoplistSubscription shoplistId={shoplist.id} />
     </>
   );
 }
@@ -88,6 +91,17 @@ const ShopListItem = memo(
     { id, name, checked, canAutoFocus, onCheckChange, onNameChange, onRemove },
     ref
   ) {
+    const [removeButtonVisible, setRemoveButtonVisible] = useState(true);
+
+    function handleStartEdit() {
+      setRemoveButtonVisible(false);
+    }
+
+    function handleEndEdit(value: string) {
+      setRemoveButtonVisible(true);
+      onNameChange(id, value);
+    }
+
     return (
       <ListItem
         ref={ref}
@@ -98,7 +112,7 @@ const ShopListItem = memo(
       >
         <ListItemContent>
           <Checkbox
-            defaultChecked={checked}
+            checked={checked}
             onChange={(event) => {
               // Item needs to have a name before it can be checked
               if (name) {
@@ -107,21 +121,24 @@ const ShopListItem = memo(
             }}
           />
           <EditableText
-            onEditDone={(value) => onNameChange(id, value)}
+            onEditStart={handleStartEdit}
+            onEditDone={handleEndEdit}
             initialFocused={canAutoFocus}
           >
             {name}
           </EditableText>
         </ListItemContent>
 
-        <RemoveButtonWrapper>
-          <IconButton
-            icon="minusOutline"
-            size={20}
-            color="textMuted"
-            onPress={() => onRemove(id)}
-          />
-        </RemoveButtonWrapper>
+        {removeButtonVisible && (
+          <RemoveButtonWrapper>
+            <IconButton
+              icon="minusOutline"
+              size={20}
+              color="textMuted"
+              onPress={() => onRemove(id)}
+            />
+          </RemoveButtonWrapper>
+        )}
       </ListItem>
     );
   })
@@ -149,6 +166,7 @@ const ListItemContent = styled('div', {
   minWidth: 0,
   overflow: 'hidden',
   whiteSpace: 'nowrap',
+  minHeight: '35px',
 });
 
 const AddButtonWrapper = styled(motion.div, {

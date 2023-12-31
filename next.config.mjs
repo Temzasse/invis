@@ -1,13 +1,12 @@
-const {
+import {
   PHASE_DEVELOPMENT_SERVER,
   PHASE_PRODUCTION_BUILD,
-} = require('next/constants');
+} from 'next/constants.js';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
-  output: 'standalone',
   modularizeImports: {
     lodash: {
       transform: 'lodash/{{member}}',
@@ -15,6 +14,9 @@ const nextConfig = {
   },
   experimental: {
     swcPlugins: [['next-superjson-plugin', {}]],
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   rewrites: async () => {
     return [
@@ -33,13 +35,13 @@ const nextConfig = {
   },
 };
 
-module.exports = (phase) => {
+export default async function configure(phase) {
   if (phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) {
-    const withSerwist = require('@serwist/next').default({
+    const withSerwist = (await import('@serwist/next')).default({
       swSrc: './client/components/pwa/sw.ts',
       swDest: 'public/sw.js',
     });
     return withSerwist(nextConfig);
   }
   return nextConfig;
-};
+}

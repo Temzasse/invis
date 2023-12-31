@@ -1,14 +1,14 @@
 import { z } from 'zod';
-import bcrypt from 'bcrypt';
+import { hash, compare } from 'bcrypt';
 import { TRPCError } from '@trpc/server';
 
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-} from '~/server/api/trpc';
+} from '../../api/trpc';
 
-import { setProjectCookie } from '~/server/utils/project';
+import { setProjectCookie } from '../../utils/project';
 
 const joinCreateInput = z.object({
   name: z.string(),
@@ -27,7 +27,7 @@ export const projectRouter = createTRPCRouter({
         throw new TRPCError({ code: 'CONFLICT' });
       }
 
-      const hashedPassword = await bcrypt.hash(input.password, 10);
+      const hashedPassword = await hash(input.password, 10);
 
       const project = await ctx.prisma.project.create({
         data: {
@@ -52,7 +52,7 @@ export const projectRouter = createTRPCRouter({
         throw new TRPCError({ code: 'BAD_REQUEST' });
       }
 
-      const matches = await bcrypt.compare(input.password, project.password);
+      const matches = await compare(input.password, project.password);
 
       if (!matches) {
         throw new TRPCError({ code: 'BAD_REQUEST' });

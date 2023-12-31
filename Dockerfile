@@ -41,22 +41,23 @@ RUN npm run build
 # Production image, copy all the files and run next ----------------------------
 FROM base AS runner
 
-ENV DATABASE_URL=file:/data/sqlite.db
+# In production the custom Next.js server handles both HTTP and WS requests
 ENV PORT="3000"
+ENV WS_PORT="3000"
+ENV DATABASE_URL=file:/data/sqlite.db
 ENV NODE_ENV="production"
 
 WORKDIR /app
 
 COPY --from=production-deps /app/node_modules /app/node_modules
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-
-COPY --from=builder /app/next.config.cjs ./
+COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/start.sh ./start.sh
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 

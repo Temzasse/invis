@@ -1,8 +1,22 @@
+import { type ShoplistItem } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { observable } from '@trpc/server/observable';
 import { orderBy } from 'lodash';
 import { z } from 'zod';
 
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from '../../api/trpc';
+
+import { publish, subscribe } from '../../utils/redis';
+
+type ShoplistEvent =
+  | { clientId: string; operation: 'add'; item: ShoplistItem }
+  | { clientId: string; operation: 'remove'; item: ShoplistItem }
+  | { clientId: string; operation: 'update'; item: ShoplistItem }
+  | { clientId: string; operation: 'complete' };
 
 export const shoplistRouter = createTRPCRouter({
   getCurrentShoplist: protectedProcedure.query(async ({ ctx }) => {
@@ -30,7 +44,12 @@ export const shoplistRouter = createTRPCRouter({
   }),
 
   completeShoplist: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(
+      z.object({
+        id: z.string(),
+        clientId: z.string(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const shoplist = await ctx.prisma.shoplist.findUnique({
         where: { id: input.id },
@@ -53,6 +72,7 @@ export const shoplistRouter = createTRPCRouter({
       z.object({
         name: z.string(),
         shoplistId: z.string(),
+        clientId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -72,6 +92,12 @@ export const shoplistRouter = createTRPCRouter({
         },
       });
 
+      publish<ShoplistEvent>(`shoplist:${item.shoplistId}`, {
+        clientId: input.clientId,
+        operation: 'add',
+        item,
+      });
+
       return item;
     }),
 
@@ -81,12 +107,19 @@ export const shoplistRouter = createTRPCRouter({
         id: z.string(),
         name: z.string().optional(),
         checked: z.boolean().optional(),
+        clientId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const item = await ctx.prisma.shoplistItem.update({
         where: { id: input.id },
         data: { name: input.name, checked: input.checked },
+      });
+
+      publish<ShoplistEvent>(`shoplist:${item.shoplistId}`, {
+        clientId: input.clientId,
+        operation: 'update',
+        item,
       });
 
       return item;
@@ -96,6 +129,7 @@ export const shoplistRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
+        clientId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -103,6 +137,29 @@ export const shoplistRouter = createTRPCRouter({
         where: { id: input.id },
       });
 
+      publish<ShoplistEvent>(`shoplist:${item.shoplistId}`, {
+        clientId: input.clientId,
+        operation: 'remove',
+        item,
+      });
+
       return item;
+    }),
+
+  onChange: publicProcedure
+    .input(z.object({ shoplistId: z.string() }))
+    .subscription(({ input }) => {
+      return observable<ShoplistEvent>((observer) => {
+        const unsubscribe = subscribe<ShoplistEvent>(
+          `shoplist:${input.shoplistId}`,
+          (data) => {
+            if ('operation' in data) {
+              observer.next(data);
+            }
+          }
+        );
+
+        return unsubscribe;
+      });
     }),
 });
