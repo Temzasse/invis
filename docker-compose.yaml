@@ -3,16 +3,24 @@ services:
   app:
     container_name: app
     build: .
+    restart: unless-stopped
+    depends_on:
+      - redis
     ports:
       - 3000:3000
+    networks:
+      - default
+    environment:
+      - REDIS_URL=redis://redis:6379
   
+  # TODO: figure out why it's not possible to connect to Redis from app...
   redis:
     container_name: redis
-    image: bitnami/redis:latest
-    ports:
-      - 6379:6379
-    volumes:
-      - redis:/bitnami/redis/data
+    image: redis:latest
+    restart: unless-stopped
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
+    networks:
+      - default
 
-volumes:
-  redis:
+networks:
+  default:
