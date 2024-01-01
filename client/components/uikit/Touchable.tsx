@@ -52,6 +52,7 @@ export const Touchable = forwardRef<any, TouchableProps>(
         },
         onPress,
         elementType: asLink ? 'a' : 'button',
+        isDisabled: rest.disabled,
       },
       mergedRef
     );

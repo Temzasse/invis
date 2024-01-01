@@ -11,18 +11,18 @@ import { Touchable } from './Touchable';
 
 type Props = {
   children: string;
-  initialFocused?: boolean;
+  disabled?: boolean;
   onEditStart?: () => void;
   onEditDone: (value: string) => void;
 };
 
 export function EditableText({
   children,
-  initialFocused,
+  disabled,
   onEditStart,
   onEditDone,
 }: Props) {
-  const [isEditing, setEditing] = useState(!!initialFocused);
+  const [isEditing, setEditing] = useState(false);
 
   function startEditing() {
     setEditing(true);
@@ -35,7 +35,15 @@ export function EditableText({
   }
 
   if (!isEditing) {
-    return <TextButton onPress={startEditing}>{children}</TextButton>;
+    return (
+      <TextButton
+        disabled={disabled}
+        className="editable-text-button"
+        onPress={startEditing}
+      >
+        {children}
+      </TextButton>
+    );
   }
 
   return (
@@ -83,6 +91,7 @@ function TextInput({
 
   return (
     <Input
+      className="editable-text-input"
       ref={ref}
       type="text"
       autoFocus

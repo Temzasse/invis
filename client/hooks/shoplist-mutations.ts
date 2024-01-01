@@ -57,32 +57,31 @@ export function useAddShoplistItem() {
   const utils = api.useUtils();
 
   const mutation = api.shoplist.addShoplistItem.useMutation({
-    onMutate: async ({ name, shoplistId }) => {
-      await utils.shoplist.getCurrentShoplist.cancel();
-
-      const shoplist = utils.shoplist.getCurrentShoplist.getData();
-      if (!shoplist) return;
-
-      const optimisticShoplist = produce(shoplist, (draft) => {
-        draft.items.push({
-          id: `optimistic-${Date.now()}`,
-          name,
-          checked: false,
-          shoplistId,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        });
-      });
-
-      utils.shoplist.getCurrentShoplist.setData(undefined, optimisticShoplist);
-
-      return { shoplist, name };
-    },
-    onError: (error, name, context) => {
+    onError: () => {
       toast.error('Jotain meni pieleen');
-      utils.shoplist.getCurrentShoplist.setData(undefined, context?.shoplist);
     },
-    onSettled: () => {
+    onSettled: (data) => {
+      if (data) {
+        const shoplist = utils.shoplist.getCurrentShoplist.getData();
+        if (!shoplist) return;
+
+        utils.shoplist.getCurrentShoplist.setData(
+          undefined,
+          produce(shoplist, (draft) => {
+            draft.items.push(data);
+          })
+        );
+
+        // Focus the new item after it hase been rendered (and animated)
+        setTimeout(() => {
+          const itemEl = document.querySelector(
+            `.shoplist-item-${data.id} .editable-text-button`
+          ) as HTMLButtonElement | null;
+
+          itemEl?.click();
+        }, 500);
+      }
+
       utils.shoplist.getCurrentShoplist.invalidate();
     },
   });
@@ -91,7 +90,7 @@ export function useAddShoplistItem() {
     mutation.mutate({ name: '', shoplistId, clientId: config.CLIENT_ID });
   });
 
-  return { addItem };
+  return { addItem, isAdding: mutation.isLoading };
 }
 
 export function useRemoveShoplistItem() {

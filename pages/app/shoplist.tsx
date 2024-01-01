@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import { forwardRef, memo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import {
@@ -13,20 +12,18 @@ import { withApiSession } from '~/server/api/root';
 import { styled } from '~/styles/styled';
 import { useMounted } from '~/utils/common';
 import { Navbar } from '~/components/navigation/Navbar';
-import { Checkbox, EditableText, IconButton } from '~/components/uikit';
+import { IconButton, Spinner } from '~/components/uikit';
 import { ShoplistSubscription } from '~/components/shoplist/ShoplistSubscription';
+import { ShopListItem } from '~/components/shoplist/ShoplistItem';
 
 export const getServerSideProps = withApiSession(async ({ req }, api) => {
   await api.shoplist.getCurrentShoplist.prefetch();
 });
 
 export default function Shoplist() {
-  const mounted = useMounted();
-
-  // TODO: add refetch polling or subscribe to shoplist updates
   const { data: shoplist } = api.shoplist.getCurrentShoplist.useQuery();
   const { updateChecked, updateName } = useUpdateShoplistItem();
-  const { addItem } = useAddShoplistItem();
+  const { addItem, isAdding } = useAddShoplistItem();
   const { removeItem } = useRemoveShoplistItem();
 
   if (!shoplist) return null;
@@ -52,7 +49,6 @@ export default function Shoplist() {
               id={item.id}
               name={item.name}
               checked={item.checked}
-              canAutoFocus={mounted}
               onCheckChange={updateChecked}
               onNameChange={updateName}
               onRemove={removeItem}
@@ -62,6 +58,7 @@ export default function Shoplist() {
 
         <AddButtonWrapper layout="position">
           <IconButton
+            disabled={isAdding}
             icon="plusCircleFilled"
             color="primary"
             size={32}
@@ -75,75 +72,6 @@ export default function Shoplist() {
   );
 }
 
-type ShopListItemProps = {
-  id: string;
-  name: string;
-  checked: boolean;
-  canAutoFocus: boolean;
-  onCheckChange: (id: string, checked: boolean) => void;
-  onNameChange: (id: string, name: string) => void;
-  onRemove: (id: string) => void;
-};
-
-// NOTE: AnimatePresence passes a ref to the component, so we need to forward it
-const ShopListItem = memo(
-  forwardRef<any, ShopListItemProps>(function ShopListItem(
-    { id, name, checked, canAutoFocus, onCheckChange, onNameChange, onRemove },
-    ref
-  ) {
-    const [removeButtonVisible, setRemoveButtonVisible] = useState(true);
-
-    function handleStartEdit() {
-      setRemoveButtonVisible(false);
-    }
-
-    function handleEndEdit(value: string) {
-      setRemoveButtonVisible(true);
-      onNameChange(id, value);
-    }
-
-    return (
-      <ListItem
-        ref={ref}
-        layout="position"
-        initial={{ opacity: 1, height: 0, overflow: 'hidden' }}
-        animate={{ opacity: 1, height: 'auto', overflow: 'visible' }}
-        exit={{ opacity: 0, height: 0, overflow: 'hidden' }}
-      >
-        <ListItemContent>
-          <Checkbox
-            checked={checked}
-            onChange={(event) => {
-              // Item needs to have a name before it can be checked
-              if (name) {
-                onCheckChange(id, event.currentTarget.checked);
-              }
-            }}
-          />
-          <EditableText
-            onEditStart={handleStartEdit}
-            onEditDone={handleEndEdit}
-            initialFocused={canAutoFocus}
-          >
-            {name}
-          </EditableText>
-        </ListItemContent>
-
-        {removeButtonVisible && (
-          <RemoveButtonWrapper>
-            <IconButton
-              icon="minusOutline"
-              size={20}
-              color="textMuted"
-              onPress={() => onRemove(id)}
-            />
-          </RemoveButtonWrapper>
-        )}
-      </ListItem>
-    );
-  })
-);
-
 const List = styled('ol', {
   display: 'flex',
   flexDirection: 'column',
@@ -154,28 +82,8 @@ const List = styled('ol', {
   scrollPaddingBlock: '200px',
 });
 
-const ListItem = styled(motion.li, {
-  display: 'flex',
-});
-
-const ListItemContent = styled('div', {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '$regular',
-  flex: 1,
-  minWidth: 0,
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  minHeight: '35px',
-});
-
 const AddButtonWrapper = styled(motion.div, {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-});
-
-const RemoveButtonWrapper = styled('div', {
-  // Offset a bit to align with navbar right slot icon
-  marginRight: '-$xxsmall',
 });
