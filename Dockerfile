@@ -42,10 +42,11 @@ RUN npm run build
 FROM base AS runner
 
 # In production the custom Next.js server handles both HTTP and WS requests
-ENV PORT="3000"
-ENV WS_PORT="3000"
 ENV DATABASE_URL=file:/data/sqlite.db
 ENV NODE_ENV="production"
+
+# Disable Next.js telemetry
+ENV NEXT_TELEMETRY_DISABLED=1
 
 WORKDIR /app
 

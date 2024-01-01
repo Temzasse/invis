@@ -30,11 +30,11 @@ export const api = createTRPCNext<AppRouter>({
           condition: (op) => op.type === 'subscription',
           true: wsLink({
             client: createWSClient({
-              url: config.WS_URL,
+              url: getWsUrl(),
             }),
           }),
           false: httpBatchLink({
-            url: `${getBaseUrl()}/api/trpc`,
+            url: `${getApiBaseUrl()}/api/trpc`,
           }),
         }),
       ],
@@ -42,8 +42,37 @@ export const api = createTRPCNext<AppRouter>({
   },
 });
 
-function getBaseUrl() {
-  return typeof window !== 'undefined' ? '' : config.API_URL;
+function getApiBaseUrl() {
+  // Browser should use relative path
+  if (!config.IS_SERVER) return '';
+
+  // These are set by Fly.io runtime
+  const region = process.env.FLY_REGION ?? '';
+  const appName = process.env.FLY_APP_NAME ?? '';
+
+  // For SSR we need to use full url
+  if (!region || !appName) {
+    return 'http://localhost:3000';
+  }
+
+  // Use https:// for production
+  return `https://${appName}.${region}.fly.dev`;
+}
+
+function getWsUrl() {
+  // WebSocket connection is made only on the client but this code is also
+  // executed during SSR so we need to be a bit defensive here
+  if (!config.IS_SERVER) return '';
+
+  const { hostname } = window.location;
+
+  // Support running the prod version of the app locally
+  if (hostname === 'localhost') {
+    return 'ws://localhost:3001';
+  }
+
+  // Use wss:// for production
+  return `wss://${hostname}`;
 }
 
 export type RouterInputs = inferRouterInputs<AppRouter>;
