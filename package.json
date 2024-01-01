@@ -28,7 +28,8 @@
     "docker:up": "docker-compose up",
     "docker:down": "docker-compose down",
     "docker:build": "docker-compose build",
-    "docker:sh": "docker-compose exec -it app /bin/sh"
+    "docker:sh": "docker-compose exec -it app /bin/sh",
+    "docker:db-seed": "docker-compose exec -it app npm run db:seed"
   },
   "dependencies": {
     "@prisma/client": "5.7.1",

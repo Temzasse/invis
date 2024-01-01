@@ -13,9 +13,9 @@ const options: RedisOptions = {
   },
 };
 
-export const createRedisClient = () => {
+export function createRedisClient() {
   try {
-    const redis = new Redis(process.env.REDIS_URL ?? '', options);
+    const redis = new Redis(process.env.REDIS_URL as string, options);
 
     redis.on('connection', (data) => {
       console.log('[Redis] Connected.', data);
@@ -29,7 +29,7 @@ export const createRedisClient = () => {
   } catch (e) {
     throw new Error(`[Redis] Could not create a Redis instance!`);
   }
-};
+}
 
 const publisher = createRedisClient();
 const subscriber = createRedisClient();
