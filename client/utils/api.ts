@@ -75,7 +75,7 @@ function getApiBaseUrl() {
 function getWsUrl() {
   // WebSocket connection is made only on the client but this code is also
   // executed during SSR so we need to be a bit defensive here
-  if (!config.IS_SERVER) return '';
+  if (config.IS_SERVER) return '';
 
   const { hostname } = window.location;
 
