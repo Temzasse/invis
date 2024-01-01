@@ -31,6 +31,19 @@ export const api = createTRPCNext<AppRouter>({
           true: wsLink({
             client: createWSClient({
               url: getWsUrl(),
+              onOpen() {
+                console.log('WebSocket connection opened');
+              },
+              onClose() {
+                console.log('WebSocket connection closed');
+              },
+              retryDelayMs(attemptIndex) {
+                // Retry immediately
+                if (attemptIndex === 0) return 0;
+
+                // Retry after 1s, 2s, 4s, 8s, 16s, 32s, 60s, 60s, ...
+                return Math.min(1000 * 2 ** attemptIndex, 60000);
+              },
             }),
           }),
           false: httpBatchLink({
