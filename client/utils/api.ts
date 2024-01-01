@@ -73,18 +73,27 @@ function getApiBaseUrl() {
 }
 
 function getWsUrl() {
-  // WebSocket connection is made only on the client but this code is also
-  // executed during SSR so we need to be a bit defensive here
-  if (config.IS_SERVER) return '';
-
-  const { hostname } = window.location;
-
-  // Support running the prod version of the app locally
-  if (hostname === 'localhost') {
+  if (config.NODE_ENV === 'development') {
     return 'ws://localhost:3001';
   }
 
-  // Use wss:// for production
+  // WebSocket connection is made only on the client but this code is also
+  // executed during SSR so we need to be a bit defensive here and return
+  // a valid url unless the build fails...
+  if (config.IS_SERVER) {
+    return 'ws://localhost';
+  }
+
+  const { hostname } = window.location;
+
+  // Support running the prod version of the app locally, note that the WebSocket
+  // handler is bundled with the HTTP API server so we need to define the port
+  if (hostname === 'localhost') {
+    return 'ws://localhost:3000';
+  }
+
+  // Use wss:// for production, note that we don't have access to the Fly.io
+  // runtime env variables here which is why we just use the hostname
   return `wss://${hostname}`;
 }
 
