@@ -35,10 +35,13 @@ export const ShopListItem = memo(
         className={`shoplist-item-${id}`}
         ref={ref}
         layout="position"
-        transition={{ duration: 0.3 }}
-        initial={{ opacity: 1, height: 0, overflow: 'hidden' }}
-        animate={{ opacity: 1, height: 'auto', overflow: 'visible' }}
-        exit={{ opacity: 0, height: 0, overflow: 'hidden' }}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        variants={{
+          hidden: { opacity: 1, height: 0, overflow: 'hidden' },
+          visible: { opacity: 1, height: 'auto', overflow: 'visible' },
+        }}
       >
         <ListItemContent>
           <Checkbox

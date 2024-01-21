@@ -1,4 +1,5 @@
 import { produce } from 'immer';
+import { toast } from 'react-hot-toast';
 
 import { config } from '~/client/config';
 import { api } from '~/utils/api';
@@ -82,7 +83,15 @@ export function ShoplistSubscription({ shoplistId }: { shoplistId: string }) {
               break;
             }
             case 'complete':
-              // TODO: complete shoplist
+              utils.shoplist.getCurrentShoplist.setData(
+                undefined,
+                produce(shoplist, (draft) => {
+                  draft.completed = true;
+                })
+              );
+              toast.success('Kauppalista merkitty valmiiksi toisen toimesta', {
+                position: 'bottom-center',
+              });
               break;
           }
 

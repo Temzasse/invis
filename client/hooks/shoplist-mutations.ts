@@ -2,7 +2,7 @@ import { toast } from 'react-hot-toast';
 import { produce } from 'immer';
 
 import { api } from '~/utils/api';
-import { useStableCallback } from '~/utils/common';
+import { sleep, useStableCallback } from '~/utils/common';
 import { isOptimisticId } from '~/utils/mutations';
 import { config } from '../config';
 
@@ -31,7 +31,7 @@ export function useUpdateShoplistItem() {
 
       return { shoplist, updates };
     },
-    onError: (error, updates, context) => {
+    onError: (error, variables, context) => {
       toast.error('Jotain meni pieleen');
       utils.shoplist.getCurrentShoplist.setData(undefined, context?.shoplist);
     },
@@ -72,7 +72,7 @@ export function useAddShoplistItem() {
           })
         );
 
-        // Focus the new item after it hase been rendered (and animated)
+        // Focus the new item after it has been rendered (and animated)
         setTimeout(() => {
           const itemEl = document.querySelector(
             `.shoplist-item-${data.id} .editable-text-button`
@@ -110,9 +110,9 @@ export function useRemoveShoplistItem() {
 
       utils.shoplist.getCurrentShoplist.setData(undefined, optimisticShoplist);
 
-      return { shoplist, name };
+      return { shoplist };
     },
-    onError: (error, name, context) => {
+    onError: (error, variables, context) => {
       toast.error('Jotain meni pieleen');
       utils.shoplist.getCurrentShoplist.setData(undefined, context?.shoplist);
     },
@@ -127,4 +127,42 @@ export function useRemoveShoplistItem() {
   });
 
   return { removeItem };
+}
+
+export function useCompleteShoplist() {
+  const utils = api.useUtils();
+
+  const mutation = api.shoplist.completeShoplist.useMutation({
+    onMutate: async ({ id }) => {
+      await utils.shoplist.getCurrentShoplist.cancel();
+
+      const shoplist = utils.shoplist.getCurrentShoplist.getData();
+      if (!shoplist) return;
+
+      const optimisticShoplist = {
+        ...shoplist,
+        completed: true,
+      };
+
+      utils.shoplist.getCurrentShoplist.setData(undefined, optimisticShoplist);
+
+      // Let the user see that the shoplist is completed before clearing it
+      await sleep(1000);
+
+      return { shoplist };
+    },
+    onError: (error, variables, context) => {
+      toast.error('Jotain meni pieleen');
+      utils.shoplist.getCurrentShoplist.setData(undefined, context?.shoplist);
+    },
+    onSettled: () => {
+      utils.shoplist.getCurrentShoplist.invalidate();
+    },
+  });
+
+  const completeShoplist = useStableCallback((id: string) => {
+    mutation.mutate({ id, clientId: config.CLIENT_ID });
+  });
+
+  return { completeShoplist, isCompleting: mutation.isLoading };
 }

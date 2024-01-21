@@ -4,7 +4,7 @@ import { type AppProps } from 'next/app';
 import { Toaster } from 'react-hot-toast';
 
 import { TabsLayout } from '~/components/navigation/TabsLayout';
-import { styled } from '~/styles/styled';
+import { styled, css } from '~/styles/styled';
 import { api } from '~/utils/api';
 
 function App({ Component, pageProps, router }: AppProps) {
@@ -16,7 +16,10 @@ function App({ Component, pageProps, router }: AppProps) {
       <Layout>
         <Component {...pageProps} />
       </Layout>
-      <Toaster />
+      <Toaster
+        containerClassName={toasterContainerStyles()}
+        toastOptions={{ className: toastStyles() }}
+      />
     </AppWrapper>
   );
 }
@@ -24,6 +27,18 @@ function App({ Component, pageProps, router }: AppProps) {
 function FallbackLayout({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
+
+const toasterContainerStyles = css({
+  bottom: 'calc(72px + env(safe-area-inset-bottom)) !important',
+  top: 'calc(8px + env(safe-area-inset-top)) !important',
+});
+
+const toastStyles = css({
+  borderRadius: '$regular !important',
+  backgroundColor: '$elevated !important',
+  color: '$text !important',
+  border: '1px solid rgba(150, 150, 150, 0.1)',
+});
 
 const AppWrapper = styled('div', {
   maxWidth: 800,

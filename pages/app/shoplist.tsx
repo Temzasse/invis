@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import {
   useAddShoplistItem,
+  useCompleteShoplist,
   useRemoveShoplistItem,
   useUpdateShoplistItem,
 } from '~/client/hooks/shoplist-mutations';
@@ -10,7 +11,6 @@ import {
 import { api } from '~/utils/api';
 import { withApiSession } from '~/server/api/root';
 import { styled } from '~/styles/styled';
-import { useMounted } from '~/utils/common';
 import { Navbar } from '~/components/navigation/Navbar';
 import { IconButton, Spinner } from '~/components/uikit';
 import { ShoplistSubscription } from '~/components/shoplist/ShoplistSubscription';
@@ -24,11 +24,20 @@ export default function Shoplist() {
   const { data: shoplist } = api.shoplist.getCurrentShoplist.useQuery();
   const { updateChecked, updateName } = useUpdateShoplistItem();
   const { addItem, isAdding } = useAddShoplistItem();
+  const { completeShoplist, isCompleting } = useCompleteShoplist();
   const { removeItem } = useRemoveShoplistItem();
 
   if (!shoplist) return null;
 
-  const completeShoplist = () => console.log('complete');
+  let navbarRightSlot = null;
+
+  if (isCompleting) {
+    navbarRightSlot = <Spinner style={{ margin: 10 }} />;
+  } else if (!shoplist.completed && shoplist.items.length > 0) {
+    navbarRightSlot = (
+      <IconButton icon="check" onPress={() => completeShoplist(shoplist.id)} />
+    );
+  }
 
   return (
     <>
@@ -36,10 +45,7 @@ export default function Shoplist() {
         <title>Ostoslista</title>
       </Head>
 
-      <Navbar
-        title="Kauppalista"
-        rightSlot={<IconButton icon="check" onPress={completeShoplist} />}
-      />
+      <Navbar title="Kauppalista" rightSlot={navbarRightSlot} />
 
       <List>
         <AnimatePresence mode="popLayout" initial={false}>
@@ -48,7 +54,7 @@ export default function Shoplist() {
               key={item.id}
               id={item.id}
               name={item.name}
-              checked={item.checked}
+              checked={item.checked || shoplist.completed}
               onCheckChange={updateChecked}
               onNameChange={updateName}
               onRemove={removeItem}

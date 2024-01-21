@@ -64,6 +64,11 @@ export const shoplistRouter = createTRPCRouter({
         data: { completed: true },
       });
 
+      publish<ShoplistEvent>(`shoplist:${input.id}`, {
+        clientId: input.clientId,
+        operation: 'complete',
+      });
+
       return updatedShoplist;
     }),
 
