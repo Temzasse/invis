@@ -4,7 +4,7 @@ import { clearCookie } from '~/server/utils/cookie';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
-    clearCookie(res, 'project');
+    clearCookie(res, 'session');
     res.redirect('/');
   } else {
     res.status(404).end();

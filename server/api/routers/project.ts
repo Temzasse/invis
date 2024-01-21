@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { uniq } from 'lodash';
 import { hash, compare } from 'bcrypt';
 import { TRPCError } from '@trpc/server';
 
@@ -8,7 +9,7 @@ import {
   publicProcedure,
 } from '../../api/trpc';
 
-import { setProjectCookie } from '../../utils/project';
+import { setSessionCookie } from '../../utils/session';
 
 const joinCreateInput = z.object({
   name: z.string(),
@@ -36,7 +37,13 @@ export const projectRouter = createTRPCRouter({
         },
       });
 
-      setProjectCookie(ctx.res, project.id);
+      setSessionCookie(ctx.res, {
+        currentProjectId: project.id,
+        joinedProjectIds: uniq([
+          ...(ctx.session?.joinedProjectIds || []),
+          project.id,
+        ]),
+      });
 
       return project;
     }),
@@ -58,12 +65,53 @@ export const projectRouter = createTRPCRouter({
         throw new TRPCError({ code: 'BAD_REQUEST' });
       }
 
-      setProjectCookie(ctx.res, project.id);
+      setSessionCookie(ctx.res, {
+        currentProjectId: project.id,
+        joinedProjectIds: uniq([
+          ...(ctx.session?.joinedProjectIds || []),
+          project.id,
+        ]),
+      });
     }),
 
-  getProject: protectedProcedure.query(({ ctx }) => {
+  switchCurrentProject: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session.joinedProjectIds.includes(input.id)) {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
+      }
+
+      const project = await ctx.prisma.project.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!project) {
+        throw new TRPCError({ code: 'BAD_REQUEST' });
+      }
+
+      setSessionCookie(ctx.res, {
+        currentProjectId: input.id,
+        joinedProjectIds: uniq([
+          ...(ctx.session?.joinedProjectIds || []),
+          input.id,
+        ]),
+      });
+    }),
+
+  getCurrentProject: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.project.findUnique({
-      where: { id: ctx.project.id },
+      where: { id: ctx.session.currentProjectId },
+      select: { name: true, id: true },
+    });
+  }),
+
+  getJoinedProjects: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.project.findMany({
+      where: { id: { in: ctx.session.joinedProjectIds } },
       select: { name: true, id: true },
     });
   }),
@@ -71,12 +119,7 @@ export const projectRouter = createTRPCRouter({
   updateItemStatuses: protectedProcedure
     .input(
       z.object({
-        items: z.array(
-          z.object({
-            id: z.string(),
-            status: z.string(),
-          })
-        ),
+        items: z.array(z.object({ id: z.string(), status: z.string() })),
       })
     )
     .mutation(async ({ ctx, input }) => {

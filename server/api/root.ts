@@ -12,7 +12,7 @@ import { createTRPCContext, createTRPCRouter } from './trpc';
 import { projectRouter } from './routers/project';
 import { categoryRouter } from './routers/category';
 import { shoplistRouter } from './routers/shoplist';
-import { getProjectFromCookies } from '../utils/project';
+import { validateSession } from '../utils/session';
 
 export const appRouter = createTRPCRouter({
   project: projectRouter,
@@ -40,9 +40,9 @@ export function withApiSession<
   return async function handler(
     context: GetServerSidePropsContext<Params, Preview>
   ): Promise<GetServerSidePropsResult<Props>> {
-    const project = await getProjectFromCookies(context.req.cookies);
+    const isSessionValid = await validateSession(context.req.cookies);
 
-    if (!project) {
+    if (!isSessionValid) {
       return {
         redirect: {
           destination: '/login',

@@ -30,14 +30,15 @@ function FallbackLayout({ children }: { children: ReactNode }) {
 
 const toasterContainerStyles = css({
   bottom: 'calc(72px + env(safe-area-inset-bottom)) !important',
-  top: 'calc(8px + env(safe-area-inset-top)) !important',
+  top: 'calc(16px + env(safe-area-inset-top)) !important',
 });
 
 const toastStyles = css({
-  borderRadius: '$regular !important',
+  borderRadius: '$full !important',
   backgroundColor: '$elevated !important',
   color: '$text !important',
-  border: '1px solid rgba(150, 150, 150, 0.1)',
+  border: '1px solid rgba(150, 150, 150, 0.2)',
+  boxShadow: '0px 4px 32px rgba(0, 0, 0, 0.8) !important',
 });
 
 const AppWrapper = styled('div', {

@@ -1,27 +1,65 @@
+import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 import { api } from '~/utils/api';
 import { withApiSession } from '~/server/api/root';
 import { styled } from '~/styles/styled';
-import { Button } from '~/components/uikit';
+import {
+  Button,
+  Icon,
+  IconButton,
+  Spinner,
+  Stack,
+  Text,
+  Touchable,
+} from '~/components/uikit';
 import { Navbar } from '~/components/navigation/Navbar';
+import { AddProjectSheet } from '~/components/project/AddProjectSheet';
 
 export const getServerSideProps = withApiSession(async (_, api) => {
-  await api.project.getProject.prefetch();
+  await Promise.all([
+    api.project.getCurrentProject.prefetch(),
+    api.project.getJoinedProjects.prefetch(),
+  ]);
 });
 
 export default function Settings() {
-  const { data: project } = api.project.getProject.useQuery();
+  const [isAddProjectSheetOpen, setIsAddProjectSheetOpen] = useState(false);
+  const switchProjectMutation = api.project.switchCurrentProject.useMutation();
+  const { data: currentProject } = api.project.getCurrentProject.useQuery();
+  const { data: joinedProjects = [] } = api.project.getJoinedProjects.useQuery(); // prettier-ignore
+  const apiUtils = api.useUtils();
 
-  function copyProjectLink() {
-    // TODO: add toast message
+  console.log({ currentProject, joinedProjects });
+
+  function copyProjectLink(projectName: string) {
     navigator.clipboard.writeText(
-      `${window.location.origin}/login?name=${project?.name}`
+      `${window.location.origin}/login?name=${projectName}`
     );
+
+    toast.success('Liittymislinkki kopioitu leikepöydälle', {
+      position: 'top-center',
+    });
   }
 
-  if (!project) return null;
+  function switchProject(projectId: string) {
+    if (currentProject?.id !== projectId) {
+      switchProjectMutation.mutate(
+        { id: projectId },
+        {
+          onSuccess: async () => {
+            // Invalidate all queries so that we don't show old data
+            await apiUtils.invalidate();
+          },
+          onError: () => {
+            toast.error('Projektin vaihtaminen epäonnistui');
+          },
+        }
+      );
+    }
+  }
 
   return (
     <>
@@ -32,18 +70,62 @@ export default function Settings() {
       <Navbar title="Asetukset" />
 
       <Content>
-        <SettingsGroup>
-          <ProjectDetails>
-            <ProjectDetailLabel>Projektin nimi</ProjectDetailLabel>
-            <ProjectDetail>{project.name}</ProjectDetail>
-          </ProjectDetails>
+        <Stack direction="y" spacing="regular">
+          <SettingsGroup>
+            <SettingsGroupTitle>
+              <Text variant="overline" color="textMuted">
+                Projektit
+              </Text>
+            </SettingsGroupTitle>
 
-          <CopyProjectLink>
-            <Button fullWidth icon="share" onPress={copyProjectLink}>
-              Kopioi liittymislinkki
-            </Button>
-          </CopyProjectLink>
-        </SettingsGroup>
+            {joinedProjects.map((project) => {
+              const isCurrentProject = project.id === currentProject?.id;
+              const isSwitchingTo =
+                switchProjectMutation.isLoading &&
+                switchProjectMutation.variables?.id === project.id;
+
+              return (
+                <SettingsGroupRow key={project.id}>
+                  <Stack
+                    direction="x"
+                    spacing="regular"
+                    justify="between"
+                    align="center"
+                  >
+                    <Touchable
+                      onPress={() => switchProject(project.id)}
+                      disabled={switchProjectMutation.isLoading}
+                    >
+                      <Stack direction="x" spacing="xsmall" align="center">
+                        {joinedProjects.length > 1 && isCurrentProject && (
+                          <Icon name="checkOutline" size={20} color="primary" />
+                        )}
+                        {isSwitchingTo && <Spinner size="small" />}
+                        <ProjectName variant="body">{project.name}</ProjectName>
+                      </Stack>
+                    </Touchable>
+
+                    <IconButton
+                      size={18}
+                      icon="share"
+                      onPress={() => copyProjectLink(project.name)}
+                    />
+                  </Stack>
+                </SettingsGroupRow>
+              );
+            })}
+
+            <SettingsGroupRow>
+              <Button
+                fullWidth
+                icon="plusCircle"
+                onPress={() => setIsAddProjectSheetOpen(true)}
+              >
+                Lisää projekti
+              </Button>
+            </SettingsGroupRow>
+          </SettingsGroup>
+        </Stack>
       </Content>
 
       <Logout>
@@ -53,6 +135,11 @@ export default function Settings() {
           </Button>
         </Link>
       </Logout>
+
+      <AddProjectSheet
+        isOpen={isAddProjectSheetOpen}
+        onClose={() => setIsAddProjectSheetOpen(false)}
+      />
     </>
   );
 }
@@ -67,32 +154,26 @@ const SettingsGroup = styled('div', {
   borderRadius: '$medium',
 });
 
-const ProjectDetails = styled('dl', {
-  display: 'flex',
-  flexWrap: 'wrap',
-  'dt, dd': {
-    borderBottom: '1px solid $surface2',
+const SettingsGroupTitle = styled('div', {
+  paddingHorizontal: '$regular',
+  paddingTop: '$xxsmall',
+  marginBottom: '-4px', // hacky but looks better :D
+});
+
+const SettingsGroupRow = styled('div', {
+  padding: '$regular',
+  borderBottom: '1px solid $surface2',
+
+  '&:last-child': {
+    borderBottom: 'none',
   },
 });
 
-const ProjectDetailLabel = styled('dt', {
-  flexBasis: '33.33%',
-  marginLeft: '$regular',
-  paddingVertical: '$regular',
-  typography: '$body',
-  color: '$text',
-});
-
-const ProjectDetail = styled('dd', {
-  flexBasis: 'calc(66.66% - $space$regular)',
-  padding: '$regular',
-  textAlign: 'right',
-  typography: '$body',
-  color: '$textMuted',
-});
-
-const CopyProjectLink = styled('div', {
-  padding: '$regular',
+const ProjectName = styled(Text, {
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  minWidth: 0,
 });
 
 const Logout = styled('div', {

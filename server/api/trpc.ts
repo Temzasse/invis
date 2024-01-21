@@ -4,18 +4,18 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import { IncomingMessage } from 'http';
 import superjson from 'superjson';
 
-import { getProjectFromCookies } from '../utils/project';
+import { Session, getSession } from '../utils/session';
 import { prisma } from '../db';
 
 type CreateContextOptions = {
-  project: null | { id: string };
+  session: null | Session;
   res: CreateNextContextOptions['res'];
 };
 
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     prisma,
-    project: opts.project,
+    session: opts.session,
     res: opts.res,
   };
 };
@@ -24,12 +24,8 @@ export const createTRPCContext = async ({
   req,
   res,
 }: CreateNextContextOptions) => {
-  const project = await getProjectFromCookies(req.cookies);
-
-  return createInnerTRPCContext({
-    project: project ? { id: project.id } : null,
-    res: res,
-  });
+  const session = getSession(req.cookies);
+  return createInnerTRPCContext({ session, res: res });
 };
 
 // TODO: how to authenticate websocket connections?
@@ -47,11 +43,11 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 });
 
 const enforceSession = t.middleware(({ ctx, next }) => {
-  if (!ctx.project) {
+  if (!ctx.session) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
 
-  return next({ ctx: { project: ctx.project } });
+  return next({ ctx: { session: ctx.session } });
 });
 
 export const createTRPCRouter = t.router;

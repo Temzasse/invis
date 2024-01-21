@@ -11,7 +11,7 @@ import {
 
 import { styled } from '~/styles/styled';
 import { Button, Stack } from '~/components/uikit';
-import { getProjectFromCookies } from '~/server/utils/project';
+import { validateSession } from '~/server/utils/session';
 
 export default function Landing() {
   const isSplashVisible = useSplashScreen();
@@ -102,11 +102,11 @@ const Title = styled('h1', {
 });
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const project = await getProjectFromCookies(req.cookies);
+  const isSessionValid = await validateSession(req.cookies);
 
   return {
     props: {},
-    redirect: project
+    redirect: isSessionValid
       ? { destination: '/app/home', permanent: false }
       : undefined,
   };

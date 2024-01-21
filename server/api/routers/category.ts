@@ -15,7 +15,7 @@ export const categoryRouter = createTRPCRouter({
 
   getCategories: protectedProcedure.query(async ({ ctx }) => {
     const project = await ctx.prisma.project.findUnique({
-      where: { id: ctx.project.id },
+      where: { id: ctx.session.currentProjectId },
       include: { categories: true },
     });
 
@@ -24,7 +24,7 @@ export const categoryRouter = createTRPCRouter({
 
   getCategoriesWithItems: protectedProcedure.query(async ({ ctx }) => {
     const project = await ctx.prisma.project.findUnique({
-      where: { id: ctx.project.id },
+      where: { id: ctx.session.currentProjectId },
       include: { categories: { include: { items: true } } },
     });
 
@@ -37,7 +37,7 @@ export const categoryRouter = createTRPCRouter({
       const category = await ctx.prisma.category.create({
         data: {
           name: input.name,
-          project: { connect: { id: ctx.project.id } },
+          project: { connect: { id: ctx.session.currentProjectId } },
         },
       });
 

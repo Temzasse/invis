@@ -1,47 +1,32 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 
 import { api } from '~/utils/api';
 import { styled } from '~/styles/styled';
-import { Button, Icon, Stack, Text, TextInput } from '~/components/uikit';
+import { Icon, Stack, Text } from '~/components/uikit';
 import { Navbar } from '~/components/navigation/Navbar';
+import { NewProjectForm } from '~/components/project/NewProjectForm';
 
 export default function NewProject() {
-  const [state, setState] = useState({
-    name: '',
-    password1: '',
-    password2: '',
-    passwordsMatch: undefined as boolean | undefined,
-  });
-
   const router = useRouter();
   const mutation = api.project.createProject.useMutation();
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    if (state.password1 !== state.password2) {
-      setState((p) => ({ ...p, passwordsMatch: false }));
-      return;
-    }
-
+  async function handleSubmit({
+    name,
+    password,
+  }: {
+    name: string;
+    password: string;
+  }) {
     try {
-      await mutation.mutateAsync({
-        name: state.name.trim(),
-        password: state.password1.trim(),
-      });
-
+      await mutation.mutateAsync({ name, password });
       router.replace('/app/home');
     } catch (error) {
       console.log('> Failed to create project', error);
+      toast.error('Projektin luominen epäonnistui');
     }
-  }
-
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
-    setState((p) => ({ ...p, [name]: value, passwordsMatch: undefined }));
   }
 
   return (
@@ -53,50 +38,13 @@ export default function NewProject() {
       <Main>
         <Navbar title="Uusi projekti" />
 
-        <Form onSubmit={handleSubmit}>
-          <TextInput
-            label="Projektin nimi"
-            name="name"
-            value={state.name}
-            onChange={handleChange}
+        <Content>
+          <NewProjectForm
+            onSubmit={handleSubmit}
+            isLoading={mutation.isLoading}
+            error={mutation.error?.data?.code}
           />
-
-          <TextInput
-            label="Salasana"
-            type="password"
-            message="Vähintään 8 merkkiä"
-            minLength={8}
-            name="password1"
-            value={state.password1}
-            onChange={handleChange}
-          />
-
-          <TextInput
-            label="Salasana uudelleen"
-            type="password"
-            minLength={8}
-            name="password2"
-            value={state.password2}
-            onChange={handleChange}
-            message={
-              state.passwordsMatch === false
-                ? 'Salasanat eivät täsmää!'
-                : undefined
-            }
-          />
-
-          <Button type="submit" fullWidth icon="plusCircle">
-            {mutation.isLoading ? 'Luodaan...' : 'Luo projekti'}
-          </Button>
-
-          {mutation.error?.data?.code === 'CONFLICT' && (
-            <Stack direction="y" spacing="xsmall">
-              <Text variant="bodySmallBold" color="textMuted" align="center">
-                Samanniminen projekti on jo olemassa.
-              </Text>
-            </Stack>
-          )}
-        </Form>
+        </Content>
 
         <Footer>
           <Link href="/">
@@ -111,17 +59,13 @@ export default function NewProject() {
   );
 }
 
-
 const Main = styled('main', {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
 });
 
-const Form = styled('form', {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '$regular',
+const Content = styled('div', {
   padding: '$regular',
 });
 

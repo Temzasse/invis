@@ -21,7 +21,7 @@ type ShoplistEvent =
 export const shoplistRouter = createTRPCRouter({
   getCurrentShoplist: protectedProcedure.query(async ({ ctx }) => {
     const project = await ctx.prisma.project.findUnique({
-      where: { id: ctx.project.id },
+      where: { id: ctx.session.currentProjectId },
       include: { shoplists: true },
     });
 
@@ -33,7 +33,7 @@ export const shoplistRouter = createTRPCRouter({
 
     if (!shoplist || shoplist.completed) {
       shoplist = await ctx.prisma.shoplist.create({
-        data: { project: { connect: { id: ctx.project.id } } },
+        data: { project: { connect: { id: ctx.session.currentProjectId } } },
       });
     }
 

@@ -57,7 +57,7 @@ function CreateItemForm({
   const [category, setCategory] = useState(categoryId || categoryOptions[0].id);
   const [name, setName] = useState('');
   const [status, setStatus] = useState<ItemStatus>('missing');
-  const apiUtils = api.useContext();
+  const apiUtils = api.useUtils();
   const { mutate, error, isLoading } =
     api.category.addItemToCategory.useMutation();
 

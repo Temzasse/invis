@@ -29,7 +29,7 @@ export function CreateCategorySheet({ isOpen, onClose }: Props) {
 
 function CreateCategoryForm({ onCreated }: { onCreated: () => void }) {
   const [name, setName] = useState('');
-  const apiUtils = api.useContext();
+  const apiUtils = api.useUtils();
   const { mutate, error, isLoading } =
     api.category.createCategory.useMutation();
 
